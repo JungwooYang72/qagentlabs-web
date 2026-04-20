@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { AIChatbot } from '@/components/features/AIChatbot';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -26,7 +25,6 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
-        <AIChatbot />
       </body>
     </html>
   );

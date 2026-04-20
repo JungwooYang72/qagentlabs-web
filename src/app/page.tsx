@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { AIChatbot } from "@/components/features/AIChatbot";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import { ArrowRight, Box, Cpu, PackageSearch, Server, HardDrive, Network, Bot } from "lucide-react";
 
@@ -47,11 +48,10 @@ export default function Home() {
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="relative w-12 h-12 flex-shrink-0 bg-white/5 rounded-lg p-1 border border-border mt-1">
-                <Image
-                  src="/QAgent Flow_로고.png"
+                <img
+                  src="/qagent-flow-logo.png"
                   alt="QAgent Flow Logo"
-                  fill
-                  className="object-contain"
+                  className="object-contain w-full h-full"
                 />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">QAgent Flow</h2>
@@ -354,6 +354,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <AIChatbot />
     </div>
   );
 }
