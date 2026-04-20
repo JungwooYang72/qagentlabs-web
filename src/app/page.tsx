@@ -11,25 +11,25 @@ export default function Home() {
       <section className="relative overflow-hidden bg-background pt-20 pb-32 md:pt-32 md:pb-40 border-b border-border">
         {/* Abstract technical background pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-        
+
         <div className="container-custom relative z-10 flex flex-col items-start gap-6 max-w-4xl">
           <div className="inline-flex items-center rounded-full border border-border bg-secondary/50 px-3 py-1 text-sm text-secondary-foreground font-medium mb-4 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-accent mr-2"></span>
             Building Infrastructure for Automation
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance">
             Intelligent Systems for <span className="text-accent">Commerce</span> & Engineering.
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl text-balance mt-4">
             QAgent Labs builds modern infrastructure combining artificial intelligence, supply chain intelligence, and engineering automation.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Button size="lg" asChild className="group">
               <Link href="/seller-commerce" className="flex items-center font-medium">
-                Explore Seller Commerce 
+                Explore Seller Commerce
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -40,7 +40,6 @@ export default function Home() {
         </div>
       </section>
 
-      </section>
 
       {/* Promotional Videos: QAgent Flow */}
       <section className="section-padding bg-muted/10 border-b border-border">
@@ -48,10 +47,10 @@ export default function Home() {
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="relative w-12 h-12 flex-shrink-0 bg-white/5 rounded-lg p-1 border border-border mt-1">
-                <Image 
-                  src="/QAgent Flow_로고.png" 
-                  alt="QAgent Flow Logo" 
-                  fill 
+                <Image
+                  src="/QAgent Flow_로고.png"
+                  alt="QAgent Flow Logo"
+                  fill
                   className="object-contain"
                 />
               </div>
@@ -66,29 +65,29 @@ export default function Home() {
             {/* Video 1 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
-                <iframe 
+                <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/csCgARA1byU" 
-                  title="QAgent Flow 자율형 업무자동화 유통분야" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
+                  src="https://www.youtube.com/embed/csCgARA1byU"
+                  title="QAgent Flow 자율형 업무자동화 유통분야"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
               </div>
               <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 (Commerce)</h3>
             </div>
-            
+
             {/* Video 2 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
-                <iframe 
+                <iframe
                   className="absolute inset-0 w-full h-full"
-                  src="https://www.youtube.com/embed/12OyuEsEcpE" 
-                  title="QAgent Flow 자율형 업무자동화 제조분야" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
+                  src="https://www.youtube.com/embed/12OyuEsEcpE"
+                  title="QAgent Flow 자율형 업무자동화 제조분야"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
               </div>
@@ -231,46 +230,46 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
+
       {/* Featured Hardware Section */}
       <section className="section-padding border-t border-border">
-         <div className="container-custom">
-           <div className="bg-primary text-primary-foreground rounded-2xl overflow-hidden shadow-xl grid md:grid-cols-2 relative">
-             <div className="p-10 md:p-16 flex flex-col justify-center">
-               <div className="inline-flex w-fit items-center rounded-full bg-primary-foreground/10 px-3 py-1 text-sm font-medium mb-6 backdrop-blur-sm border border-primary-foreground/20">
-                 Featured Product
-               </div>
-               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-                 NX-802RU30
-               </h2>
-               <p className="text-lg text-primary-foreground/80 mb-8 max-w-md">
-                 Professional 8-bay rackmountable direct attached storage enclosure engineered for technical environments, NAS builders, and enterprise use.
-               </p>
-               <div>
-                  <Button variant="secondary" asChild>
-                    <Link href="/products/nx-802ru30">View Technical Specifications</Link>
-                  </Button>
-               </div>
-             </div>
-             <div className="bg-muted border-l border-primary-foreground/10 p-10 flex items-center justify-center relative min-h-[300px]">
-               {/* Abstract placeholder for technical product */}
-               <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-4 relative">
-                  <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
-                    <div className="w-20 h-4 bg-muted rounded"></div>
-                    <div className="flex gap-2">
-                      <div className="w-3 h-3 rounded-full bg-accent/20 border border-accent/50"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
-                    </div>
+        <div className="container-custom">
+          <div className="bg-primary text-primary-foreground rounded-2xl overflow-hidden shadow-xl grid md:grid-cols-2 relative">
+            <div className="p-10 md:p-16 flex flex-col justify-center">
+              <div className="inline-flex w-fit items-center rounded-full bg-primary-foreground/10 px-3 py-1 text-sm font-medium mb-6 backdrop-blur-sm border border-primary-foreground/20">
+                Featured Product
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+                NX-802RU30
+              </h2>
+              <p className="text-lg text-primary-foreground/80 mb-8 max-w-md">
+                Professional 8-bay rackmountable direct attached storage enclosure engineered for technical environments, NAS builders, and enterprise use.
+              </p>
+              <div>
+                <Button variant="secondary" asChild>
+                  <Link href="/products/nx-802ru30">View Technical Specifications</Link>
+                </Button>
+              </div>
+            </div>
+            <div className="bg-muted border-l border-primary-foreground/10 p-10 flex items-center justify-center relative min-h-[300px]">
+              {/* Abstract placeholder for technical product */}
+              <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-4 relative">
+                <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
+                  <div className="w-20 h-4 bg-muted rounded"></div>
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-accent/20 border border-accent/50"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
                   </div>
-                  <div className="grid grid-cols-4 gap-2 flex-1">
-                     {Array.from({length: 8}).map((_, i) => (
-                       <div key={i} className="bg-muted rounded border border-border/80 h-full w-full"></div>
-                     ))}
-                  </div>
-               </div>
-             </div>
-           </div>
-         </div>
+                </div>
+                <div className="grid grid-cols-4 gap-2 flex-1">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="bg-muted rounded border border-border/80 h-full w-full"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Infrastructure Picks */}
