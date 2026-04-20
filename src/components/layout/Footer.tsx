@@ -7,9 +7,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <h3 className="font-bold text-lg mb-4 tracking-tight">QAgent Labs</h3>
-            <p className="text-muted-foreground text-sm max-w-xs">
+            <p className="text-muted-foreground text-sm max-w-xs mb-4">
               Building intelligent systems for commerce, supply chains, and engineering automation.
             </p>
+            <address className="not-italic text-sm text-muted-foreground/80 leading-relaxed max-w-xs">
+              경기도 구리시 갈매중앙로 190,<br/>
+              D동 4층 17호<br/>
+              (갈매동, 휴밸나인 지식산업센터)
+            </address>
           </div>
           
           <div>

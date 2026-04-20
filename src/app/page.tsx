@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import { ArrowRight, Box, Cpu, PackageSearch, Server, HardDrive, Network, Bot } from "lucide-react";
@@ -35,6 +36,64 @@ export default function Home() {
             <Button size="lg" variant="outline" asChild>
               <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer" className="font-medium">Contact Us</a>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      </section>
+
+      {/* Promotional Videos: QAgent Flow */}
+      <section className="section-padding bg-muted/10 border-b border-border">
+        <div className="container-custom">
+          <div className="flex flex-col items-center mb-12 text-center">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="relative w-12 h-12 flex-shrink-0 bg-white/5 rounded-lg p-1 border border-border mt-1">
+                <Image 
+                  src="/QAgent Flow_로고.png" 
+                  alt="QAgent Flow Logo" 
+                  fill 
+                  className="object-contain"
+                />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">QAgent Flow</h2>
+            </div>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              자율형 업무자동화 구축 솔루션. 유통과 제조 분야에서 반복 업무를 AI가 스스로 수행합니다.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Video 1 */}
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
+                <iframe 
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/csCgARA1byU" 
+                  title="QAgent Flow 자율형 업무자동화 유통분야" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 (Commerce)</h3>
+            </div>
+            
+            {/* Video 2 */}
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
+                <iframe 
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/12OyuEsEcpE" 
+                  title="QAgent Flow 자율형 업무자동화 제조분야" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <h3 className="font-semibold text-lg text-center text-foreground">제조분야 자동화 (Manufacturing)</h3>
+            </div>
           </div>
         </div>
       </section>
