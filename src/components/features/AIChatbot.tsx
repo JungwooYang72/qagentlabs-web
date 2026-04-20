@@ -82,7 +82,7 @@ export function AIChatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+    <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
       {isOpen && (
         <div className="mb-4 w-80 md:w-96 bg-background/80 backdrop-blur-xl border border-border shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-300 pointer-events-auto">

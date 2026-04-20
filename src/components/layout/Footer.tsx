@@ -12,8 +12,7 @@ export function Footer() {
             </p>
             <address className="not-italic text-sm text-muted-foreground/80 leading-relaxed max-w-xs">
               경기도 구리시 갈매중앙로 190,<br/>
-              D동 4층 17호<br/>
-              (갈매동, 휴밸나인 지식산업센터)
+              구리갈매 휴밸나인 지식산업센터
             </address>
           </div>
           
