@@ -59,7 +59,7 @@ export default function ContactPage() {
                 <div>
                   <h4 className="font-medium text-sm">HQ</h4>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Seoul, South Korea<br />
+                    경기도 구리시 갈매중앙로 190, D동 4층 17호(갈매동, 휴밸나인 지식산업센터)<br />
                     Operation & Engineering Hub
                   </p>
                 </div>
