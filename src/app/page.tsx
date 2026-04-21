@@ -357,6 +357,11 @@ export default function Home() {
       <AIChatbot />
       {/* 챗봇 수동 추가 */}
       <AIChatbot />
+
+      {/* 🚨 강제 렌더링 테스트 박스 🚨 */}
+      <div style={{ position: "fixed", bottom: "100px", right: "50px", width: "120px", height: "50px", backgroundColor: "red", zIndex: 999999, color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", borderRadius: "8px" }}>
+        TEST BOX
+      </div>
     </div>
   );
 }
