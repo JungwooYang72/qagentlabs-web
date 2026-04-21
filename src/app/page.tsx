@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import AIChatbot from "@/components/features/AIChatbot";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import { ArrowRight, Box, Cpu, PackageSearch, Server, HardDrive, Network, Bot } from "lucide-react";
+import AIChatbot from "@/components/features/AIChatbot";
 
 export default function Home() {
   return (
@@ -354,6 +355,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <AIChatbot />
+      {/* 챗봇 수동 추가 */}
       <AIChatbot />
     </div>
   );
