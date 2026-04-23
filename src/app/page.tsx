@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/Card";
 import {
   ArrowRight,
-  Box,
   Bot,
+  Box,
   Cpu,
   HardDrive,
   Network,
@@ -29,8 +29,7 @@ export default function Home() {
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
           style={{
-            backgroundImage:
-              "radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)",
+            backgroundImage: "radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)",
             backgroundSize: "32px 32px",
           }}
         ></div>
@@ -76,11 +75,7 @@ export default function Home() {
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="relative w-12 h-12 flex-shrink-0 bg-white/5 rounded-lg p-1 border border-border mt-1">
-                <img
-                  src="/qagent-flow-logo.png"
-                  alt="QAgent Flow Logo"
-                  className="object-contain w-full h-full"
-                />
+                <img src="/qagent-flow-logo.png" alt="QAgent Flow Logo" className="object-contain w-full h-full" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">QAgent Flow</h2>
             </div>
@@ -90,7 +85,6 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Video 1 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -106,7 +100,6 @@ export default function Home() {
               <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 (Commerce)</h3>
             </div>
 
-            {/* Video 2 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -255,7 +248,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Hardware Section */}
       <section className="section-padding border-t border-border">
         <div className="container-custom">
           <div className="bg-primary text-primary-foreground rounded-2xl overflow-hidden shadow-xl grid md:grid-cols-2 relative">
@@ -293,7 +285,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Infrastructure Picks */}
       <section className="section-padding bg-muted/20 border-t border-border">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
@@ -316,9 +307,7 @@ export default function Home() {
                     Anchor Node
                   </div>
                   <h3 className="text-3xl font-bold mb-4">NX-802RU30</h3>
-                  <p className="text-xl text-foreground/80 mb-6 font-medium">
-                    2U Rack Server Chassis for NAS & Home Server Builds
-                  </p>
+                  <p className="text-xl text-foreground/80 mb-6 font-medium">2U Rack Server Chassis for NAS & Home Server Builds</p>
                   <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
                     The core of our recommended storage architecture. Engineered for high-density environments, providing uncompromised direct-attached storage expansion with a SAS/SATA passthrough backplane for optimal ZFS performance.
                   </p>
