@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import AIChatbot from "@/components/features/AIChatbot";
 import {
   Card,
@@ -8,8 +8,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ArrowRight, Box, Cpu, PackageSearch, Server, HardDrive, Network, Bot } from "lucide-react";
+} from "@/components/ui/Card";
+import {
+  ArrowRight,
+  Box,
+  Bot,
+  Cpu,
+  HardDrive,
+  Network,
+  PackageSearch,
+  Server,
+} from "lucide-react";
 
 export default function Home() {
   return (
@@ -20,14 +29,15 @@ export default function Home() {
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)",
+            backgroundImage:
+              "radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)",
             backgroundSize: "32px 32px",
           }}
-        />
+        ></div>
 
         <div className="container-custom relative z-10 flex flex-col items-start gap-6 max-w-4xl">
           <div className="inline-flex items-center rounded-full border border-border bg-secondary/50 px-3 py-1 text-sm text-secondary-foreground font-medium mb-4 shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-accent mr-2" />
+            <span className="flex h-2 w-2 rounded-full bg-accent mr-2"></span>
             Building Infrastructure for Automation
           </div>
 
@@ -36,8 +46,7 @@ export default function Home() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl text-balance mt-4">
-            QAgent Labs builds modern infrastructure combining artificial intelligence, supply chain intelligence,
-            and engineering automation.
+            QAgent Labs builds modern infrastructure combining artificial intelligence, supply chain intelligence, and engineering automation.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
@@ -81,6 +90,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Video 1 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -91,11 +101,12 @@ export default function Home() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
-                />
+                ></iframe>
               </div>
               <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 (Commerce)</h3>
             </div>
 
+            {/* Video 2 */}
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -106,7 +117,7 @@ export default function Home() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
-                />
+                ></iframe>
               </div>
               <h3 className="font-semibold text-lg text-center text-foreground">제조분야 자동화 (Manufacturing)</h3>
             </div>
@@ -144,17 +155,14 @@ export default function Home() {
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4">
-                  We solve the operational bottleneck for technical products by providing structured product information
-                  and automation-driven content for sellers.
+                  We solve the operational bottleneck for technical products by providing structured product information and automation-driven content for sellers.
                 </p>
                 <div className="space-y-2">
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" />
-                    <span>Product operations support</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Product operations support</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" />
-                    <span>Structured channel expansion</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Structured channel expansion</span>
                   </div>
                 </div>
               </CardContent>
@@ -182,17 +190,14 @@ export default function Home() {
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4">
-                  We build AI agents that execute tasks, connect company data, and automate operations such as reporting
-                  and Slack delivery.
+                  We build AI agents that execute tasks, connect company data, and automate operations such as reporting and Slack delivery.
                 </p>
                 <div className="space-y-2">
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" />
-                    <span>Internal workflow automation</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Internal workflow automation</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" />
-                    <span>Slack / DB connected execution</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Slack / DB connected execution</span>
                   </div>
                 </div>
               </CardContent>
@@ -220,8 +225,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground">
-                  Algorithmic generation of 3D models and structural representations for engineering and architectural
-                  applications.
+                  Algorithmic generation of 3D models and structural representations for engineering and architectural applications.
                 </p>
               </CardContent>
             </Card>
@@ -243,8 +247,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground">
-                  Using machine learning to optimize technical hardware procurement, reducing lead times and predicting
-                  component availability.
+                  Using machine learning to optimize technical hardware procurement, reducing lead times and predicting component availability.
                 </p>
               </CardContent>
             </Card>
@@ -262,8 +265,7 @@ export default function Home() {
               </div>
               <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">NX-802RU30</h2>
               <p className="text-lg text-primary-foreground/80 mb-8 max-w-md">
-                Professional 8-bay rackmountable direct attached storage enclosure engineered for technical
-                environments, NAS builders, and enterprise use.
+                Professional 8-bay rackmountable direct attached storage enclosure engineered for technical environments, NAS builders, and enterprise use.
               </p>
               <div>
                 <Button variant="secondary" asChild>
@@ -274,15 +276,15 @@ export default function Home() {
             <div className="bg-muted border-l border-primary-foreground/10 p-10 flex items-center justify-center relative min-h-[300px]">
               <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-4 relative">
                 <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
-                  <div className="w-20 h-4 bg-muted rounded" />
+                  <div className="w-20 h-4 bg-muted rounded"></div>
                   <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-accent/20 border border-accent/50" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-accent/20 border border-accent/50"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
                   </div>
                 </div>
                 <div className="grid grid-cols-4 gap-2 flex-1">
                   {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="bg-muted rounded border border-border/80 h-full w-full" />
+                    <div key={i} className="bg-muted rounded border border-border/80 h-full w-full"></div>
                   ))}
                 </div>
               </div>
@@ -298,9 +300,7 @@ export default function Home() {
             <div className="max-w-3xl">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Infrastructure Picks</h2>
               <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-                Validated hardware components recommended by our engineering team. These selections form the baseline
-                for specialized automation nodes, secure storage deployments, and high-throughput networking
-                environments.
+                Validated hardware components recommended by our engineering team. These selections form the baseline for specialized automation nodes, secure storage deployments, and high-throughput networking environments.
               </p>
             </div>
           </div>
@@ -320,15 +320,9 @@ export default function Home() {
                     2U Rack Server Chassis for NAS & Home Server Builds
                   </p>
                   <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
-                    The core of our recommended storage architecture. Engineered for high-density environments,
-                    providing uncompromised direct-attached storage expansion with a SAS/SATA passthrough backplane
-                    for optimal ZFS performance.
+                    The core of our recommended storage architecture. Engineered for high-density environments, providing uncompromised direct-attached storage expansion with a SAS/SATA passthrough backplane for optimal ZFS performance.
                   </p>
-                  <Button
-                    variant="outline"
-                    className="w-fit group-hover:bg-accent group-hover:text-accent-foreground transition-colors"
-                    asChild
-                  >
+                  <Button variant="outline" className="w-fit group-hover:bg-accent group-hover:text-accent-foreground transition-colors" asChild>
                     <Link href="/products/nx-802ru30">
                       Review Technical Specs <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
@@ -344,9 +338,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">Synology DS224+</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    Reliable NAS platform for practical storage deployment and safe off-site replication.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Reliable NAS platform for practical storage deployment and safe off-site replication.</p>
                 </div>
               </div>
 
@@ -356,9 +348,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">Samsung 990 PRO 2TB</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    High-performance NVMe SSD for fast storage workloads and system cache tiering.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">High-performance NVMe SSD for fast storage workloads and system cache tiering.</p>
                 </div>
               </div>
 
@@ -368,9 +358,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">SK Hynix Platinum P41 2TB</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    Professional-grade NVMe SSD balancing extreme speed with thermal stability.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Professional-grade NVMe SSD balancing extreme speed with thermal stability.</p>
                 </div>
               </div>
 
@@ -380,9 +368,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-bold text-lg">TP-Link Wi-Fi 7 Router</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    Next-generation network infrastructure for high-speed, multi-gigabit wireless environments.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Next-generation network infrastructure for high-speed, multi-gigabit wireless environments.</p>
                 </div>
               </div>
             </div>
