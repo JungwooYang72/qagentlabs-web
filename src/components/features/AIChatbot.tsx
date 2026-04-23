@@ -36,17 +36,18 @@ export default function AIChatbot() {
               content: `당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다. 항상 정중하고 전문적으로 답변하세요.
 
               [회사 핵심 정체성]
-              - QAgent Labs는 AI가 스스로 판단하고 업무를 수행하는 '지능형 자동화 에이전트' 솔루션 전문 기업입니다.
-              
+              - QAgent Labs는 AI 에이전트 기술을 활용하여 복잡한 설계와 비즈니스 워크플로우를 자동화하는 혁신적인 기업입니다.
+              - 사람이 수작업으로 하던 복잡한 엔지니어링 설계와 업무 과정을 AI가 스스로 판단하고 처리할 수 있도록 만드는 기술을 연구·개발합니다.
+
               [주요 사업 및 서비스]
-              1. 지능형 업무 자동화: 사람이 반복적으로 수행하던 복잡한 비즈니스 워크플로우를 AI 에이전트가 자율적으로 처리하는 시스템을 구축합니다. (OpenClaw 등 자율 실행 프로토콜 활용)
-              2. 차세대 엔지니어링 솔루션 (준비 중): 3D MEP(기계/전기/배관) 설계 과정을 AI로 자동화하는 혁신적인 시스템을 개발 중입니다.
+              1. 지능형 업무 자동화: 'OpenClaw'와 'n8n'을 결합한 자율형 AI 자동화 시스템을 통해 기업의 실무 프로세스를 지능화하고 반복 업무를 자율적으로 처리합니다.
+              2. 차세대 엔지니어링 솔루션 (준비 중): 3D MEP(기계/전기/배관) 설계 과정을 AI로 자동화하는 혁신적인 시스템(Project Super-Engineer)을 개발 중입니다.
 
               [답변 가이드라인]
-              - 기술적 배경을 물으면 "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 전문성 있게 답변하세요.
-              - "사람의 수작업을 줄이고 비즈니스 효율을 극대화하는 것"이 회사의 존재 이유임을 강조하세요.
-              - 3D MEP 설계에 대해서는 "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하고 있다"고 언급하세요.
-              - 답변은 항상 간결하면서도 신뢰감 있게 작성하세요.`
+              - 기술적 배경 문의 시: "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 전문성 있게 답변하세요.
+              - 가치 강조: "사람의 수작업을 획기적으로 줄이고 비즈니스 효율을 극대화하는 지능형 자동화 파트너"임을 강조하세요.
+              - 3D MEP 설계 답변 시: "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하여 혁신적인 설계 자동화를 준비하고 있다"고 언급하세요.
+              - 모든 답변은 간결하면서도 신뢰감 있는 비즈니스 톤을 유지하세요.`
             },
             ...messages.map(m => ({ role: m.sender === "ai" ? "assistant" : "user", content: m.text })),
             { role: "user", content: userText }
@@ -58,7 +59,7 @@ export default function AIChatbot() {
 
       const data = await response.json();
 
-      // ★ 어떤 데이터 구조로 오든 텍스트를 추출하는 유연한 로직
+      // 어떤 구조로 오든 텍스트를 찾아내는 융통성 있는 로직
       let aiResponse = "";
       if (data.choices?.[0]?.message?.content) {
         aiResponse = data.choices[0].message.content;
@@ -67,7 +68,7 @@ export default function AIChatbot() {
       } else if (typeof data === 'string') {
         aiResponse = data;
       } else {
-        aiResponse = "답변 데이터 형식을 해석할 수 없습니다. 서버 설정을 확인해주세요.";
+        aiResponse = "답변을 가져오는 데 문제가 발생했습니다. 관리자에게 문의해주세요.";
       }
 
       setMessages((prev) => [...prev, { sender: "ai", text: aiResponse }]);
