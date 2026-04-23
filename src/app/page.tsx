@@ -354,9 +354,11 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* 챗봇 수동 추가 */}
+      {/* 여기에 챗봇을 둡니다. 
+         기존에 중복되었던 것들을 싹 지우고 아래 딱 하나만 남기세요. 
+      */}
       <AIChatbot />
 
-    </div>
+    </div> // 최상위 flex-col div가 닫히는 곳
   );
 }

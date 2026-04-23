@@ -81,20 +81,27 @@ export default function AIChatbot() {
   // src/components/features/AIChatbot.tsx 파일 하단부 수정
 
   return (
-    /* 화면 우측 하단에 고정하는 스타일 */
-    <div style={{ position: "fixed", bottom: "30px", right: "30px", zIndex: 99999 }}>
+    /* 포지션을 fixed로 강제하고 z-index를 최상위로 올립니다. */
+    <div style={{
+      position: "fixed",
+      bottom: "30px",
+      right: "30px",
+      zIndex: 999999, // 숫자를 더 높여서 다른 요소에 묻히지 않게 합니다.
+      pointerEvents: "auto" // 클릭 이벤트를 확실히 받도록 설정
+    }}>
       {isOpen ? (
-        /* 채팅창이 열렸을 때 (기존 코드 그대로 유지) */
-        <div style={{ /* ... 기존 채팅창 스타일 ... */ }}>
-          {/* ... 기존 채팅창 내용 ... */}
+        /* 채팅창 영역 */
+        <div style={{ /* ...기존 스타일... */ }}>
+          {/* ...기존 내용... */}
         </div>
       ) : (
-        /* ★ 아이콘 아래 안내 문구가 상시 노출되는 상태 ★ */
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-          {/* 챗봇 아이콘 버튼 */}
+        /* 아이콘 & 안내문구 영역 */
+        <div
+          onClick={() => setIsOpen(true)} // 버튼뿐만 아니라 감싸는 div에도 클릭 이벤트를 줍니다.
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+        >
+          {/* 아이콘 버튼 */}
           <button
-            onClick={() => setIsOpen(true)}
             style={{
               width: "70px", height: "70px", borderRadius: "50%",
               backgroundColor: "#0f172a", color: "#ffffff", border: "none",
@@ -106,26 +113,16 @@ export default function AIChatbot() {
             💬
           </button>
 
-          {/* 아이콘 바로 아래 큼지막한 안내 멘트 */}
-          <div
-            onClick={() => setIsOpen(true)}
-            style={{
-              backgroundColor: "#0f172a",
-              color: "#ffffff",
-              fontWeight: "bold",
-              padding: "10px 20px",
-              borderRadius: "30px",
-              fontSize: "16px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              border: "2px solid #ffffff"
-            }}
-          >
-            궁금한 점은 무엇이든 물어보세요!
+          {/* 하단 안내 문구 */}
+          <div style={{
+            backgroundColor: "#0f172a", color: "#ffffff", fontWeight: "bold",
+            padding: "10px 20px", borderRadius: "30px", fontSize: "16px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)", whiteSpace: "nowrap",
+            border: "2px solid #ffffff"
+          }}>
+            궁금한건 무엇이든 물어보세요!
           </div>
         </div>
       )}
     </div>
   );
-}
