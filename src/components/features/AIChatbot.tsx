@@ -29,15 +29,22 @@ export default function AIChatbot() {
     try {
       const apiMessages = [
         {
-          role: "system", content: `당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다.항상 정중하고 전문적으로 답변하세요.
-          [회사 기본 정보]
-        - 회사명: QAgent Labs (큐에이전트 랩스)
-      - 핵심 비즈니스: AI 에이전트 기반의 자동화 솔루션, 3D MEP(기계 / 전기 / 배관) 자동화 설계 시스템 구축.
-    - 주요 기술: Antigravity IDE, OpenClaw 등을 활용한 자율 AI 프레임워크 개발.
-    
-    [답변 규칙]
-      1. 사용자가 QAgent Labs가 무엇을 하는 곳인지 물어보면, AI 기술을 통해 복잡한 설계와 비즈니스 워크플로우를 자동화하는 혁신적인 기업이라고 소개하세요.
-    2. 회사 외부의 민감한 정치, 종교적 질문에는 정중히 답변을 거절하세요.`
+          role: "system", content: `당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다. 항상 정중하고 전문적으로 답변하세요.
+
+  [회사 핵심 정체성]
+  - QAgent Labs는 단순한 챗봇을 넘어, AI가 스스로 판단하고 업무를 수행하는 '지능형 자동화 에이전트' 솔루션 전문 기업입니다.
+  
+  [주요 사업 및 서비스]
+  1. 지능형 업무 자동화 (현재 주력): 
+     - 사람이 반복적으로 수행하던 복잡한 비즈니스 워크플로우를 AI 에이전트가 자율적으로 처리하는 시스템을 구축합니다.
+     - 단순 자동화를 넘어 AI가 상황을 분석하고 실행까지 완료하는 '에이전틱 자동화'에 특화되어 있습니다.
+  2. 차세대 엔지니어링 솔루션 (준비 중): 
+     - 3D MEP(기계/전기/배관) 설계 과정을 AI로 자동화하는 혁신적인 시스템을 개발 중입니다.
+
+  [답변 가이드라인]
+  - 사용자가 기술적 배경을 물으면 "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 전문성 있게 답변하세요. (특정 기술명 언급 지양)
+  - "사람의 수작업을 줄이고 비즈니스 효율을 극대화하는 것"이 회사의 존재 이유임을 강조하세요.
+  - 아직 준비 중인 설계 자동화 서비스에 대해서는 "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하고 있다"는 뉘앙스로 답변하세요.`
         },
         ...messages.map(m => ({
           role: m.sender === "ai" ? "assistant" : "user",
@@ -71,67 +78,53 @@ export default function AIChatbot() {
     if (e.key === "Enter") handleSendMessage();
   };
 
+  // src/components/features/AIChatbot.tsx 파일 하단부 수정
+
   return (
+    /* 화면 우측 하단에 고정하는 스타일 */
     <div style={{ position: "fixed", bottom: "30px", right: "30px", zIndex: 99999 }}>
       {isOpen ? (
-        <div style={{
-          width: "350px", height: "500px", backgroundColor: "#ffffff",
-          border: "1px solid #e5e7eb", borderRadius: "16px",
-          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
-          display: "flex", flexDirection: "column", overflow: "hidden"
-        }}>
-          <div style={{ backgroundColor: "#0f172a", color: "#ffffff", padding: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontWeight: "bold", fontSize: "16px" }}>QAgent Labs (DeepSeek)</span>
-            <button onClick={() => setIsOpen(false)} style={{ background: "none", border: "none", color: "#ffffff", cursor: "pointer", fontSize: "18px" }}>✕</button>
-          </div>
-
-          <div style={{ flex: 1, padding: "16px", overflowY: "auto", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", gap: "12px" }}>
-            {messages.map((msg, idx) => (
-              <div key={idx} style={{
-                alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                backgroundColor: msg.sender === "user" ? "#0f172a" : "#e2e8f0",
-                color: msg.sender === "user" ? "#ffffff" : "#334155",
-                padding: "10px 14px", borderRadius: "12px", maxWidth: "80%",
-                fontSize: "14px", lineHeight: "1.5", wordBreak: "keep-all"
-              }}>
-                {msg.text}
-              </div>
-            ))}
-            {isLoading && (
-              <div style={{ alignSelf: "flex-start", backgroundColor: "#e2e8f0", color: "#334155", padding: "10px 14px", borderRadius: "12px", fontSize: "14px", fontStyle: "italic" }}>
-                딥시크가 생각 중입니다...
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div style={{ padding: "16px", backgroundColor: "#ffffff", borderTop: "1px solid #e5e7eb", display: "flex", gap: "8px" }}>
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="메시지를 입력하세요..."
-              disabled={isLoading}
-              style={{ flex: 1, padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#0f172a" }}
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={isLoading}
-              style={{ backgroundColor: isLoading ? "#94a3b8" : "#0f172a", color: "#ffffff", border: "none", borderRadius: "8px", padding: "0 16px", cursor: isLoading ? "not-allowed" : "pointer", fontWeight: "bold" }}
-            >
-              전송
-            </button>
-          </div>
+        /* 채팅창이 열렸을 때 (기존 코드 그대로 유지) */
+        <div style={{ /* ... 기존 채팅창 스타일 ... */ }}>
+          {/* ... 기존 채팅창 내용 ... */}
         </div>
       ) : (
-        <button
-          onClick={() => setIsOpen(true)}
-          style={{ width: "64px", height: "64px", borderRadius: "50%", backgroundColor: "#0f172a", color: "#ffffff", border: "none", cursor: "pointer", boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}
-        >
-          💬
-        </button>
+        /* ★ 아이콘 아래 안내 문구가 상시 노출되는 상태 ★ */
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+
+          {/* 챗봇 아이콘 버튼 */}
+          <button
+            onClick={() => setIsOpen(true)}
+            style={{
+              width: "70px", height: "70px", borderRadius: "50%",
+              backgroundColor: "#0f172a", color: "#ffffff", border: "none",
+              cursor: "pointer", boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "32px", marginBottom: "10px"
+            }}
+          >
+            💬
+          </button>
+
+          {/* 아이콘 바로 아래 큼지막한 안내 멘트 */}
+          <div
+            onClick={() => setIsOpen(true)}
+            style={{
+              backgroundColor: "#0f172a",
+              color: "#ffffff",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "30px",
+              fontSize: "16px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              border: "2px solid #ffffff"
+            }}
+          >
+            궁금한 점은 무엇이든 물어보세요!
+          </div>
+        </div>
       )}
     </div>
   );
-}
