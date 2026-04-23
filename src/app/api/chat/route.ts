@@ -4,12 +4,18 @@ export async function POST(req: Request) {
     try {
         const { messages } = await req.json();
 
-        // Vercel 환경 변수에서 딥시크 API 키를 가져옵니다.
+        // ★ 꿩 대신 닭(OpenClaw) 코드를 완전히 삭제하고, 오직 DeepSeek만 바라보게 만듭니다.
         const apiKey = process.env.DEEPSEEK_API_KEY;
+
+        // ★ [탐지기] 서버가 도대체 무슨 키를 들고 있는지 터미널에 출력합니다. (보안상 앞뒤 4글자만)
+        console.log("=========================================");
+        console.log("컴퓨터가 잡아챈 키:", apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : "🚨키를 아예 못 찾음 (undefined)🚨");
+        console.log("=========================================");
+
         const apiUrl = "https://api.deepseek.com/chat/completions";
 
         if (!apiKey) {
-            return NextResponse.json({ error: "딥시크 API 키가 설정되지 않았습니다." }, { status: 500 });
+            return NextResponse.json({ error: "서버가 API 키를 찾지 못했습니다." }, { status: 500 });
         }
 
         const response = await fetch(apiUrl, {
@@ -19,7 +25,7 @@ export async function POST(req: Request) {
                 "Authorization": `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                model: "deepseek-chat", // 딥시크 공식 모델명
+                model: "deepseek-chat",
                 messages: messages,
                 temperature: 0.7,
             }),
