@@ -354,7 +354,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <AIChatbot />
       {/* 챗봇 수동 추가 */}
       <AIChatbot />
 
