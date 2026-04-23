@@ -39,13 +39,14 @@ export default function AIChatbot() {
               - QAgent Labs는 AI가 스스로 판단하고 업무를 수행하는 '지능형 자동화 에이전트' 솔루션 전문 기업입니다.
               
               [주요 사업 및 서비스]
-              1. 지능형 업무 자동화: 사람이 반복적으로 수행하던 복잡한 비즈니스 워크플로우를 AI 에이전트가 자율적으로 처리하는 시스템을 구축합니다. (OpenClaw 등 자율 프로토콜 활용)
+              1. 지능형 업무 자동화: 사람이 반복적으로 수행하던 복잡한 비즈니스 워크플로우를 AI 에이전트가 자율적으로 처리하는 시스템을 구축합니다. (OpenClaw 등 자율 실행 프로토콜 활용)
               2. 차세대 엔지니어링 솔루션 (준비 중): 3D MEP(기계/전기/배관) 설계 과정을 AI로 자동화하는 혁신적인 시스템을 개발 중입니다.
 
               [답변 가이드라인]
               - 기술적 배경을 물으면 "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 답변하세요.
               - "사람의 수작업을 줄이고 비즈니스 효율을 극대화하는 것"이 회사의 존재 이유임을 강조하세요.
-              - 3D MEP 설계에 대해서는 "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하고 있다"고 언급하세요.`
+              - 3D MEP 설계에 대해서는 "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하고 있다"고 언급하세요.
+              - 답변은 항상 간결하면서도 신뢰감 있게 작성하세요.`
             },
             ...messages.map(m => ({ role: m.sender === "ai" ? "assistant" : "user", content: m.text })),
             { role: "user", content: userText }
@@ -53,12 +54,17 @@ export default function AIChatbot() {
         }),
       });
 
+      if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+
       const data = await response.json();
-      if (data.choices && data.choices[0]) {
-        setMessages((prev) => [...prev, { sender: "ai", text: data.choices[0].message.content }]);
-      }
-    } catch (error) {
-      setMessages((prev) => [...prev, { sender: "ai", text: "죄송합니다. 메시지 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요." }]);
+
+      // API 응답 구조에 맞춰 안전하게 데이터를 가져옵니다.
+      const aiResponse = data.choices?.[0]?.message?.content || data.message || "죄송합니다. 답변을 생성하는 데 문제가 발생했습니다.";
+
+      setMessages((prev) => [...prev, { sender: "ai", text: aiResponse }]);
+    } catch (error: any) {
+      console.error("Chat Error:", error);
+      setMessages((prev) => [...prev, { sender: "ai", text: `오류가 발생했습니다: ${error.message}. 잠시 후 다시 시도해주세요.` }]);
     } finally {
       setIsLoading(false);
     }
@@ -67,8 +73,11 @@ export default function AIChatbot() {
   return (
     <div style={{ position: "fixed", bottom: "30px", right: "30px", zIndex: 999999 }}>
       {!isOpen ? (
-        /* 아이콘 상태 */
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }} onClick={() => setIsOpen(true)}>
+        /* 아이콘 상태: 무엇이든 물어보세요 문구 포함 */
+        <div
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
+          onClick={() => setIsOpen(true)}
+        >
           <div style={{
             width: "70px", height: "70px", borderRadius: "50%",
             backgroundColor: "#0f172a", color: "#ffffff",
@@ -78,7 +87,8 @@ export default function AIChatbot() {
           <div style={{
             backgroundColor: "#0f172a", color: "#ffffff", fontWeight: "bold",
             padding: "10px 22px", borderRadius: "30px", fontSize: "16px",
-            border: "2px solid #ffffff", boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
+            border: "2px solid #ffffff", boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            whiteSpace: "nowrap"
           }}>무엇이든 물어보세요!</div>
         </div>
       ) : (
@@ -89,11 +99,16 @@ export default function AIChatbot() {
           boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
           display: "flex", flexDirection: "column", overflow: "hidden"
         }}>
+          {/* 헤더 */}
           <div style={{ backgroundColor: "#0f172a", color: "#ffffff", padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontWeight: "bold", fontSize: "16px" }}>QAgent Labs AI 상담</span>
-            <button onClick={() => setIsOpen(false)} style={{ background: "none", border: "none", color: "#ffffff", cursor: "pointer", fontSize: "20px" }}>✕</button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+              style={{ background: "none", border: "none", color: "#ffffff", cursor: "pointer", fontSize: "20px" }}
+            >✕</button>
           </div>
 
+          {/* 메시지 영역 */}
           <div style={{ flex: 1, padding: "20px", overflowY: "auto", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", gap: "12px" }}>
             {messages.map((msg, idx) => (
               <div key={idx} style={{
@@ -110,18 +125,26 @@ export default function AIChatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div style={{ padding: "15px", borderTop: "1px solid #e5e7eb", display: "flex", gap: "8px", backgroundColor: "#ffffff" }}>
+          {/* 입력 하단 영역 */}
+          <div
+            style={{ padding: "15px", borderTop: "1px solid #e5e7eb", display: "flex", gap: "8px", backgroundColor: "#ffffff" }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <input
               type="text" value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              placeholder="메시지 입력..."
+              placeholder="메시지를 입력하세요..."
               style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", color: "#000" }}
             />
             <button
               onClick={handleSendMessage}
               disabled={isLoading}
-              style={{ backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "8px", padding: "0 15px", cursor: "pointer", fontWeight: "bold" }}
+              style={{
+                backgroundColor: "#0f172a", color: "#ffffff", border: "none",
+                borderRadius: "8px", padding: "0 15px", cursor: "pointer",
+                fontWeight: "bold", opacity: isLoading ? 0.7 : 1
+              }}
             >
               전송
             </button>
