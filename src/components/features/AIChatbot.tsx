@@ -29,7 +29,7 @@ export default function AIChatbot() {
     try {
       const apiMessages = [
         {
-          role: "system", content: "당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다. 항상 정중하고 전문적으로 답변하세요.
+          role: "system", content: ·당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다.항상 정중하고 전문적으로 답변하세요.
           [회사 기본 정보]
         - 회사명: QAgent Labs (큐에이전트 랩스)
       - 핵심 비즈니스: AI 에이전트 기반의 자동화 솔루션, 3D MEP(기계 / 전기 / 배관) 자동화 설계 시스템 구축.
@@ -37,11 +37,12 @@ export default function AIChatbot() {
     
     [답변 규칙]
       1. 사용자가 QAgent Labs가 무엇을 하는 곳인지 물어보면, AI 기술을 통해 복잡한 설계와 비즈니스 워크플로우를 자동화하는 혁신적인 기업이라고 소개하세요.
-    2. 회사 외부의 민감한 정치, 종교적 질문에는 정중히 답변을 거절하세요." },
+    2. 회사 외부의 민감한 정치, 종교적 질문에는 정중히 답변을 거절하세요.·
+    },
         ...messages.map(m => ({
-        role: m.sender === "ai" ? "assistant" : "user",
-        content: m.text
-      })),
+      role: m.sender === "ai" ? "assistant" : "user",
+      content: m.text
+    })),
     { role: "user", content: userText }
       ];
 
