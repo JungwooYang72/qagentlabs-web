@@ -2,9 +2,16 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
+type ChatMessage = {
+  sender: "ai" | "user";
+  text: string;
+};
+
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([{ sender: "ai", text: "안녕하세요! QAgent Labs입니다. 무엇을 도와드릴까요?" }]);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { sender: "ai", text: "안녕하세요! QAgent Labs입니다. 무엇을 도와드릴까요?" },
+  ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -47,35 +54,42 @@ export default function AIChatbot() {
               - 기술적 배경 문의 시: "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 전문성 있게 답변하세요.
               - 가치 강조: "사람의 수작업을 획기적으로 줄이고 비즈니스 효율을 극대화하는 지능형 자동화 파트너"임을 강조하세요.
               - 3D MEP 설계 답변 시: "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하여 혁신적인 설계 자동화를 준비하고 있다"고 언급하세요.
-              - 모든 답변은 간결하면서도 신뢰감 있는 비즈니스 톤을 유지하세요.`
+              - 모든 답변은 간결하면서도 신뢰감 있는 비즈니스 톤을 유지하세요.`,
             },
-            ...messages.map(m => ({ role: m.sender === "ai" ? "assistant" : "user", content: m.text })),
-            { role: "user", content: userText }
-          ]
+            ...messages.map((message) => ({
+              role: message.sender === "ai" ? "assistant" : "user",
+              content: message.text,
+            })),
+            { role: "user", content: userText },
+          ],
         }),
       });
 
-      if (!response.ok) throw new Error(`서버 응답 오류: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`서버 응답 오류: ${response.status}`);
+      }
 
       const data = await response.json();
 
-      // 어떤 구조로 오든 텍스트를 찾아내는 융통성 있는 로직
       let aiResponse = "";
-      if (data.choices?.[0]?.message?.content) {
+      if (data?.choices?.[0]?.message?.content) {
         aiResponse = data.choices[0].message.content;
-      } else if (data.message) {
+      } else if (data?.message) {
         aiResponse = data.message;
-      } else if (typeof data === 'string') {
+      } else if (typeof data === "string") {
         aiResponse = data;
       } else {
         aiResponse = "답변을 가져오는 데 문제가 발생했습니다. 관리자에게 문의해주세요.";
       }
 
       setMessages((prev) => [...prev, { sender: "ai", text: aiResponse }]);
-
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Chat Error:", error);
-      setMessages((prev) => [...prev, { sender: "ai", text: `오류가 발생했습니다: ${error.message}. 잠시 후 다시 시도해주세요.` }]);
+      const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류";
+      setMessages((prev) => [
+        ...prev,
+        { sender: "ai", text: `오류가 발생했습니다: ${errorMessage}. 잠시 후 다시 시도해주세요.` },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -88,65 +102,153 @@ export default function AIChatbot() {
           style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
           onClick={() => setIsOpen(true)}
         >
-          <div style={{
-            width: "70px", height: "70px", borderRadius: "50%",
-            backgroundColor: "#0f172a", color: "#ffffff",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "32px", marginBottom: "10px", boxShadow: "0 10px 20px rgba(0,0,0,0.2)"
-          }}>💬</div>
-          <div style={{
-            backgroundColor: "#0f172a", color: "#ffffff", fontWeight: "bold",
-            padding: "10px 22px", borderRadius: "30px", fontSize: "16px",
-            border: "2px solid #ffffff", boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            whiteSpace: "nowrap"
-          }}>무엇이든 물어보세요!</div>
+          <div
+            style={{
+              width: "70px",
+              height: "70px",
+              borderRadius: "50%",
+              backgroundColor: "#0f172a",
+              color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "32px",
+              marginBottom: "10px",
+              boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+            }}
+          >
+            💬
+          </div>
+          <div
+            style={{
+              backgroundColor: "#0f172a",
+              color: "#ffffff",
+              fontWeight: "bold",
+              padding: "10px 22px",
+              borderRadius: "30px",
+              fontSize: "16px",
+              border: "2px solid #ffffff",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            무엇이든 물어보세요!
+          </div>
         </div>
       ) : (
-        <div style={{
-          width: "370px", height: "550px", backgroundColor: "#ffffff",
-          border: "1px solid #e5e7eb", borderRadius: "20px",
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
-          display: "flex", flexDirection: "column", overflow: "hidden"
-        }}>
-          <div style={{ backgroundColor: "#0f172a", color: "#ffffff", padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            width: "370px",
+            height: "550px",
+            backgroundColor: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "20px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#0f172a",
+              color: "#ffffff",
+              padding: "20px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span style={{ fontWeight: "bold", fontSize: "16px" }}>QAgent Labs AI 상담</span>
             <button
-              onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(false);
+              }}
               style={{ background: "none", border: "none", color: "#ffffff", cursor: "pointer", fontSize: "20px" }}
-            >✕</button>
+            >
+              ✕
+            </button>
           </div>
 
-          <div style={{ flex: 1, padding: "20px", overflowY: "auto", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div
+            style={{
+              flex: 1,
+              padding: "20px",
+              overflowY: "auto",
+              backgroundColor: "#f8fafc",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
+          >
             {messages.map((msg, idx) => (
-              <div key={idx} style={{
-                alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                backgroundColor: msg.sender === "user" ? "#0f172a" : "#e2e8f0",
-                color: msg.sender === "user" ? "#ffffff" : "#334155",
-                padding: "12px 16px", borderRadius: "15px", maxWidth: "85%",
-                fontSize: "14px", lineHeight: "1.5", wordBreak: "keep-all"
-              }}>
+              <div
+                key={idx}
+                style={{
+                  alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
+                  backgroundColor: msg.sender === "user" ? "#0f172a" : "#e2e8f0",
+                  color: msg.sender === "user" ? "#ffffff" : "#334155",
+                  padding: "12px 16px",
+                  borderRadius: "15px",
+                  maxWidth: "85%",
+                  fontSize: "14px",
+                  lineHeight: "1.5",
+                  wordBreak: "keep-all",
+                }}
+              >
                 {msg.text}
               </div>
             ))}
-            {isLoading && <div style={{ alignSelf: "flex-start", color: "#64748b", fontSize: "13px" }}>답변 준비 중...</div>}
+            {isLoading && (
+              <div style={{ alignSelf: "flex-start", color: "#64748b", fontSize: "13px" }}>답변 준비 중...</div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
           <div
-            style={{ padding: "15px", borderTop: "1px solid #e5e7eb", display: "flex", gap: "8px", backgroundColor: "#ffffff" }}
+            style={{
+              padding: "15px",
+              borderTop: "1px solid #e5e7eb",
+              display: "flex",
+              gap: "8px",
+              backgroundColor: "#ffffff",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <input
-              type="text" value={inputValue}
+              type="text"
+              value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  void handleSendMessage();
+                }
+              }}
               placeholder="메시지를 입력하세요..."
-              style={{ flex: 1, padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", color: "#000" }}
+              style={{
+                flex: 1,
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #cbd5e1",
+                outline: "none",
+                color: "#000",
+              }}
             />
             <button
-              onClick={handleSendMessage}
+              onClick={() => {
+                void handleSendMessage();
+              }}
               disabled={isLoading}
-              style={{ backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "8px", padding: "0 15px", cursor: "pointer", fontWeight: "bold" }}
+              style={{
+                backgroundColor: "#0f172a",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "0 15px",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
             >
               전송
             </button>
