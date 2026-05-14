@@ -57,7 +57,7 @@ export default function AIAutomationPage() {
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             {/* CTA 1 (Hero Primary) */}
             <Button size="lg" className="bg-foreground text-background hover:bg-foreground/90 font-semibold px-8 h-14 text-lg" asChild>
-              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">우리 회사에 적용 가능한지 확인하기 <ArrowRight className="ml-2 w-5 h-5" /></a>
+              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">우리 회사에 적용 가능한지 확인하기 <ArrowRight className="ml-2 w-5 h-5" /></a>
             </Button>
             {/* CTA 1 (Hero Secondary) */}
             <Button size="lg" variant="outline" className="font-semibold px-8 h-14 text-lg border-foreground/20 text-foreground" asChild>
@@ -144,7 +144,7 @@ export default function AIAutomationPage() {
             <h3 className="text-2xl font-bold mb-6 text-center text-foreground break-keep">우리 팀이 매일 반복하는 이 업무, 자동화가 가능할까요?</h3>
             {/* CTA 2 (Middle) */}
              <Button size="lg" className="bg-foreground text-background hover:bg-foreground/90 font-semibold px-10 h-14 text-lg" asChild>
-              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">자동화 가능 업무 진단 받기 <ArrowRight className="ml-2 w-5 h-5" /></a>
+              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">자동화 가능 업무 진단 받기 <ArrowRight className="ml-2 w-5 h-5" /></a>
             </Button>
           </div>
         </div>
@@ -407,7 +407,7 @@ export default function AIAutomationPage() {
             </p>
             <div className="flex justify-center">
               <Button size="lg" className="bg-foreground text-background hover:bg-foreground/90 font-bold px-10 h-14 text-lg" asChild>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">샘플 자동화 시나리오 요청하기</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">샘플 자동화 시나리오 요청하기</a>
               </Button>
             </div>
           </div>

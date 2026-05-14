@@ -57,7 +57,7 @@ export default function Home() {
             </Button>
             <Button size="lg" variant="outline" asChild>
               <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry"
+                href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium"

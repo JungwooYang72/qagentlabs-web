@@ -59,7 +59,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} QAgent Labs. All rights reserved.</p>
           <div className="flex gap-4">
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">wowa080421@gmail.com</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">harrison.park@qagentlabs.com</a>
           </div>
         </div>
       </div>

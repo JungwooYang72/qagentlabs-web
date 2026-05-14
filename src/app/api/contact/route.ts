@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 
 // Initialize Resend with your API key from .env.local
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_fallback');
-const TO_EMAIL = 'wowa080421@gmail.com';
+const TO_EMAIL = 'harrison.park@qagentlabs.com';
 
 // Update this to your verified domain once configured (e.g. 'QAgentLabs <contact@qagentlabs.com>')
 // If no domain is verified yet, it must be 'onboarding@resend.dev'

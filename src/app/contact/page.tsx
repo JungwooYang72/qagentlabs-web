@@ -42,12 +42,12 @@ export default function ContactPage() {
                 <div>
                   <h4 className="font-medium text-sm">Email</h4>
                   <p className="text-sm text-muted-foreground mt-1 mb-3">
-                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground hover:text-accent transition-colors">
-                      wowa080421@gmail.com
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground hover:text-accent transition-colors">
+                      harrison.park@qagentlabs.com
                     </a>
                   </p>
                   <Button variant="outline" size="sm" asChild>
-                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">👉 이메일 보내기</a>
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">👉 이메일 보내기</a>
                   </Button>
                 </div>
               </li>

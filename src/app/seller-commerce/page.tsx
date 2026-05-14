@@ -187,7 +187,7 @@ export default function SellerCommercePage() {
                 <Link href="/products/nx-802ru30">Review the NX-802RU30 <ArrowRight className="ml-2 w-4 h-4" /></Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-background" asChild>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=wowa080421@gmail.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">Contact for Commerce Partnership</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry" target="_blank" rel="noopener noreferrer">Contact for Commerce Partnership</a>
               </Button>
             </div>
           </div>
