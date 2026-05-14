@@ -19,6 +19,7 @@ export default function ContactForm() {
       firstName: formData.get("firstName"),
       lastName: formData.get("lastName"),
       email: formData.get("email"),
+      phone: formData.get("phone"),
       subject: formData.get("subject"),
       message: formData.get("message"),
     };
@@ -102,6 +103,19 @@ export default function ContactForm() {
           disabled={isSubmitting}
           className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
           placeholder="name@company.com"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="phone" className="text-sm font-medium">연락처</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          required
+          disabled={isSubmitting}
+          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+          placeholder="010-1234-5678"
         />
       </div>
 

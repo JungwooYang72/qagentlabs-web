@@ -18,12 +18,12 @@ function extractDomain(value: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { firstName, lastName, email, subject, message } = body;
+    const { firstName, lastName, email, phone, subject, message } = body;
 
     // Validate required fields
-    if (!firstName || !email || !message) {
+    if (!firstName || !email || !phone || !message) {
       return NextResponse.json(
-        { error: '이름, 이메일, 문의 내용을 모두 입력해주세요.' },
+        { error: '이름, 이메일, 연락처, 문의 내용을 모두 입력해주세요.' },
         { status: 400 }
       );
     }
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       <h3>QAgentLabs 신규 문의 접수</h3>
       <p><strong>이름:</strong> ${firstName} ${lastName || ''}</p>
       <p><strong>이메일:</strong> ${email}</p>
+      <p><strong>연락처:</strong> ${phone}</p>
       <p><strong>제목:</strong> ${subject || '입력되지 않음'}</p>
       <p><strong>문의 내용:</strong></p>
       <p>${message.replace(/\n/g, '<br/>')}</p>
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
         formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
         formData.append("entry.1851805290", email);
         formData.append("entry.970744273", "미입력 (홈페이지 문의)");
-        formData.append("entry.1081258101", "미입력 (이메일로 회신 요망)");
+        formData.append("entry.1081258101", phone);
         formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
         
         // 400 에러 원인 수정: 유입경로는 객관식이므로 허용된 옵션인 "기타"를 값으로 넣고, 기타 응답 필드에 텍스트를 넣음
