@@ -5,6 +5,16 @@ import { Resend } from 'resend';
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || '';
 const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || '';
 
+function extractEmailAddress(value: string): string {
+  const match = value.match(/<([^>]+)>/);
+  return (match ? match[1] : value).trim();
+}
+
+function extractDomain(value: string): string {
+  const email = extractEmailAddress(value);
+  return email.split("@")[1]?.toLowerCase() || "";
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -27,12 +37,18 @@ export async function POST(req: Request) {
       <p>${message.replace(/\n/g, '<br/>')}</p>
     `;
 
+    const extractedFromEmail = extractEmailAddress(FROM_EMAIL);
+    const fromDomain = extractDomain(FROM_EMAIL);
+    const toDomain = extractDomain(TO_EMAIL);
+
     // Production & Development Logging
     console.log("[CONTACT_FORM] ======================");
     console.log(`[CONTACT_FORM] HAS_CONTACT_FROM_EMAIL: ${!!process.env.CONTACT_FROM_EMAIL}`);
     console.log(`[CONTACT_FORM] HAS_CONTACT_TO_EMAIL: ${!!process.env.CONTACT_TO_EMAIL}`);
-    console.log(`[CONTACT_FORM] FROM_DOMAIN: ${FROM_EMAIL.split('@')[1] || 'None'}`);
-    console.log(`[CONTACT_FORM] TO_DOMAIN: ${TO_EMAIL.split('@')[1] || 'None'}`);
+    console.log(`[CONTACT_FORM] extractedFromEmail: ${extractedFromEmail}`);
+    console.log(`[CONTACT_FORM] fromDomain: ${fromDomain || 'None'}`);
+    console.log(`[CONTACT_FORM] toDomain: ${toDomain || 'None'}`);
+    
     // Server Configuration Validation
     if (!process.env.RESEND_API_KEY) {
       console.log("[CONTACT_FORM] Blocked: RESEND_API_KEY missing");
@@ -48,8 +64,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: errMsg }, { status: 500 });
     }
 
-    if (FROM_EMAIL.includes('harrison.park@qagentlabs.com') || !FROM_EMAIL.includes('qagentlabs.com')) {
-      const errMsg = '서버 설정 오류: 발신자는 반드시 qagentlabs.com 도메인을 사용해야 합니다.';
+    if (extractedFromEmail === 'onboarding@resend.dev' || fromDomain !== 'qagentlabs.com') {
+      const errMsg = '서버 설정 오류: 발신자는 반드시 qagentlabs.com 도메인을 사용해야 하며 onboarding@resend.dev는 허용되지 않습니다.';
       console.log(`[CONTACT_FORM] Blocked: ${errMsg}`);
       return NextResponse.json({ error: errMsg }, { status: 500 });
     }
