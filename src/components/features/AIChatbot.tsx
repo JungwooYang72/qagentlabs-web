@@ -5,6 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 type Message = {
   sender: "ai" | "user";
   text: string;
+  sources?: string[];
+  recommendedPlan?: string;
 };
 
 function extractTextFromUnknown(value: unknown): string {
@@ -127,6 +129,8 @@ export default function AIChatbot() {
 
       const data: unknown = await response.json();
       const aiResponse = getAIResponse(data);
+      const sources = (data as any).sources || [];
+      const recommendedPlan = (data as any).recommendedPlan || null;
 
       if (!aiResponse) {
         console.error("Unexpected API response shape:", data);
@@ -140,7 +144,7 @@ export default function AIChatbot() {
         return;
       }
 
-      setMessages((prev) => [...prev, { sender: "ai", text: aiResponse }]);
+      setMessages((prev) => [...prev, { sender: "ai", text: aiResponse, sources, recommendedPlan }]);
     } catch (error: unknown) {
       console.error("Chat Error:", error);
       const message = error instanceof Error ? error.message : "알 수 없는 오류";
@@ -255,7 +259,17 @@ export default function AIChatbot() {
                   wordBreak: "keep-all",
                 }}
               >
-                {msg.text}
+                <div>{msg.text}</div>
+                {msg.recommendedPlan && (
+                  <div style={{ marginTop: "12px", display: "inline-block", padding: "4px 10px", backgroundColor: "#3b82f6", color: "#ffffff", borderRadius: "12px", fontSize: "12px", fontWeight: "bold" }}>
+                    ⭐ 추천 플랜: {msg.recommendedPlan}
+                  </div>
+                )}
+                {msg.sources && msg.sources.length > 0 && (
+                  <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", color: "#64748b" }}>
+                    <strong>참고:</strong> {msg.sources.join(", ")}
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && <div style={{ alignSelf: "flex-start", color: "#64748b", fontSize: "13px" }}>답변 준비 중...</div>}

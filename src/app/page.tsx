@@ -84,7 +84,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -113,6 +113,20 @@ export default function Home() {
                 ></iframe>
               </div>
               <h3 className="font-semibold text-lg text-center text-foreground">제조분야 자동화 (Manufacturing)</h3>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/xtq9RffO_3Q"
+                  title="QAgent Flow 자율형 업무자동화 유통분야 업그레이드버전"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 업그레이드버전</h3>
             </div>
           </div>
         </div>
