@@ -86,6 +86,63 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // =========================================================================
+    // [2] Google Form 연동 로직
+    // =========================================================================
+    /*
+      필드 매핑표 (Google Form 문항 -> 홈페이지 ContactForm 필드)
+      - 담당자 성함: entry.1996914439 -> ${firstName} ${lastName}
+      - 이메일 주소: entry.1851805290 -> ${email}
+      - 회사/기관명: entry.970744273 -> "미입력 (홈페이지 문의)"
+      - 연락처: entry.1081258101 -> "미입력 (이메일로 회신 요망)"
+      - 문의 내용: entry.935415787 -> [제목: ${subject}] ${message}
+      - 유입경로: entry.153407753 -> "홈페이지 폼 작성"
+
+      ※ 주의: Google Form 양식이 변경되거나 문항이 삭제/추가되면 entry.xxxxx ID가 변경될 수 있습니다.
+    */
+    const GOOGLE_FORM_ACTION_URL = process.env.GOOGLE_FORM_ACTION_URL;
+    if (GOOGLE_FORM_ACTION_URL) {
+      try {
+        const formData = new URLSearchParams();
+        formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
+        formData.append("entry.1851805290", email);
+        formData.append("entry.970744273", "미입력 (홈페이지 문의)");
+        formData.append("entry.1081258101", "미입력 (이메일로 회신 요망)");
+        formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
+        formData.append("entry.153407753", "홈페이지 폼 작성");
+
+        const gfResponse = await fetch(GOOGLE_FORM_ACTION_URL, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        });
+
+        const gfStatus = gfResponse.status;
+        const gfStatusText = gfResponse.statusText;
+        const gfBodyText = await gfResponse.text();
+        const snippet = gfBodyText.substring(0, 500).replace(/\n/g, ' ');
+
+        if (!gfResponse.ok) {
+          console.error(`[CONTACT_FORM] Google Form submit failed`);
+          console.error(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
+          console.error(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
+        } else {
+          console.log("[CONTACT_FORM] Google Form submit success");
+          console.log(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
+          console.log(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
+        }
+      } catch (gfError: any) {
+        // 구글 폼 저장이 실패해도 이메일 발송 프로세스는 정상 처리되도록 예외만 기록
+        console.error("[CONTACT_FORM] Google Form submit failed (Fetch Exception)");
+        console.error(`[CONTACT_FORM] Error Message: ${gfError.message}`);
+      }
+    } else {
+      console.log("[CONTACT_FORM] GOOGLE_FORM_ACTION_URL is not set, skipping Google Form integration.");
+    }
+    // =========================================================================
+
     console.log("[CONTACT_FORM] Success:", data);
 
     return NextResponse.json({ success: true, data });
