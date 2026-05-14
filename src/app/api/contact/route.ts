@@ -96,7 +96,8 @@ export async function POST(req: Request) {
       - 회사/기관명: entry.970744273 -> "미입력 (홈페이지 문의)"
       - 연락처: entry.1081258101 -> "미입력 (이메일로 회신 요망)"
       - 문의 내용: entry.935415787 -> [제목: ${subject}] ${message}
-      - 유입경로: entry.153407753 -> "홈페이지 폼 작성"
+      - 유입경로: entry.153407753 -> "기타" (옵션값)
+      - 유입경로 기타 텍스트: entry.153407753.other_option_response -> "홈페이지 폼 작성"
 
       ※ 주의: Google Form 양식이 변경되거나 문항이 삭제/추가되면 entry.xxxxx ID가 변경될 수 있습니다.
     */
@@ -109,7 +110,21 @@ export async function POST(req: Request) {
         formData.append("entry.970744273", "미입력 (홈페이지 문의)");
         formData.append("entry.1081258101", "미입력 (이메일로 회신 요망)");
         formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
-        formData.append("entry.153407753", "홈페이지 폼 작성");
+        
+        // 400 에러 원인 수정: 유입경로는 객관식이므로 허용된 옵션인 "기타"를 값으로 넣고, 기타 응답 필드에 텍스트를 넣음
+        formData.append("entry.153407753", "기타");
+        formData.append("entry.153407753.other_option_response", "홈페이지 폼 작성");
+
+        // [요구사항 3] POST payload 로깅 (개인정보 일부 마스킹)
+        const maskedPayload: Record<string, string> = {};
+        for (const [key, value] of Array.from(formData.entries())) {
+          if (key === 'entry.1996914439' || key === 'entry.1851805290' || key === 'entry.1081258101') {
+            maskedPayload[key] = value.length > 3 ? value.substring(0, 3) + '***' : '***';
+          } else {
+            maskedPayload[key] = value;
+          }
+        }
+        console.log("[CONTACT_FORM] Google Form POST Payload:", JSON.stringify(maskedPayload));
 
         const gfResponse = await fetch(GOOGLE_FORM_ACTION_URL, {
           method: "POST",
@@ -122,16 +137,28 @@ export async function POST(req: Request) {
         const gfStatus = gfResponse.status;
         const gfStatusText = gfResponse.statusText;
         const gfBodyText = await gfResponse.text();
-        const snippet = gfBodyText.substring(0, 500).replace(/\n/g, ' ');
+        
+        // [요구사항 1] snippet 길이 5000자로 늘리기
+        const snippet = gfBodyText.substring(0, 5000).replace(/\n/g, ' ');
 
         if (!gfResponse.ok) {
           console.error(`[CONTACT_FORM] Google Form submit failed`);
           console.error(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
           console.error(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
+
+          // [요구사항 2] 에러 키워드 추출 및 주변 문맥 로깅
+          const errorKeywords = ['error', 'required', 'invalid', 'entry.', '필수', '잘못'];
+          errorKeywords.forEach(keyword => {
+            const index = snippet.toLowerCase().indexOf(keyword);
+            if (index !== -1) {
+              const start = Math.max(0, index - 50);
+              const end = Math.min(snippet.length, index + 50);
+              console.error(`[CONTACT_FORM] Context for '${keyword}': ...${snippet.substring(start, end)}...`);
+            }
+          });
         } else {
           console.log("[CONTACT_FORM] Google Form submit success");
           console.log(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
-          console.log(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
         }
       } catch (gfError: any) {
         // 구글 폼 저장이 실패해도 이메일 발송 프로세스는 정상 처리되도록 예외만 기록
