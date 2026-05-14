@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/Button";
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus("idle");
+    setErrorMessage("");
 
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -29,13 +31,20 @@ export default function ContactForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to send message");
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (_) {
+          errorData = { error: "Failed to send message (Status: " + response.status + ")" };
+        }
+        throw new Error(errorData.error || "Unknown server error");
       }
       
       setStatus("success");
       (e.target as HTMLFormElement).reset();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setErrorMessage(error.message || "Unknown error occurred");
       setStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -52,9 +61,10 @@ export default function ContactForm() {
       )}
       
       {status === "error" && (
-        <div className="p-4 bg-red-50 text-red-800 border border-red-200 rounded-md text-sm">
-          문의 전송 중 문제가 발생했습니다.<br/>
-          잠시 후 다시 시도하시거나 연락처 섹션의 이메일 버튼을 이용해주세요.
+        <div className="p-4 bg-red-50 text-red-800 border border-red-200 rounded-md text-sm break-all">
+          <strong>문의 전송에 실패했습니다.</strong><br/>
+          <span className="text-xs mt-1 mb-2 block opacity-80">사유: {errorMessage.includes('서버 환경변수') || errorMessage.includes('서버 설정') ? '서버 시스템 설정 오류' : '일시적인 서버 문제 또는 네트워크 오류'}</span>
+          문제가 지속될 경우 연락처 섹션의 이메일 버튼을 직접 이용해주세요.
         </div>
       )}
 

@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Initialize Resend with your API key from .env.local
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_fallback');
-const TO_EMAIL = 'harrison.park@qagentlabs.com';
-
-// Update this to your verified domain once configured (e.g. 'QAgentLabs <contact@qagentlabs.com>')
-// If no domain is verified yet, it must be 'onboarding@resend.dev'
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'QAgentLabs Contact <onboarding@resend.dev>';
+// Server-side initialization
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL || '';
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || '';
 
 export async function POST(req: Request) {
   try {
@@ -31,10 +27,34 @@ export async function POST(req: Request) {
       <p>${message.replace(/\n/g, '<br/>')}</p>
     `;
 
-    // Resend requires a verified domain to send FROM.
-    // onboarding@resend.dev is allowed ONLY if the TO_EMAIL is the verified email address on the Resend account.
-    console.log("TO_EMAIL:", TO_EMAIL);
-    console.log("FROM_EMAIL:", FROM_EMAIL);
+    // Production & Development Logging
+    console.log("[CONTACT_FORM] ======================");
+    console.log(`[CONTACT_FORM] HAS_CONTACT_FROM_EMAIL: ${!!process.env.CONTACT_FROM_EMAIL}`);
+    console.log(`[CONTACT_FORM] HAS_CONTACT_TO_EMAIL: ${!!process.env.CONTACT_TO_EMAIL}`);
+    console.log(`[CONTACT_FORM] FROM_DOMAIN: ${FROM_EMAIL.split('@')[1] || 'None'}`);
+    console.log(`[CONTACT_FORM] TO_DOMAIN: ${TO_EMAIL.split('@')[1] || 'None'}`);
+    // Server Configuration Validation
+    if (!process.env.RESEND_API_KEY) {
+      console.log("[CONTACT_FORM] Blocked: RESEND_API_KEY missing");
+      return NextResponse.json(
+        { error: '서버 환경변수 오류: 이메일 발송 서버 키가 없습니다.' },
+        { status: 500 }
+      );
+    }
+
+    if (!FROM_EMAIL || !TO_EMAIL) {
+      const errMsg = '서버 환경변수 오류: 발신자 또는 수신자 이메일이 설정되지 않았습니다.';
+      console.log(`[CONTACT_FORM] Blocked: ${errMsg}`);
+      return NextResponse.json({ error: errMsg }, { status: 500 });
+    }
+
+    if (FROM_EMAIL.includes('harrison.park@qagentlabs.com') || !FROM_EMAIL.includes('qagentlabs.com')) {
+      const errMsg = '서버 설정 오류: 발신자는 반드시 qagentlabs.com 도메인을 사용해야 합니다.';
+      console.log(`[CONTACT_FORM] Blocked: ${errMsg}`);
+      return NextResponse.json({ error: errMsg }, { status: 500 });
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
@@ -44,13 +64,13 @@ export async function POST(req: Request) {
       replyTo: email,
     });
 
-    console.log("resend data:", data);
-    console.log("resend error:", error);
-
     if (error) {
-      console.error('Resend Error:', error);
+      console.log(`[CONTACT_FORM] Resend Error Status: ${error.statusCode || 'Unknown'}`);
+      console.log(`[CONTACT_FORM] Resend Error Message: ${error.message}`);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    console.log("[CONTACT_FORM] Success:", data);
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
