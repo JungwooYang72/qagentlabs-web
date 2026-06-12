@@ -182,5 +182,105 @@
     "priority": 10,
     "audience": ["전체"],
     "relatedServices": []
+  },
+  {
+    "id": "driver_what_is",
+    "category": "driver",
+    "title": "QAgent Driver Hub는 무엇인가요?",
+    "content": "QAgent Driver Hub는 카카오·티맵 대리 콜 화면 위에 YELLOW/GREEN 신호를 표시하여 기사님의 콜 판단을 돕는 대리기사 전용 보조 앱입니다. 기사용 앱의 콜 정보를 분석하여 적합도가 높은 콜은 초록 신호로, 일반적인 콜은 노랑 신호로 표시해 드립니다. 현재 카카오 대리와 티맵 대리 플랫폼을 지원합니다.",
+    "keywords": ["무엇", "정의", "드라이버허브", "카카오대리", "티맵대리", "지원"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_auto_accept",
+    "category": "driver",
+    "title": "자동수락 앱인가요? 앱이 콜을 대신 잡아주나요?",
+    "content": "아닙니다. QAgent Driver Hub는 자동수락 앱이 아닙니다. 이 앱은 콜을 대신 잡아주거나 수락 버튼을 자동으로 클릭하는 매크로 기능을 제공하지 않으며, 최종 수락 판단 및 클릭은 기사님이 직접 실행하셔야 합니다.",
+    "keywords": ["자동수락", "대신", "자동", "수락"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_auto_click",
+    "category": "driver",
+    "title": "자동클릭이나 매크로 기능이 있나요?",
+    "content": "아닙니다. QAgent Driver Hub는 자동클릭 또는 매크로 기능을 일절 지원하지 않습니다. 이는 안전한 주행 보조 도구로써 설계되었으며, 어떠한 형태의 자동 조작이나 우회 기능도 포함되어 있지 않습니다.",
+    "keywords": ["자동클릭", "매크로", "우회", "자동조작"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_permissions",
+    "category": "driver",
+    "title": "접근성 권한과 다른 앱 위에 표시(오버레이) 권한이 왜 필요한가요?",
+    "content": "대리 콜 화면의 목적지 및 요금 텍스트 정보를 실시간으로 읽고 분석하기 위해 '접근성 권한'이 필요하며, 분석 결과를 콜 카드 위에 신호등(초록/노랑)으로 표시하기 위해 '다른 앱 위에 표시(오버레이) 권한'을 요구합니다. 이는 오직 텍스트 식별 및 신호 표시를 위한 것이며, 버튼 자동 클릭 등 기사님의 조작을 임의로 대행하기 위한 권한이 결코 아닙니다.",
+    "keywords": ["접근성", "오버레이", "권한", "텍스트", "신호등"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_pricing",
+    "category": "driver",
+    "title": "무료 베타 종료 후 요금은 어떻게 되나요?",
+    "content": "무료 베타 기간이 종료된 이후에는 월 단위 포인트 선불 결제 방식으로 운영될 예정입니다. Basic 요금제는 월 10,000P(카카오 또는 티맵 중 1개 지원), Standard 요금제는 월 20,000P(카카오 및 티맵 둘 다 지원)로 제공될 예정입니다. 대리기사 시장에 맞춘 포인트 충전 결제이며, 현재 공개 예정 이용권은 Basic과 Standard입니다.",
+    "keywords": ["가격", "요금", "비용", "베타종료", "Basic", "Standard", "포인트", "충전"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_beta",
+    "category": "driver",
+    "title": "무료 베타 테스트 신청은 어떻게 하나요?",
+    "content": "현재 QAgent Driver Hub는 무료 베타 테스터를 모집 중입니다. 페이지 상단 혹은 하단의 '베타 신청하기' 버튼을 눌러 양식을 작성해주시면 심사 후 개별 연락을 드려 APK 설치 방법 및 권한 설정을 안내해 드립니다. 1차 무료 베타 기간은 30일이며, 주행 피드백을 활발히 전달해 주시는 기사님은 무료 기간 연장 혜택을 드립니다.",
+    "keywords": ["신청", "무료베타", "베타테스트", "가입", "혜택"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_apk_install",
+    "category": "driver",
+    "title": "APK 설치는 어떻게 하나요? 바로 다운로드할 수 있나요?",
+    "content": "안전한 베타 운영을 위해 실제 APK 파일은 홈페이지에서 임의로 다운로드할 수 없으며, 무료 베타 신청이 정상 승인된 기사님들께 개별적으로 다운로드 링크 및 가이드를 제공해 드립니다. APK 다운로드 공간에는 '베타 승인 후 제공' 또는 '준비 중'으로 표시됩니다.",
+    "keywords": ["APK", "설치", "다운로드", "링크", "파일"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_no_guarantee",
+    "category": "driver",
+    "title": "수익이나 배차를 보장해 주나요?",
+    "content": "아닙니다. QAgent Driver Hub가 제공하는 신호등 표시와 대기 위치 관련 안내는 기사님의 판단을 돕기 위한 베타 기준 참고 정보입니다. 실제 매출, 배차, 콜 수신, 좋은 콜 수락을 보장하지 않습니다. 최종 운행 판단과 콜 수락 여부는 기사님이 직접 결정해야 합니다.",
+    "keywords": ["수익", "보장", "배차", "수입", "증가"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_feedback",
+    "category": "driver",
+    "title": "신호등이 안 뜨거나 콜 판정 오류가 있으면 어떻게 피드백하나요?",
+    "content": "수집된 피드백은 향후 신호 표시 정확도와 사용성 개선에 반영됩니다.",
+    "keywords": ["오류", "피드백", "제보", "캡처", "화면", "오작동"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
+  },
+  {
+    "id": "driver_consultation",
+    "category": "driver",
+    "title": "챗봇 상담 마무리 정책",
+    "content": "대리기사용 챗봇 안내 시, 수익 보장 및 자동수락은 불가능하다는 안전 가이드를 우선 밝히고, 마지막에는 항상 베타 테스터 참여를 유도하며 '무료 베타 신청폼을 작성하셨나요?' 혹은 '어떤 지역을 주 운행지로 하시는지 말씀해주시면 안내해 드리겠습니다.'와 같은 자연스러운 추가 질문 1개로 마무리하십시오.",
+    "keywords": ["상담유도", "마무리", "기사"],
+    "priority": 10,
+    "audience": ["대리기사"],
+    "relatedServices": []
   }
 ]

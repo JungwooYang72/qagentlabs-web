@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  source?: string;
+}
+
+export default function ContactForm({ source = "general" }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -22,6 +26,7 @@ export default function ContactForm() {
       phone: formData.get("phone"),
       subject: formData.get("subject"),
       message: formData.get("message"),
+      source,
     };
 
     try {

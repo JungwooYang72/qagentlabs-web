@@ -117,3 +117,44 @@ export function retrieveContext(query: string, intent: Intent) {
 
   return { contextString, sources };
 }
+
+// 5. Driver-specific Hybrid Retrieval (RAG)
+export function retrieveDriverContext(query: string) {
+  const fuseResults = fuse.search(query);
+  
+  // Filter only driver category
+  const driverResults = fuseResults.filter(res => res.item.category === 'driver');
+
+  // Deduplicate and Dynamic Budget
+  const MAX_TOKEN_CHARS = 1500;
+  let currentChars = 0;
+  const selectedChunks: KnowledgeRecord[] = [];
+  const seenIds = new Set<string>();
+
+  for (const res of driverResults) {
+    const item = res.item;
+    if (seenIds.has(item.id)) continue;
+    
+    const chunkSize = item.content.length + item.title.length;
+    if (currentChars + chunkSize > MAX_TOKEN_CHARS) {
+      break;
+    }
+
+    selectedChunks.push(item);
+    seenIds.add(item.id);
+    currentChars += chunkSize;
+  }
+
+  // Check if we need to force append the driver consultation CTA
+  const driverCtaChunk = knowledgeData.find(k => k.id === 'driver_consultation');
+  if (driverCtaChunk && currentChars + driverCtaChunk.content.length < 2000 && !seenIds.has(driverCtaChunk.id)) {
+    selectedChunks.push(driverCtaChunk);
+  }
+
+  // Format String
+  const contextString = selectedChunks.map(item => `[FAQ] ${item.title}\n${item.content}`).join('\n\n');
+  const sources = selectedChunks.map(i => i.title);
+
+  return { contextString, sources };
+}
+

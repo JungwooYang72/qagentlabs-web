@@ -10,22 +10,22 @@ export function Navbar() {
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link
-              href="/seller-commerce"
+              href="/seller-field"
               className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Seller Service
+              SELLER FIELD
+            </Link>
+            <Link
+              href="/driver-hub"
+              className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              Driver Hub
             </Link>
             <Link
               href="/ai-automation"
               className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               AI Automation
-            </Link>
-            <Link
-              href="/products/nx-802ru30"
-              className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              NX-802RU30
             </Link>
             <Link
               href="/about"

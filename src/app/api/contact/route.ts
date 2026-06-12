@@ -18,7 +18,7 @@ function extractDomain(value: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { firstName, lastName, email, phone, subject, message } = body;
+    const { firstName, lastName, email, phone, subject, message, source } = body;
 
     // Validate required fields
     if (!firstName || !email || !phone || !message) {
@@ -28,12 +28,16 @@ export async function POST(req: Request) {
       );
     }
 
+    const isDriverHub = source === 'driver-hub';
+
     const htmlContent = `
-      <h3>QAgentLabs 신규 문의 접수</h3>
+      <h3>${isDriverHub ? 'QAgent Driver Hub 베타 신청 및 문의' : 'QAgentLabs 신규 문의 접수'}</h3>
       <p><strong>이름:</strong> ${firstName} ${lastName || ''}</p>
       <p><strong>이메일:</strong> ${email}</p>
       <p><strong>연락처:</strong> ${phone}</p>
       <p><strong>제목:</strong> ${subject || '입력되지 않음'}</p>
+      <p><strong>유입경로:</strong> ${isDriverHub ? 'QAgent Driver Hub 무료 베타' : '일반 홈페이지 문의'}</p>
+      <p><strong>비고:</strong> ${isDriverHub ? '홈페이지 Driver Hub 페이지 작성' : '일반 문의 접수'}</p>
       <p><strong>문의 내용:</strong></p>
       <p>${message.replace(/\n/g, '<br/>')}</p>
     `;
@@ -73,10 +77,14 @@ export async function POST(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
+    const mailSubject = isDriverHub 
+      ? `[QAgent Driver Hub 베타신청] ${subject || '신규 신청이 접수되었습니다'}` 
+      : `[QAgentLabs 문의] ${subject || '신규 문의가 접수되었습니다'}`;
+
     const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [TO_EMAIL],
-      subject: `[QAgentLabs 문의] ${subject || '신규 문의가 접수되었습니다'}`,
+      subject: mailSubject,
       html: htmlContent,
       replyTo: email,
     });
@@ -108,13 +116,13 @@ export async function POST(req: Request) {
         const formData = new URLSearchParams();
         formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
         formData.append("entry.1851805290", email);
-        formData.append("entry.970744273", "미입력 (홈페이지 문의)");
+        formData.append("entry.970744273", isDriverHub ? "홈페이지 Driver Hub 페이지 작성" : "미입력 (홈페이지 문의)");
         formData.append("entry.1081258101", phone);
         formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
         
         // 400 에러 원인 수정: 유입경로는 객관식이므로 허용된 옵션인 "기타"를 값으로 넣고, 기타 응답 필드에 텍스트를 넣음
         formData.append("entry.153407753", "기타");
-        formData.append("entry.153407753.other_option_response", "홈페이지 폼 작성");
+        formData.append("entry.153407753.other_option_response", isDriverHub ? "QAgent Driver Hub 무료 베타" : "홈페이지 폼 작성");
 
         // [요구사항 3] POST payload 로깅 (개인정보 일부 마스킹)
         const maskedPayload: Record<string, string> = {};

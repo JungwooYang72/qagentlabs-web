@@ -19,13 +19,13 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-sm">Projects</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/seller-commerce" className="hover:text-foreground transition-colors">
-                  Seller Commerce
+                <Link href="/seller-field" className="hover:text-foreground transition-colors">
+                  SELLER FIELD
                 </Link>
               </li>
               <li>
-                <Link href="/products/nx-802ru30" className="hover:text-foreground transition-colors">
-                  NX-802RU30 Storage
+                <Link href="/driver-hub" className="hover:text-foreground transition-colors">
+                  Driver Hub Beta
                 </Link>
               </li>
               <li className="flex items-center gap-2">

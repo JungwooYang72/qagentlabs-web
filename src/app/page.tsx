@@ -18,6 +18,7 @@ import {
   Network,
   PackageSearch,
   Server,
+  Smartphone,
 } from "lucide-react";
 
 export default function Home() {
@@ -50,8 +51,8 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Button size="lg" asChild className="group">
-              <Link href="/seller-commerce" className="flex items-center font-medium">
-                Explore Seller Commerce
+              <Link href="/seller-field" className="flex items-center font-medium">
+                Explore SELLER FIELD
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -144,7 +145,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="flex flex-col h-full border-accent/20 shadow-md transition-all hover:shadow-lg hover:border-accent/40 bg-background relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4">
                 <span className="inline-flex items-center rounded-md bg-accent/10 px-2 py-1 text-xs font-semibold text-accent ring-1 ring-inset ring-accent/20">
@@ -155,27 +156,27 @@ export default function Home() {
                 <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 text-accent">
                   <PackageSearch className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-xl">Seller Commerce</CardTitle>
+                <CardTitle className="text-xl">SELLER FIELD</CardTitle>
                 <CardDescription className="text-base mt-2">
-                  Sales support services connecting product operations with external sales channels.
+                  Intelligent systems for premium consumer tech curation & B2B automation.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4">
-                  We solve the operational bottleneck for technical products by providing structured product information and automation-driven content for sellers.
+                  QAgentLabs의 독보적인 AI 스펙 검증 시스템을 통과한 지능형 가전 및 스마트 오피스 제품을 선보이는 프리미엄 기술 쇼룸입니다.
                 </p>
                 <div className="space-y-2">
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Product operations support</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>3대 기술 검증 큐레이션</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Structured channel expansion</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>v8 AI 엔진 B2B 유통망 연계</span>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="pt-4 border-t border-border mt-auto">
-                <Link href="/seller-commerce" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
-                  View capabilities <ArrowRight className="ml-1 h-3 w-3" />
+                <Link href="/seller-field" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
+                  Explore Showroom <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </CardFooter>
             </Card>
@@ -211,6 +212,41 @@ export default function Home() {
               <CardFooter className="pt-4 border-t border-border mt-auto">
                 <Link href="/ai-automation" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
                   Explore service <ArrowRight className="ml-1 h-3 w-3" />
+                </Link>
+              </CardFooter>
+            </Card>
+
+            <Card className="flex flex-col h-full border-accent/20 shadow-md transition-all hover:shadow-lg hover:border-accent/40 bg-background relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4">
+                <span className="inline-flex items-center rounded-md bg-accent/10 px-2 py-1 text-xs font-semibold text-accent ring-1 ring-inset ring-accent/20">
+                  Active
+                </span>
+              </div>
+              <CardHeader>
+                <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 text-accent">
+                  <Smartphone className="h-6 w-6" />
+                </div>
+                <CardTitle className="text-xl">Driver Hub</CardTitle>
+                <CardDescription className="text-base mt-2">
+                  대리기사 콜 판단 보조 앱 & 이동 전략 솔루션
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1">
+                <p className="text-sm text-muted-foreground mb-4">
+                  카카오·티맵 대리 콜 화면 위에 YELLOW/GREEN 신호등을 표시하여 콜 판단을 돕고, 실시간 대기지 추천 및 이동 전략을 지원하는 안전한 보조도구입니다.
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm">
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>카카오·티맵 콜 판단 신호등</span>
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>자동수락 아님 / 안전한 보조도구</span>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="pt-4 border-t border-border mt-auto">
+                <Link href="/driver-hub" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
+                  Explore Driver Hub <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </CardFooter>
             </Card>
@@ -267,31 +303,30 @@ export default function Home() {
           <div className="bg-primary text-primary-foreground rounded-2xl overflow-hidden shadow-xl grid md:grid-cols-2 relative">
             <div className="p-10 md:p-16 flex flex-col justify-center">
               <div className="inline-flex w-fit items-center rounded-full bg-primary-foreground/10 px-3 py-1 text-sm font-medium mb-6 backdrop-blur-sm border border-primary-foreground/20">
-                Featured Product
+                Featured Showroom
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">NX-802RU30</h2>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">SELLER FIELD</h2>
               <p className="text-lg text-primary-foreground/80 mb-8 max-w-md">
-                Professional 8-bay rackmountable direct attached storage enclosure engineered for technical environments, NAS builders, and enterprise use.
+                QAgentLabs의 차세대 AI 공간 로봇 청소기부터 최고 사양 스마트 오피스 기기까지 아우르는 기술 집약형 테크 쇼룸을 만나보세요.
               </p>
               <div>
                 <Button variant="secondary" asChild>
-                  <Link href="/products/nx-802ru30">View Technical Specifications</Link>
+                  <Link href="/seller-field">Explore Tech Showroom</Link>
                 </Button>
               </div>
             </div>
             <div className="bg-muted border-l border-primary-foreground/10 p-10 flex items-center justify-center relative min-h-[300px]">
-              <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-4 relative">
+              <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-6 relative">
                 <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
-                  <div className="w-20 h-4 bg-muted rounded"></div>
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-accent/20 border border-accent/50"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                  <div className="w-24 h-4 bg-muted rounded font-mono text-[10px] flex items-center px-2 text-muted-foreground">ACTIVE_AI_NODE</div>
+                  <div className="flex gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-accent animate-ping"></span>
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-2 flex-1">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="bg-muted rounded border border-border/80 h-full w-full"></div>
-                  ))}
+                <div className="flex-1 flex flex-col justify-center gap-3">
+                  <div className="h-6 bg-muted/65 border border-border rounded flex items-center px-3 font-mono text-[9px] text-slate-500">S-ROBOT_X1_UNIT: OPERATING</div>
+                  <div className="h-6 bg-muted/65 border border-border rounded flex items-center px-3 font-mono text-[9px] text-slate-500">MULTIHUB_POWER: PD_100W</div>
                 </div>
               </div>
             </div>
@@ -314,20 +349,20 @@ export default function Home() {
             <div className="lg:col-span-7 flex flex-col h-full">
               <div className="border border-border bg-background p-8 md:p-10 rounded-2xl shadow-sm flex flex-col h-full relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-6 opacity-10">
-                  <Server className="w-32 h-32" />
+                  <Bot className="w-32 h-32 text-accent" />
                 </div>
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="inline-flex w-fit items-center rounded bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent border border-accent/20 mb-6 uppercase tracking-widest">
-                    Anchor Node
+                    TECH SHOWROOM
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">NX-802RU30</h3>
-                  <p className="text-xl text-foreground/80 mb-6 font-medium">2U Rack Server Chassis for NAS & Home Server Builds</p>
+                  <h3 className="text-3xl font-bold mb-4">SELLER FIELD</h3>
+                  <p className="text-xl text-foreground/80 mb-6 font-medium">Intelligent Home & Office Device Showroom</p>
                   <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
-                    The core of our recommended storage architecture. Engineered for high-density environments, providing uncompromised direct-attached storage expansion with a SAS/SATA passthrough backplane for optimal ZFS performance.
+                    QAgentLabs가 직접 검증하고 입증한 최상위 테크 브랜드 큐레이션. 3D 스캔 기반 공간 매핑 로봇 가전부터 초고속 데이터 전송 멀티 허브까지, 하이엔드 테크 생태계를 한 페이지에서 정밀하게 파악하십시오.
                   </p>
                   <Button variant="outline" className="w-fit group-hover:bg-accent group-hover:text-accent-foreground transition-colors" asChild>
-                    <Link href="/products/nx-802ru30">
-                      Review Technical Specs <ArrowRight className="ml-2 w-4 h-4" />
+                    <Link href="/seller-field">
+                      Explore Showroom <ArrowRight className="ml-2 w-4 h-4" />
                     </Link>
                   </Button>
                 </div>

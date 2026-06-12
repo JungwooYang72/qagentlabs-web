@@ -1,44 +1,75 @@
 import { NextResponse } from "next/server";
-import { classifyIntent, getRecommendation, retrieveContext, Intent } from "@/lib/rag/retriever";
+import { classifyIntent, getRecommendation, retrieveContext, Intent, retrieveDriverContext } from "@/lib/rag/retriever";
+
+// 드라이버용 시스템 프롬프트 정의
+const DRIVER_SYSTEM_PROMPT = `당신은 QAgent Driver Hub의 공식 AI 어시스턴트입니다.
+
+QAgent Driver Hub는 카카오·티맵 대리 콜 화면 위에 YELLOW/GREEN 신호를 표시해 기사님의 콜 판단을 돕는 보조 앱입니다.
+
+무료 베타, 지원 플랫폼, APK 설치 안내, 접근성/오버레이 권한, Basic/Standard 이용권, 자동수락·자동클릭이 아니라는 점을 정확히 안내합니다.
+
+대기 위치나 이동 판단에 대한 질문이 들어오면 수익이나 배차를 보장하지 않고, 기사님의 최종 판단을 돕는 참고 정보 수준으로만 설명합니다.
+
+“수익 보장”, “배차 보장”, “콜 수신 보장”, “확률 보장”, “무조건 좋은 콜”, “콜을 대신 잡아줌” 같은 표현은 절대 사용하지 않습니다.
+
+QAgent Driver Hub는 자동수락 앱이 아니며, 자동클릭이나 매크로 기능을 제공하지 않고, 버튼을 대신 누르지 않습니다.
+
+기사님의 운행 판단을 돕기 위해 콜 화면 정보와 주변 조건을 참고 신호로 안내하며 기사님의 최종 주관을 돕는 참고 지표임을 밝히십시오.`;
+
 
 export async function POST(req: Request) {
     try {
-        const { messages } = await req.json();
+        const { messages, mode } = await req.json();
 
         // 1. 유저의 마지막 메시지 추출
         const lastUserMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
 
-        // 2. Intent Classification 및 Recommendation 계산
-        const intent = classifyIntent(lastUserMessage);
-        const recommendedPlan = getRecommendation(lastUserMessage);
+        let systemPrompt = "";
+        let sources: string[] = [];
+        let recommendedPlan: string | null = null;
 
-        // 3. Development Logging
-        if (process.env.NODE_ENV === 'development') {
-            console.log("\n--- [RAG DEBUG LOG] ---");
-            console.log(`[Query]: ${lastUserMessage}`);
-            console.log(`[Intent]: ${intent}`);
-            console.log(`[Recommended]: ${recommendedPlan || "None"}`);
-        }
+        if (mode === "driver") {
+            // driver mode: business RAG를 우회(bypass)하고 드라이버용 로직 실행
+            const { contextString, sources: driverSources } = retrieveDriverContext(lastUserMessage);
+            systemPrompt = DRIVER_SYSTEM_PROMPT;
+            if (contextString) {
+                systemPrompt += `\n\n[참고 FAQ 지식베이스]\n${contextString}`;
+            }
+            sources = driverSources;
+        } else {
+            // mode가 없거나 mode === "automation" 등 기존 비즈니스 모드인 경우
+            // 2. Intent Classification 및 Recommendation 계산
+            const intent = classifyIntent(lastUserMessage);
+            recommendedPlan = getRecommendation(lastUserMessage);
 
-        // 4. 위험/무관 질문 사전 차단
-        if (intent === Intent.DANGER || intent === Intent.UNRELATED) {
-            if (process.env.NODE_ENV === 'development') console.log("[Blocked]: 정책 위반 또는 무관한 질문");
-            return NextResponse.json({ 
-                reply: "QAgentLabs 업무 자동화 및 서비스 관련 문의에 집중해서 안내드리고 있습니다. 자동화하고 싶으신 업무를 알려주시면 도움을 드리겠습니다.",
-                sources: [] 
-            });
-        }
+            // 3. Development Logging
+            if (process.env.NODE_ENV === 'development') {
+                console.log("\n--- [RAG DEBUG LOG] ---");
+                console.log(`[Query]: ${lastUserMessage}`);
+                console.log(`[Intent]: ${intent}`);
+                console.log(`[Recommended]: ${recommendedPlan || "None"}`);
+            }
 
-        // 5. Hybrid Retrieval & Dynamic Budget
-        const { contextString, sources } = retrieveContext(lastUserMessage, intent);
-        
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`[Sources]: ${sources.join(", ")}`);
-            console.log("-----------------------\n");
-        }
+            // 4. 위험/무관 질문 사전 차단
+            if (intent === Intent.DANGER || intent === Intent.UNRELATED) {
+                if (process.env.NODE_ENV === 'development') console.log("[Blocked]: 정책 위반 또는 무관한 질문");
+                return NextResponse.json({ 
+                    reply: "QAgentLabs 업무 자동화 및 서비스 관련 문의에 집중해서 안내드리고 있습니다. 자동화하고 싶으신 업무를 알려주시면 도움을 드리겠습니다.",
+                    sources: [] 
+                });
+            }
 
-        // 6. System Prompt 강화 (Consultative Tone & Hallucination Guard)
-        const systemPrompt = `당신은 'QAgentLabs'의 공식 컨설턴트 겸 AI 어시스턴트입니다.
+            // 5. Hybrid Retrieval & Dynamic Budget
+            const retrievalResult = retrieveContext(lastUserMessage, intent);
+            const contextString = retrievalResult.contextString;
+            sources = retrievalResult.sources;
+            
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`[Sources]: ${sources.join(", ")}`);
+                console.log("-----------------------\n");
+            }
+
+            systemPrompt = `당신은 'QAgentLabs'의 공식 컨설턴트 겸 AI 어시스턴트입니다.
 컨설턴트처럼 전문적으로 방향을 제시하며, 너무 사과하거나 회피하지 말고 짧고 명확하게 답변하세요.
 
 [답변 정책]
@@ -67,18 +98,32 @@ export async function POST(req: Request) {
 
 [회사 정보 Context]
 ${contextString ? contextString : "현재 관련된 상세 정보가 검색되지 않았습니다. 하지만 서비스 관련 질문이라면 가장 가까운 자동화 플랜 방향성을 제안해 주세요."}`;
+        }
 
-        // 5. 프론트엔드에서 넘어온 messages 배열을 조작하여 System Prompt 교체
-        const augmentedMessages = messages.map((m: any) => {
-            if (m.role === "system") {
-                return { ...m, content: systemPrompt };
+        // 6. 프론트엔드에서 넘어온 messages 배열을 조작하여 System Prompt 교체
+        let augmentedMessages: any[] = [];
+
+        if (mode === "driver") {
+            // driver mode: 클라이언트가 보낸 system role 메시지가 있을 시 완벽하게 필터링/무시
+            const filteredMessages = messages.filter((m: any) => m.role !== "system");
+            // 서버 내부의 systemPrompt(DRIVER_SYSTEM_PROMPT + RAG context)를 최상단에 주입
+            augmentedMessages = [
+                { role: "system", content: systemPrompt },
+                ...filteredMessages
+            ];
+        } else {
+            // 기존 자동화 챗봇 동작 유지
+            augmentedMessages = messages.map((m: any) => {
+                if (m.role === "system") {
+                    return { ...m, content: systemPrompt };
+                }
+                return m;
+            });
+
+            // (기존 시스템 프롬프트가 없을 경우 대비)
+            if (!augmentedMessages.some((m: any) => m.role === "system")) {
+                augmentedMessages.unshift({ role: "system", content: systemPrompt });
             }
-            return m;
-        });
-
-        // (기존 시스템 프롬프트가 없을 경우 대비)
-        if (!augmentedMessages.some((m: any) => m.role === "system")) {
-            augmentedMessages.unshift({ role: "system", content: systemPrompt });
         }
 
         const apiKey = process.env.DEEPSEEK_API_KEY;
