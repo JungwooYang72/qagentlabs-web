@@ -19,11 +19,6 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-sm">Projects</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/seller-field" className="hover:text-foreground transition-colors">
-                  SELLER FIELD
-                </Link>
-              </li>
-              <li>
                 <Link href="/driver-hub" className="hover:text-foreground transition-colors">
                   Driver Hub Beta
                 </Link>

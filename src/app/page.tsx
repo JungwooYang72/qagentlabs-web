@@ -19,6 +19,7 @@ import {
   PackageSearch,
   Server,
   Smartphone,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function Home() {
@@ -38,33 +39,28 @@ export default function Home() {
         <div className="container-custom relative z-10 flex flex-col items-start gap-6 max-w-4xl">
           <div className="inline-flex items-center rounded-full border border-border bg-secondary/50 px-3 py-1 text-sm text-secondary-foreground font-medium mb-4 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-accent mr-2"></span>
-            Building Infrastructure for Automation
+            AI Automation & Intelligent Systems
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance">
-            Intelligent Systems for <span className="text-accent">Commerce</span> & Engineering.
+            반복되는 데이터 업무를 <span className="text-accent">AI 자동화 결과물</span>로 바꿉니다.
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl text-balance mt-4">
-            QAgent Labs builds modern infrastructure combining artificial intelligence, supply chain intelligence, and engineering automation.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl text-balance mt-4 break-keep">
+            엑셀, CSV, 상품데이터, 고객문의, 반복 업무 자료를 보내주시면 QAgentLabs 내부 AI 자동화 시스템으로 정리·분류·분석해 실무에 바로 사용할 수 있는 결과물로 제공합니다.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Button size="lg" asChild className="group">
-              <Link href="/seller-field" className="flex items-center font-medium">
-                Explore SELLER FIELD
+              <Link href="/contact" className="flex items-center font-medium">
+                AI 자동화 무료진단 받기
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=harrison.park@qagentlabs.com&su=QAgentLabs%20Inquiry"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium"
-              >
-                Contact Us
-              </a>
+              <Link href="/ai-automation" className="font-medium">
+                서비스 자세히 보기
+              </Link>
             </Button>
           </div>
         </div>
@@ -145,42 +141,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="flex flex-col h-full border-accent/20 shadow-md transition-all hover:shadow-lg hover:border-accent/40 bg-background relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4">
-                <span className="inline-flex items-center rounded-md bg-accent/10 px-2 py-1 text-xs font-semibold text-accent ring-1 ring-inset ring-accent/20">
-                  Active
-                </span>
-              </div>
-              <CardHeader>
-                <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 text-accent">
-                  <PackageSearch className="h-6 w-6" />
-                </div>
-                <CardTitle className="text-xl">SELLER FIELD</CardTitle>
-                <CardDescription className="text-base mt-2">
-                  Intelligent systems for premium consumer tech curation & B2B automation.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-sm text-muted-foreground mb-4">
-                  QAgentLabs의 독보적인 AI 스펙 검증 시스템을 통과한 지능형 가전 및 스마트 오피스 제품을 선보이는 프리미엄 기술 쇼룸입니다.
-                </p>
-                <div className="space-y-2">
-                  <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>3대 기술 검증 큐레이션</span>
-                  </div>
-                  <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>v8 AI 엔진 B2B 유통망 연계</span>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="pt-4 border-t border-border mt-auto">
-                <Link href="/seller-field" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
-                  Explore Showroom <ArrowRight className="ml-1 h-3 w-3" />
-                </Link>
-              </CardFooter>
-            </Card>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="flex flex-col h-full border-accent/20 shadow-md transition-all hover:shadow-lg hover:border-accent/40 bg-background relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4">
                 <span className="inline-flex items-center rounded-md bg-accent/10 px-2 py-1 text-xs font-semibold text-accent ring-1 ring-inset ring-accent/20">
@@ -193,25 +154,28 @@ export default function Home() {
                 </div>
                 <CardTitle className="text-xl">AI Automation</CardTitle>
                 <CardDescription className="text-base mt-2">
-                  Execution-based AI systems that automate internal workflows.
+                  엑셀, CSV, 상품데이터, 고객문의 등의 반복 데이터 정리 업무를 AI 자동화 결과물로 제공합니다.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
-                <p className="text-sm text-muted-foreground mb-4">
-                  We build AI agents that execute tasks, connect company data, and automate operations such as reporting and Slack delivery.
-                </p>
-                <div className="space-y-2">
-                  <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Internal workflow automation</span>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>데이터 정리·분류·분석</span>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>Slack / DB connected execution</span>
+                  <div className="flex items-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>리포트·콘텐츠 초안 생성</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>반복 업무 자동화 구조 설계</span>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="pt-4 border-t border-border mt-auto">
-                <Link href="/ai-automation" className="text-accent text-sm font-medium flex items-center hover:opacity-80 transition-opacity">
-                  Explore service <ArrowRight className="ml-1 h-3 w-3" />
+              <CardFooter className="pt-4 border-t border-border mt-auto flex flex-col gap-2 items-start w-full">
+                <Link href="/contact" className="text-accent text-sm font-semibold flex items-center hover:opacity-80 transition-opacity">
+                  무료진단 신청하기 <ArrowRight className="ml-1 h-3 w-3" />
+                </Link>
+                <Link href="/ai-automation" className="text-muted-foreground text-xs font-medium flex items-center hover:opacity-80 transition-opacity">
+                  서비스 자세히 보기 <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </CardFooter>
             </Card>
@@ -235,11 +199,11 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mb-4">
                   카카오·티맵 대리 콜 화면 위에 YELLOW/GREEN 신호등을 표시하여 콜 판단을 돕고, 실시간 대기지 추천 및 이동 전략을 지원하는 안전한 보조도구입니다.
                 </p>
-                <div className="space-y-2">
-                  <div className="flex items-center text-sm">
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center">
                     <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>카카오·티맵 콜 판단 신호등</span>
                   </div>
-                  <div className="flex items-center text-sm">
+                  <div className="flex items-center">
                     <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>자동수락 아님 / 안전한 보조도구</span>
                   </div>
                 </div>
@@ -298,38 +262,82 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-padding border-t border-border">
-        <div className="container-custom">
-          <div className="bg-primary text-primary-foreground rounded-2xl overflow-hidden shadow-xl grid md:grid-cols-2 relative">
-            <div className="p-10 md:p-16 flex flex-col justify-center">
-              <div className="inline-flex w-fit items-center rounded-full bg-primary-foreground/10 px-3 py-1 text-sm font-medium mb-6 backdrop-blur-sm border border-primary-foreground/20">
-                Featured Showroom
+      <section className="section-padding border-t border-border bg-background">
+        <div className="container-custom max-w-5xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">AI Automation</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto break-keep">
+              반복되는 데이터 정리, 분석, 문서화 업무를 AI 자동화 결과물로 바꿉니다.
+            </p>
+          </div>
+
+          <div className="bg-muted/30 border border-border rounded-2xl p-8 md:p-12 shadow-sm mb-12">
+            <p className="text-base md:text-lg text-foreground/80 leading-relaxed break-keep mb-8">
+              QAgentLabs는 엑셀, CSV, 상품데이터, 고객문의, 반복 업무 자료를 받아 내부 AI 자동화 시스템으로 정리·분류·분석하고, 실무에 바로 사용할 수 있는 결과물로 제공합니다. 초기 상담, 데이터 구조 확인, 샘플 결과물 제작부터 시작해 고객의 반복 업무를 자동화 가능한 형태로 전환합니다.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent" />
+                  1. 데이터를 보내면 정리합니다
+                </h3>
+                <p className="text-sm text-muted-foreground break-keep leading-relaxed">
+                  엑셀, CSV, 상품데이터, 고객문의, 반복 업무 자료를 정리표, 분석표, 리포트, 콘텐츠 초안 등으로 가공합니다.
+                </p>
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">SELLER FIELD</h2>
-              <p className="text-lg text-primary-foreground/80 mb-8 max-w-md">
-                QAgentLabs의 차세대 AI 공간 로봇 청소기부터 최고 사양 스마트 오피스 기기까지 아우르는 기술 집약형 테크 쇼룸을 만나보세요.
-              </p>
-              <div>
-                <Button variant="secondary" asChild>
-                  <Link href="/seller-field">Explore Tech Showroom</Link>
-                </Button>
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent" />
+                  2. 내부 자동화로 처리합니다
+                </h3>
+                <p className="text-sm text-muted-foreground break-keep leading-relaxed">
+                  고객사 시스템을 바로 구축하는 방식이 아니라, QAgentLabs 내부 자동화 시스템을 활용해 빠르게 결과물을 제공합니다.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent" />
+                  3. 자동화 구조로 전환합니다
+                </h3>
+                <p className="text-sm text-muted-foreground break-keep leading-relaxed">
+                  한 번의 정리 작업에서 끝나지 않고, 반복 가능한 업무는 자동화 프로세스로 구조화할 수 있습니다.
+                </p>
               </div>
             </div>
-            <div className="bg-muted border-l border-primary-foreground/10 p-10 flex items-center justify-center relative min-h-[300px]">
-              <div className="w-full max-w-sm aspect-[4/3] rounded bg-background border border-border shadow-sm flex flex-col justify-between p-6 relative">
-                <div className="flex justify-between items-center mb-8 border-b border-border pb-4">
-                  <div className="w-24 h-4 bg-muted rounded font-mono text-[10px] flex items-center px-2 text-muted-foreground">ACTIVE_AI_NODE</div>
-                  <div className="flex gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-accent animate-ping"></span>
-                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  </div>
-                </div>
-                <div className="flex-1 flex flex-col justify-center gap-3">
-                  <div className="h-6 bg-muted/65 border border-border rounded flex items-center px-3 font-mono text-[9px] text-slate-500">S-ROBOT_X1_UNIT: OPERATING</div>
-                  <div className="h-6 bg-muted/65 border border-border rounded flex items-center px-3 font-mono text-[9px] text-slate-500">MULTIHUB_POWER: PD_100W</div>
-                </div>
-              </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="border border-border bg-background p-6 md:p-8 rounded-xl shadow-sm">
+              <h3 className="font-bold text-xl mb-4">주요 제공 결과물</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">✔ <span>엑셀/CSV 데이터 정리본</span></li>
+                <li className="flex items-center gap-2">✔ <span>상품데이터 정리 및 분류표</span></li>
+                <li className="flex items-center gap-2">✔ <span>반복 업무 처리 결과표</span></li>
+                <li className="flex items-center gap-2">✔ <span>데이터 요약 리포트</span></li>
+                <li className="flex items-center gap-2">✔ <span>콘텐츠 초안 / 자동화 가능성 진단서</span></li>
+                <li className="flex items-center gap-2">✔ <span>자동화 가능성 분석표 및 샘플 결과물</span></li>
+              </ul>
             </div>
+            <div className="border border-border bg-background p-6 md:p-8 rounded-xl shadow-sm">
+              <h3 className="font-bold text-xl mb-4">적용 가능한 업무 예시</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">✔ <span>상품명, 카테고리, 가격, 재고 데이터 정리</span></li>
+                <li className="flex items-center gap-2">✔ <span>엑셀/CSV 파일 정리 및 재구성</span></li>
+                <li className="flex items-center gap-2">✔ <span>고객문의/상담 데이터 분류</span></li>
+                <li className="flex items-center gap-2">✔ <span>반복 보고서 초안 작성 및 판매 데이터 요약</span></li>
+                <li className="flex items-center gap-2">✔ <span>업무 프로세스 정리 및 반복 데이터 입력·분류</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-4">
+            <Button size="lg" asChild>
+              <Link href="/contact">AI 자동화 무료진단 받기</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/ai-automation">서비스 자세히 보기</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -353,18 +361,25 @@ export default function Home() {
                 </div>
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="inline-flex w-fit items-center rounded bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-accent border border-accent/20 mb-6 uppercase tracking-widest">
-                    TECH SHOWROOM
+                    AI AUTOMATION
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">SELLER FIELD</h3>
-                  <p className="text-xl text-foreground/80 mb-6 font-medium">Intelligent Home & Office Device Showroom</p>
+                  <h3 className="text-3xl font-bold mb-4">AI Automation</h3>
+                  <p className="text-xl text-foreground/80 mb-6 font-medium">반복되는 데이터 업무를 AI 자동화 결과물로</p>
                   <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
-                    QAgentLabs가 직접 검증하고 입증한 최상위 테크 브랜드 큐레이션. 3D 스캔 기반 공간 매핑 로봇 가전부터 초고속 데이터 전송 멀티 허브까지, 하이엔드 테크 생태계를 한 페이지에서 정밀하게 파악하십시오.
+                    엑셀, CSV, 상품데이터, 고객문의, 반복 업무 자료를 보내주시면 QAgentLabs 내부 AI 자동화 시스템으로 정리·분류·분석해 실무에 바로 사용할 수 있는 결과물로 제공합니다.
                   </p>
-                  <Button variant="outline" className="w-fit group-hover:bg-accent group-hover:text-accent-foreground transition-colors" asChild>
-                    <Link href="/seller-field">
-                      Explore Showroom <ArrowRight className="ml-2 w-4 h-4" />
-                    </Link>
-                  </Button>
+                  <div className="flex gap-4">
+                    <Button variant="outline" className="w-fit group-hover:bg-accent group-hover:text-accent-foreground transition-colors" asChild>
+                      <Link href="/contact">
+                        무료진단 신청하기 <ArrowRight className="ml-2 w-4 h-4" />
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                      <Link href="/ai-automation">
+                        서비스 자세히 보기
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

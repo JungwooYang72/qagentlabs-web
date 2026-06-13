@@ -10,12 +10,6 @@ export function Navbar() {
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link
-              href="/seller-field"
-              className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              SELLER FIELD
-            </Link>
-            <Link
               href="/driver-hub"
               className="flex items-center text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
