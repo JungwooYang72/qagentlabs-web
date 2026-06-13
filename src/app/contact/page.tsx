@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/Button";
 import ContactForm from "./ContactForm";
 import { Mail, Building, Clock } from "lucide-react";
 import type { Metadata } from 'next';
-
+ 
 export const metadata: Metadata = {
   title: 'Contact QAgent Labs',
   description: 'Get in touch with QAgent Labs for business inquiries.',
 };
-
+ 
 export default function ContactPage() {
   return (
     <div className="flex flex-col w-full pb-16">
@@ -21,7 +21,7 @@ export default function ContactPage() {
           </p>
         </div>
       </section>
-
+ 
       <section className="section-padding container-custom max-w-5xl grid md:grid-cols-5 gap-12">
         <div className="md:col-span-3">
           <div className="bg-background rounded-xl border border-border p-8 shadow-sm">
@@ -29,7 +29,7 @@ export default function ContactPage() {
             <ContactForm />
           </div>
         </div>
-
+ 
         <div className="md:col-span-2 space-y-8">
           <div className="bg-muted/50 rounded-xl border border-border p-8">
             <h3 className="font-bold text-lg mb-6 tracking-tight">Direct Contact</h3>

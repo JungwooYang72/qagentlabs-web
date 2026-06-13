@@ -1,9 +1,10 @@
 "use client";
-
+ 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import ContactForm from "@/app/contact/ContactForm";
 import {
   ArrowRight,
   Bot,
@@ -20,7 +21,9 @@ import {
   Shield,
   Smartphone,
   Navigation,
-  Sparkles
+  Sparkles,
+  Download,
+  Copy
 } from "lucide-react";
 
 // ==========================================
@@ -190,12 +193,12 @@ export default function DriverHubPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto justify-center">
             <Button size="lg" className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 !text-slate-950 font-black px-8 h-14 text-base shadow-lg shadow-yellow-400/10 border-0" asChild>
-              <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-950 !text-slate-950">
+              <a href="#contact-form" className="text-slate-950 !text-slate-950">
                 베타 신청하기
               </a>
             </Button>
             <Button size="lg" variant="outline" className="border-slate-600 text-slate-200 hover:text-white font-bold px-8 h-14 text-base" asChild>
-              <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white">
+              <a href="#contact-form" className="text-slate-200 hover:text-white">
                 사용 문의하기
               </a>
             </Button>
@@ -356,7 +359,7 @@ export default function DriverHubPage() {
                 </p>
                 <div className="flex justify-end">
                   <Button variant="ghost" className="text-blue-400 hover:text-blue-300 p-0 font-semibold flex items-center gap-1" asChild>
-                    <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
+                    <a href="#contact-form" className="text-blue-400 hover:text-blue-300">
                       오류 제보 및 피드백 제출하기 <ArrowRight className="w-4 h-4" />
                     </a>
                   </Button>
@@ -476,12 +479,12 @@ export default function DriverHubPage() {
 
               <div className="flex gap-3 mt-6 pt-5 border-t border-slate-900/60">
                 <Button className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 !text-slate-950 font-black px-6 py-3 text-xs md:text-sm h-auto flex-1 shadow-lg border-0" asChild>
-                  <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-950 !text-slate-950">
+                  <a href="#contact-form" className="text-slate-950 !text-slate-950">
                     베타 신청하기
                   </a>
                 </Button>
                 <Button variant="outline" className="border-slate-600 text-slate-200 hover:text-white font-bold px-6 py-3 text-xs md:text-sm h-auto flex-1" asChild>
-                  <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white">
+                  <a href="#contact-form" className="text-slate-200 hover:text-white">
                     결제 문의하기
                   </a>
                 </Button>
@@ -610,40 +613,175 @@ export default function DriverHubPage() {
         </div>
       </section>
 
-      {/* Beta Form Connection Section */}
-      <section className="section-padding container-custom bg-slate-950 border-b border-slate-900">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-slate-900/50 border border-slate-800 p-8 md:p-12 rounded-3xl shadow-lg relative overflow-hidden">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">지금 QAgent Driver Hub 베타 테스터에 신청해 보세요</h2>
-            
-            <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto mb-8 break-keep">
-              초기 베타 테스터 참여 신청을 하시면 심사를 거쳐 다운로드 링크를 제공합니다. 또한 오류 제보나 테스트 중 발견한 불편 사항을 접수해주시면 적극 반영하겠습니다.
+      {/* APK Download & Guide Section */}
+      <section id="download" className="section-padding container-custom bg-slate-950 border-b border-slate-900">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-4">APK 다운로드 및 설치 안내</h2>
+            <p className="text-slate-400 break-keep max-w-xl mx-auto text-sm">
+              QAgent Driver Hub APK는 무료 베타 신청 승인 후 개별 안내됩니다.<br />
+              무단 배포를 막고 현장 피드백을 정확히 받기 위해 신청자 확인 후 다운로드 링크와 설치 가이드를 제공합니다.
             </p>
+          </div>
 
-            <div className="bg-slate-950/60 border border-slate-900 rounded-2xl p-6 text-left max-w-xl mx-auto mb-8 text-xs text-slate-400 space-y-2.5">
-              <div className="font-semibold text-slate-300 text-sm mb-3">📋 주요 신청양식 문항 구성 안내</div>
-              <div className="flex gap-2">✔ <span>닉네임/성함 및 휴대폰 연락처 정보</span></div>
-              <div className="flex gap-2">✔ <span>활동 선호 지역 및 주 사용 플랫폼 (카카오 / 티맵대리)</span></div>
-              <div className="flex gap-2">✔ <span>보유 안드로이드 단말기 모델명 및 주 운행 요일/시간대</span></div>
-              <div className="flex gap-2">✔ <span>테스터 동의문항 (수익 보장 없음 동의, 자동수락 미지원 동의 등)</span></div>
+          <div className="grid md:grid-cols-12 gap-8 items-stretch">
+            {/* Download Card */}
+            <div className="md:col-span-5 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-3">
+                  <Download className="w-4 h-4" />
+                  <span>무료 베타 승인 후 제공</span>
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">QAgent Driver Hub</h3>
+                
+                <ul className="space-y-3.5 text-xs text-slate-400 border-b border-slate-800 pb-5 mb-5 font-mono">
+                  <li className="flex justify-between">
+                    <span>버전</span>
+                    <span className="text-slate-200">베타 승인 후 안내</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>업데이트 날짜</span>
+                    <span className="text-slate-200">베타 운영 중</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>파일 크기</span>
+                    <span className="text-slate-200">승인 후 안내</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>상태</span>
+                    <span className="text-amber-500 font-bold">베타 승인 후 제공</span>
+                  </li>
+                </ul>
+
+                <div className="text-xs font-semibold text-slate-300 mb-2">기사 주안점</div>
+                <p className="text-[11px] text-slate-400 leading-relaxed mb-6 break-keep">
+                  - 카카오 대리 / 티맵 대리 콜 목록 신호등 분석<br/>
+                  - 리스트형 및 수락 팝업 신호 분석 연동<br/>
+                  - 실시간 500m 반경 콜 가능성 지표 제공 (데모)
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <button 
+                  disabled 
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800 text-slate-500 border border-slate-700 font-bold h-12 text-sm cursor-not-allowed"
+                >
+                  베타 신청 후 다운로드 안내 받기
+                </button>
+                <a 
+                  href="#contact-form" 
+                  className="w-full flex items-center justify-center rounded-xl bg-transparent border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-semibold h-10 text-xs transition-colors"
+                >
+                  베타 테스터 신청하기
+                </a>
+              </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Button size="lg" className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 !text-slate-950 font-black px-8 border-0" asChild>
-                <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-950 !text-slate-950">
-                  베타 신청하기
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="border-slate-600 text-slate-200 hover:text-white font-bold px-8" asChild>
-                <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white">
-                  오류/피드백 보내기
-                </a>
-              </Button>
-              <Button size="lg" variant="ghost" className="text-slate-400 hover:text-slate-200" asChild>
-                <a href={DRIVER_BETA_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-200">
-                  사용 문의하기
-                </a>
-              </Button>
+            {/* Quick Installation Reference */}
+            <div className="md:col-span-7 bg-slate-900/10 border border-slate-900 rounded-3xl p-8 flex flex-col justify-between">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-white">이용 및 설치 흐름</h3>
+                <ul className="space-y-3 text-xs md:text-sm text-slate-400 leading-relaxed break-keep">
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">1</span>
+                    <p><strong>무료 베타 신청:</strong> 하단 신청 폼을 통해 신청서를 제출합니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">2</span>
+                    <p><strong>QAgentLabs 확인 및 개별 연락:</strong> 심사를 거쳐 기사님께 개별 승인 전화를 드립니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">3</span>
+                    <p><strong>APK 다운로드 링크 수신:</strong> 다운로드 경로와 개별 비밀번호를 전송받습니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">4</span>
+                    <p><strong>Android 보안 설정 확인:</strong> '출처를 알 수 없는 앱 설치 ＞ 이 출처 허용'을 켭니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">5</span>
+                    <p><strong>접근성 권한 허용:</strong> 콜 텍스트 식별을 위해 스마트폰 접근성 설정을 활성화합니다. (자동 조작 기능 무관)</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">6</span>
+                    <p><strong>오버레이 권한 허용:</strong> 다른 앱 위에 표시 권한을 허용하여 신호등 창을 띄웁니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">7</span>
+                    <p><strong>카카오/티맵 콜 화면에서 신호등 확인:</strong> 기사용 앱에서 초록/노랑 불빛이 정상 작동하는지 주행 확인합니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">8</span>
+                    <p><strong>피드백 제보:</strong> 콜 판정이 이상하거나 신호가 안 뜨는 경우 캡처와 함께 하단 폼으로 의견을 전달합니다.</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Internal ContactForm Section */}
+      <section id="contact-form" className="section-padding container-custom bg-slate-950 border-b border-slate-900">
+        <div className="max-w-xl mx-auto">
+          <div className="bg-slate-900/50 border border-slate-800 p-8 md:p-12 rounded-3xl shadow-lg relative overflow-hidden">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-4">무료 베타 신청 및 문의</h2>
+            
+            <div className="bg-slate-950/60 border border-slate-900 rounded-2xl p-5 mb-8 text-xs text-slate-400 space-y-3 leading-relaxed break-keep">
+              <div className="font-semibold text-slate-300 text-sm mb-1">📋 유형별 안내 사항</div>
+              <div>• <strong>무료 베타 신청:</strong> 무료 베타 신청서를 남겨주시면 확인 후 APK 설치 안내를 개별 연락드립니다. (자동수락/자동클릭은 제공하지 않습니다)</div>
+              <div>• <strong>오류/피드백 제보:</strong> 오류 화면 캡처, 콜 화면에서 신호가 뜨지 않은 상황, 판정이 이상했던 내용을 남겨주시면 개선에 참고하겠습니다. (캡처 파일은 회신 안내 후 전달받겠습니다)</div>
+              <div>• <strong>일반 문의사항:</strong> 지원 기종, 설치 방법, 카카오·티맵 지원 범위, 권한 설정 관련 문의를 남겨주세요.</div>
+            </div>
+
+            <div className="text-slate-200 text-left">
+              <ContactForm source="driver-hub" defaultInquiryType="beta-apply" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Promotional Share Script Section */}
+      <section className="section-padding container-custom bg-slate-950 border-b border-slate-900">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="bg-slate-900/30 border border-slate-900 p-6 md:p-8 rounded-3xl relative overflow-hidden">
+            <h3 className="text-xl font-bold text-white mb-3">오픈채팅/문자 배포용 홍보문</h3>
+            <p className="text-xs text-slate-400 mb-6 break-keep">
+              주변 동료 대리기사님들께 Driver Hub 무료 베타 소식을 널리 공유해 보세요!
+            </p>
+            
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-left font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed select-all relative group max-w-xl mx-auto">
+              {`대리기사 콜 판단 신호등 앱 QAgent Driver Hub 무료 베타테스터를 모집합니다.
+
+카카오·티맵 콜 화면 위에 YELLOW/GREEN 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
+
+자동수락이나 자동클릭은 없으며, 기사님의 최종 판단을 돕는 참고 정보입니다.
+
+무료 베타 기간 동안 사용해보시고 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
+
+신청 링크: https://qagentlabs.com/driver-hub`}
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <button 
+                onClick={() => {
+                  const textToCopy = `대리기사 콜 판단 신호등 앱 QAgent Driver Hub 무료 베타테스터를 모집합니다.
+
+카카오·티맵 콜 화면 위에 YELLOW/GREEN 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
+
+자동수락이나 자동클릭은 없으며, 기사님의 최종 판단을 돕는 참고 정보입니다.
+
+무료 베타 기간 동안 사용해보시고 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
+
+신청 링크: https://qagentlabs.com/driver-hub`;
+                  void navigator.clipboard.writeText(textToCopy);
+                  alert("홍보문이 클립보드에 복사되었습니다. 원하는 곳에 붙여넣기(Ctrl+V) 하세요!");
+                }}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-4 py-2 text-xs font-semibold transition-all border border-slate-700"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                홍보문 텍스트 복사하기
+              </button>
             </div>
           </div>
         </div>

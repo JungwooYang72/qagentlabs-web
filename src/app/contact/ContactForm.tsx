@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/Button";
 
 interface ContactFormProps {
   source?: string;
+  defaultInquiryType?: "beta-apply" | "feedback" | "general";
 }
 
-export default function ContactForm({ source = "general" }: ContactFormProps) {
+export default function ContactForm({ source = "general", defaultInquiryType = "general" }: ContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -27,6 +28,7 @@ export default function ContactForm({ source = "general" }: ContactFormProps) {
       subject: formData.get("subject"),
       message: formData.get("message"),
       source,
+      inquiryType: formData.get("inquiryType") || defaultInquiryType,
     };
 
     try {
@@ -71,6 +73,23 @@ export default function ContactForm({ source = "general" }: ContactFormProps) {
           <strong>문의 전송에 실패했습니다.</strong><br/>
           <span className="text-xs mt-1 mb-2 block opacity-80">사유: {errorMessage.includes('서버 환경변수') || errorMessage.includes('서버 설정') ? '서버 시스템 설정 오류' : '일시적인 서버 문제 또는 네트워크 오류'}</span>
           문제가 지속될 경우 연락처 섹션의 이메일 버튼을 직접 이용해주세요.
+        </div>
+      )}
+
+      {source === "driver-hub" && (
+        <div className="space-y-2">
+          <label htmlFor="inquiryType" className="text-sm font-medium text-slate-200">문의 유형</label>
+          <select
+            id="inquiryType"
+            name="inquiryType"
+            disabled={isSubmitting}
+            defaultValue={defaultInquiryType}
+            className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
+          >
+            <option value="beta-apply">무료 베타 신청</option>
+            <option value="feedback">오류/피드백 제보</option>
+            <option value="general">일반 문의사항</option>
+          </select>
         </div>
       )}
 
