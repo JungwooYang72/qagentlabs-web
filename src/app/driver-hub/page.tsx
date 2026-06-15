@@ -27,10 +27,7 @@ import {
 } from "lucide-react";
 
 // ==========================================
-// [설정] 대리기사 전용 베타 신청 / 피드백 구글 폼 URL
-// 이 변수를 수정하면 모든 Driver Hub 폼 링크가 일괄 교체됩니다.
-// ==========================================
-const DRIVER_BETA_FORM_URL = "https://forms.gle/dummy-driver-beta";
+
 
 type ChatMessage = {
   sender: "ai" | "user";

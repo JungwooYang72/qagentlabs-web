@@ -384,45 +384,54 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 flex flex-col justify-center gap-4">
-              <div className="border border-border bg-background p-6 rounded-xl hover:bg-muted/30 transition-colors flex gap-4 items-start">
-                <div className="mt-1 bg-muted p-2 rounded-md border border-border shrink-0">
-                  <Box className="w-5 h-5 text-foreground/70" />
+            <div className="lg:col-span-5 flex flex-col justify-center bg-background border border-border p-8 rounded-2xl shadow-sm">
+              <h3 className="font-bold text-xl mb-3 text-foreground">AI Automation 결과물</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-6 break-keep">
+                엑셀, CSV, 상품데이터, 고객문의, 반복 업무 자료를 보내주시면 QAgentLabs 내부 AI 자동화 시스템으로 정리·분류·분석해 실무에 바로 사용할 수 있는 결과물로 제공합니다.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>엑셀/CSV 정리본</span>
                 </div>
-                <div>
-                  <h4 className="font-bold text-lg">Synology DS224+</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Reliable NAS platform for practical storage deployment and safe off-site replication.</p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>상품데이터 분류표</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>고객문의 분류표</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>데이터 요약 리포트</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>콘텐츠 초안</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>자동화 가능성 진단서</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>반복 업무 처리 결과표</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
+                  <span>샘플 결과물</span>
                 </div>
               </div>
 
-              <div className="border border-border bg-background p-6 rounded-xl hover:bg-muted/30 transition-colors flex gap-4 items-start">
-                <div className="mt-1 bg-muted p-2 rounded-md border border-border shrink-0">
-                  <HardDrive className="w-5 h-5 text-foreground/70" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg">Samsung 990 PRO 2TB</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">High-performance NVMe SSD for fast storage workloads and system cache tiering.</p>
-                </div>
-              </div>
-
-              <div className="border border-border bg-background p-6 rounded-xl hover:bg-muted/30 transition-colors flex gap-4 items-start">
-                <div className="mt-1 bg-muted p-2 rounded-md border border-border shrink-0">
-                  <Cpu className="w-5 h-5 text-foreground/70" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg">SK Hynix Platinum P41 2TB</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Professional-grade NVMe SSD balancing extreme speed with thermal stability.</p>
-                </div>
-              </div>
-
-              <div className="border border-border bg-background p-6 rounded-xl hover:bg-muted/30 transition-colors flex gap-4 items-start">
-                <div className="mt-1 bg-muted p-2 rounded-md border border-border shrink-0">
-                  <Network className="w-5 h-5 text-foreground/70" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-lg">TP-Link Wi-Fi 7 Router</h4>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">Next-generation network infrastructure for high-speed, multi-gigabit wireless environments.</p>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
+                <Button size="sm" asChild className="w-full sm:w-auto">
+                  <Link href="/contact">AI 자동화 무료진단 받기</Link>
+                </Button>
+                <Button size="sm" variant="outline" asChild className="w-full sm:w-auto">
+                  <Link href="/ai-automation">서비스 자세히 보기</Link>
+                </Button>
               </div>
             </div>
           </div>
