@@ -18,53 +18,105 @@ function extractDomain(value: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { firstName, lastName, email, phone, subject, message, source, inquiryType } = body;
-
-    // Validate required fields
-    if (!firstName || !email || !phone || !message) {
-      return NextResponse.json(
-        { error: '이름, 이메일, 연락처, 문의 내용을 모두 입력해주세요.' },
-        { status: 400 }
-      );
-    }
+    const { 
+      source, 
+      inquiryType,
+      // B2B 폼 필드
+      firstName, 
+      lastName, 
+      email, 
+      phone, 
+      subject, 
+      message, 
+      // Driver Hub 폼 필드
+      nickname,
+      kakaoId,
+      activityArea,
+      device,
+      androidVersion,
+      experience,
+      platforms,
+      consentPrivacy,
+      consentTerms,
+      consentScreenshot
+    } = body;
 
     const isDriverHub = source === 'driver-hub';
+
+    // Validate required fields
+    if (isDriverHub) {
+      if (!nickname || (!email && !kakaoId) || !activityArea || !device || !androidVersion || !experience) {
+        return NextResponse.json(
+          { error: '필수 신청 정보를 모두 입력해주세요.' },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!firstName || !email || !phone || !message) {
+        return NextResponse.json(
+          { error: '이름, 이메일, 연락처, 문의 내용을 모두 입력해주세요.' },
+          { status: 400 }
+        );
+      }
+    }
 
     let titleText = 'QAgentLabs 신규 문의 접수';
     let pathText = '일반 홈페이지 문의';
     let noteText = '일반 문의 접수';
     let mailSubject = `[QAgentLabs 문의] ${subject || '신규 문의가 접수되었습니다'}`;
+    let htmlContent = '';
 
     if (isDriverHub) {
       if (inquiryType === 'beta-apply') {
         titleText = 'QAgent Driver Hub 베타 신청';
         pathText = 'QAgent Driver Hub 무료 베타';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 베타 신청';
-        mailSubject = `[QAgent Driver Hub 베타신청] ${subject || '홈페이지 문의'}`;
+        mailSubject = `[QAgent Driver Hub 베타신청] ${nickname} 기사님 신청`;
       } else if (inquiryType === 'feedback') {
         titleText = 'QAgent Driver Hub 오류/피드백 접수';
         pathText = 'QAgent Driver Hub 오류/피드백';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 오류/피드백';
-        mailSubject = `[QAgent Driver Hub 오류/피드백] ${subject || '홈페이지 문의'}`;
+        mailSubject = `[QAgent Driver Hub 오류/피드백] ${nickname} 기사님 제보`;
       } else {
         titleText = 'QAgent Driver Hub 사용 문의';
         pathText = 'QAgent Driver Hub 사용문의';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 사용 문의';
-        mailSubject = `[QAgent Driver Hub 사용문의] ${subject || '홈페이지 문의'}`;
+        mailSubject = `[QAgent Driver Hub 사용문의] ${nickname} 기사님 문의`;
       }
-    }
 
-    const htmlContent = `
-      <h3>${titleText}</h3>
-      <p><strong>이름:</strong> ${firstName} ${lastName || ''}</p>
-      <p><strong>이메일:</strong> ${email}</p>
-      <p><strong>연락처:</strong> ${phone}</p>
-      <p><strong>제목:</strong> ${subject || '입력되지 않음'}</p>
-      <p><strong>유입경로:</strong> ${pathText}</p>
-      <p><strong>비고:</strong> ${noteText}</p>
-      <p><strong>문의 내용:</strong></p>
-      <p>${message.replace(/\n/g, '<br/>')}</p>
-    `;
+      htmlContent = `
+        <h3>${titleText}</h3>
+        <p><strong>닉네임 또는 이름:</strong> ${nickname}</p>
+        <p><strong>이메일:</strong> ${email || '미입력'}</p>
+        <p><strong>카카오톡 ID:</strong> ${kakaoId || '미입력'}</p>
+        <p><strong>휴대폰 번호:</strong> ${phone || '미입력'}</p>
+        <p><strong>주 활동 지역:</strong> ${activityArea}</p>
+        <p><strong>사용 플랫폼:</strong> ${Array.isArray(platforms) ? platforms.join(', ') : (platforms || '미선택')}</p>
+        <p><strong>사용 기기:</strong> ${device}</p>
+        <p><strong>Android 버전:</strong> ${androidVersion}</p>
+        <p><strong>대리기사 경력:</strong> ${experience}</p>
+        <p><strong>개인정보 동의:</strong> ${consentPrivacy || '동의안함'}</p>
+        <p><strong>베타 약관 동의:</strong> ${consentTerms || '동의안함'}</p>
+        <p><strong>오류 캡처 동의:</strong> ${consentScreenshot || '동의안함'}</p>
+        <p><strong>추가 문의/제보 내용:</strong></p>
+        <p>${(message || '없음').replace(/\n/g, '<br/>')}</p>
+        <br/>
+        <p><strong>유입경로:</strong> ${pathText}</p>
+        <p><strong>비고:</strong> ${noteText}</p>
+      `;
+    } else {
+      htmlContent = `
+        <h3>${titleText}</h3>
+        <p><strong>이름:</strong> ${firstName} ${lastName || ''}</p>
+        <p><strong>이메일:</strong> ${email}</p>
+        <p><strong>연락처:</strong> ${phone}</p>
+        <p><strong>제목:</strong> ${subject || '입력되지 않음'}</p>
+        <p><strong>유입경로:</strong> ${pathText}</p>
+        <p><strong>비고:</strong> ${noteText}</p>
+        <p><strong>문의 내용:</strong></p>
+        <p>${message.replace(/\n/g, '<br/>')}</p>
+      `;
+    }
 
     const extractedFromEmail = extractEmailAddress(FROM_EMAIL);
     const fromDomain = extractDomain(FROM_EMAIL);
@@ -106,7 +158,7 @@ export async function POST(req: Request) {
       to: [TO_EMAIL],
       subject: mailSubject,
       html: htmlContent,
-      replyTo: email,
+      replyTo: isDriverHub ? (email || FROM_EMAIL) : email,
     });
 
     if (error) {
@@ -116,41 +168,64 @@ export async function POST(req: Request) {
     }
 
     // =========================================================================
-    // [2] Google Form 연동 로직
+    // [2] Google Form 연동 로직 (1:1 매핑으로 전면 개편)
     // =========================================================================
-    /*
-      필드 매핑표 (Google Form 문항 -> 홈페이지 ContactForm 필드)
-      - 담당자 성함: entry.1996914439 -> ${firstName} ${lastName}
-      - 이메일 주소: entry.1851805290 -> ${email}
-      - 회사/기관명: entry.970744273 -> "미입력 (홈페이지 문의)"
-      - 연락처: entry.1081258101 -> "미입력 (이메일로 회신 요망)"
-      - 문의 내용: entry.935415787 -> [제목: ${subject}] ${message}
-      - 유입경로: entry.153407753 -> "기타" (옵션값)
-      - 유입경로 기타 텍스트: entry.153407753.other_option_response -> "홈페이지 폼 작성"
-
-      ※ 주의: Google Form 양식이 변경되거나 문항이 삭제/추가되면 entry.xxxxx ID가 변경될 수 있습니다.
-    */
     const GOOGLE_FORM_ACTION_URL = process.env.GOOGLE_FORM_ACTION_URL;
     if (GOOGLE_FORM_ACTION_URL) {
       try {
         const formData = new URLSearchParams();
-        formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
-        formData.append("entry.1851805290", email);
-        formData.append("entry.970744273", noteText);
-        formData.append("entry.1081258101", phone);
-        formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
-        
-        // 400 에러 원인 수정: 유입경로는 객관식이므로 허용된 옵션인 "기타"를 값으로 넣고, 기타 응답 필드에 텍스트를 넣음
-        formData.append("entry.153407753", "기타");
-        formData.append("entry.153407753.other_option_response", pathText);
+
+        if (isDriverHub) {
+          formData.append("entry.124821362", nickname);
+          formData.append("entry.1269818276", email || "");
+          formData.append("entry.1026788664", kakaoId || "");
+          formData.append("entry.945786966", phone || "");
+          formData.append("entry.1395594018", activityArea);
+          formData.append("entry.151789722", device);
+          formData.append("entry.1526675598", androidVersion);
+          formData.append("entry.1815606880", experience);
+          formData.append("entry.1985121008", consentPrivacy || "동의안함");
+          formData.append("entry.1883591446", consentTerms || "동의안함");
+          formData.append("entry.501373128", consentScreenshot || "동의안함");
+
+          // 복수 선택 체크박스 다중값 전송 처리
+          if (Array.isArray(platforms)) {
+            platforms.forEach(p => {
+              formData.append("entry.676517953", p);
+            });
+          } else if (platforms) {
+            formData.append("entry.676517953", platforms);
+          }
+        } else {
+          formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
+          formData.append("entry.1851805290", email);
+          formData.append("entry.970744273", noteText);
+          formData.append("entry.1081258101", phone);
+          formData.append("entry.935415787", `[제목: ${subject || '미입력'}]\n${message}`);
+          formData.append("entry.153407753", "기타");
+          formData.append("entry.153407753.other_option_response", pathText);
+        }
 
         // [요구사항 3] POST payload 로깅 (개인정보 일부 마스킹)
         const maskedPayload: Record<string, string> = {};
         for (const [key, value] of Array.from(formData.entries())) {
-          if (key === 'entry.1996914439' || key === 'entry.1851805290' || key === 'entry.1081258101') {
+          const keysToMask = [
+            'entry.1996914439', // B2B 성함
+            'entry.1851805290', // B2B 이메일
+            'entry.1081258101', // B2B 전화번호
+            'entry.124821362',  // 드라이버 이름/닉네임
+            'entry.1269818276', // 드라이버 이메일
+            'entry.1026788664', // 드라이버 카톡 ID
+            'entry.945786966'   // 드라이버 전화번호
+          ];
+          if (keysToMask.includes(key)) {
             maskedPayload[key] = value.length > 3 ? value.substring(0, 3) + '***' : '***';
           } else {
-            maskedPayload[key] = value;
+            if (maskedPayload[key]) {
+              maskedPayload[key] += `, ${value}`;
+            } else {
+              maskedPayload[key] = value;
+            }
           }
         }
         console.log("[CONTACT_FORM] Google Form POST Payload:", JSON.stringify(maskedPayload));
@@ -166,8 +241,6 @@ export async function POST(req: Request) {
         const gfStatus = gfResponse.status;
         const gfStatusText = gfResponse.statusText;
         const gfBodyText = await gfResponse.text();
-        
-        // [요구사항 1] snippet 길이 5000자로 늘리기
         const snippet = gfBodyText.substring(0, 5000).replace(/\n/g, ' ');
 
         if (!gfResponse.ok) {
@@ -175,7 +248,6 @@ export async function POST(req: Request) {
           console.error(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
           console.error(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
 
-          // [요구사항 2] 에러 키워드 추출 및 주변 문맥 로깅
           const errorKeywords = ['error', 'required', 'invalid', 'entry.', '필수', '잘못'];
           errorKeywords.forEach(keyword => {
             const index = snippet.toLowerCase().indexOf(keyword);
@@ -190,7 +262,6 @@ export async function POST(req: Request) {
           console.log(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
         }
       } catch (gfError: any) {
-        // 구글 폼 저장이 실패해도 이메일 발송 프로세스는 정상 처리되도록 예외만 기록
         console.error("[CONTACT_FORM] Google Form submit failed (Fetch Exception)");
         console.error(`[CONTACT_FORM] Error Message: ${gfError.message}`);
       }

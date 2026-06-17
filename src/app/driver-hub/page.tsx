@@ -436,7 +436,7 @@ export default function DriverHubPage() {
                 <ul className="space-y-3.5 text-sm text-slate-400 leading-relaxed break-keep">
                   <li className="flex gap-2.5">
                     <span className="text-blue-500 font-bold shrink-0">•</span>
-                    <p>초기 베타 테스터 기사님들은 <strong>첫 1개월간 비용 결제 없이 전면 무료</strong>로 사용할 수 있습니다.</p>
+                    <p>🎁 초기 베타 테스터는 <strong>APK 설치 승인일(다운로드 링크 지급일)로부터 1개월간</strong> 무료로 이용합니다. (신청일 기준이 아닙니다. 무료 기간 종료 후 Basic 월 10,000원으로 전환됩니다.)</p>
                   </li>
                   <li className="flex gap-2.5">
                     <span className="text-blue-500 font-bold shrink-0">•</span>
@@ -457,7 +457,7 @@ export default function DriverHubPage() {
                   <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-inner">
                     <div>
                       <div className="font-mono text-base font-bold text-blue-400 select-all tracking-wider">기업은행 492-075699-04-010</div>
-                      <div className="text-xs text-slate-400 mt-1">예금주: <span className="text-slate-300 font-semibold">양정우(큐에이전트랩스)</span></div>
+                      <div className="text-xs text-slate-400 mt-1">예금주: <span className="text-slate-300 font-semibold">양*우(큐에이전트랩스)</span></div>
                     </div>
                   </div>
                 </div>
