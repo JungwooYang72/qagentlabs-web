@@ -230,9 +230,9 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
         androidVersion,
         experience,
         platforms,
-        consentPrivacy: consentPrivacy ? "동의함" : "동의안함",
-        consentTerms: consentTerms ? "동의함" : "동의안함",
-        consentScreenshot: consentScreenshot ? "동의함" : "동의안함",
+        consentPrivacy: consentPrivacy ? "동의" : "미동의",
+        consentTerms: consentTerms ? "동의" : "미동의",
+        consentScreenshot: consentScreenshot ? "동의" : "미동의",
       };
 
       try {
@@ -450,11 +450,11 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
               <label className="text-sm font-medium text-slate-200 block">사용 중인 대리 플랫폼 <span className="text-slate-500">(중복 선택 가능) *</span></label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
                 <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer select-none">
-                  <input type="checkbox" name="platforms" value="카카오T" defaultChecked className="rounded border-slate-800 bg-slate-950 text-accent focus:ring-accent w-4.5 h-4.5" />
+                  <input type="checkbox" name="platforms" value="카카오T 대리" defaultChecked className="rounded border-slate-800 bg-slate-950 text-accent focus:ring-accent w-4.5 h-4.5" />
                   <span>카카오T</span>
                 </label>
                 <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer select-none">
-                  <input type="checkbox" name="platforms" value="티맵" defaultChecked className="rounded border-slate-800 bg-slate-950 text-accent focus:ring-accent w-4.5 h-4.5" />
+                  <input type="checkbox" name="platforms" value="티맵 대리" defaultChecked className="rounded border-slate-800 bg-slate-950 text-accent focus:ring-accent w-4.5 h-4.5" />
                   <span>티맵</span>
                 </label>
                 <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer select-none">
@@ -489,9 +489,9 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
                 >
                   <option value="">-- 기기 모델 선택 --</option>
                   <option value="갤럭시 S 계열">갤럭시 S 계열</option>
-                  <option value="갤럭시 Note 계열">갤럭시 Note 계열</option>
-                  <option value="갤럭시 Z Fold">갤럭시 Z Fold</option>
-                  <option value="갤럭시 Z Flip">갤럭시 Z Flip</option>
+                  <option value="Note 계열">갤럭시 Note 계열</option>
+                  <option value="Z Fold">갤럭시 Z Fold</option>
+                  <option value="Z Flip">갤럭시 Z Flip</option>
                   <option value="기타 안드로이드">기타 안드로이드</option>
                   <option value="iPhone">iPhone (지원불가)</option>
                 </select>
@@ -513,7 +513,7 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
                   <option value="13">Android 13</option>
                   <option value="12">Android 12</option>
                   <option value="11">Android 11</option>
-                  <option value="10 이하">Android 10 이하</option>
+                  <option value="모름">Android 10 이하</option>
                   <option value="모름">잘 모름</option>
                 </select>
               </div>

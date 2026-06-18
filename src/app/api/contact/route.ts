@@ -182,47 +182,25 @@ export async function POST(req: Request) {
         const formData = new URLSearchParams();
 
         if (isDriverHub) {
-          // 구글 폼 수락 규격과 홈페이지 필드 값 매핑 보정
-          const mappedDevice = 
-            device === "갤럭시 Note 계열" ? "Note 계열" :
-            device === "갤럭시 Z Fold" ? "Z Fold" :
-            device === "갤럭시 Z Flip" ? "Z Flip" :
-            device; // "갤럭시 S 계열", "기타 안드로이드" 등은 그대로 유지
-
-          const mappedAndroidVersion = 
-            androidVersion === "10 이하" ? "모름" : androidVersion; // 구글폼에 "10 이하"가 없으므로 "모름"으로 보정
-
-          const mappedConsentPrivacy = consentPrivacy === "동의함" ? "동의" : "미동의";
-          const mappedConsentTerms = consentTerms === "동의함" ? "동의" : "미동의";
-          const mappedConsentScreenshot = consentScreenshot === "동의함" ? "동의" : "미동의";
-
           formData.append("entry.124821362", nickname);
           formData.append("entry.1269818276", email || "");
           formData.append("entry.1026788664", kakaoId || "");
           formData.append("entry.945786966", phone || "");
           formData.append("entry.1395594018", activityArea);
-          formData.append("entry.151789722", mappedDevice);
-          formData.append("entry.1526675598", mappedAndroidVersion);
+          formData.append("entry.151789722", device);
+          formData.append("entry.1526675598", androidVersion);
           formData.append("entry.1815606880", experience);
-          formData.append("entry.1985121008", mappedConsentPrivacy);
-          formData.append("entry.1883591446", mappedConsentTerms);
-          formData.append("entry.501373128", mappedConsentScreenshot);
+          formData.append("entry.1985121008", consentPrivacy);
+          formData.append("entry.1883591446", consentTerms);
+          formData.append("entry.501373128", consentScreenshot);
 
           // 복수 선택 체크박스 다중값 전송 처리
           if (Array.isArray(platforms)) {
             platforms.forEach(p => {
-              const mappedP = 
-                p === "카카오T" ? "카카오T 대리" :
-                p === "티맵" ? "티맵 대리" :
-                p;
-              formData.append("entry.676517953", mappedP);
+              formData.append("entry.676517953", p);
             });
           } else if (platforms) {
-            const mappedP = 
-              platforms === "카카오T" ? "카카오T 대리" :
-              platforms === "티맵" ? "티맵 대리" :
-              platforms;
-            formData.append("entry.676517953", mappedP);
+            formData.append("entry.676517953", platforms);
           }
         } else {
           formData.append("entry.1996914439", `${firstName} ${lastName || ''}`.trim());
@@ -300,6 +278,14 @@ export async function POST(req: Request) {
     // =========================================================================
 
     console.log("[CONTACT_FORM] Process complete. emailSendSuccess:", emailSendSuccess, "googleFormSuccess:", googleFormSuccess);
+
+    // 구글 폼 연동이 시도되었으나 데이터 적재에 실패한 경우 무조건 에러 리턴 (Silent Fail 제거)
+    if (googleFormAttempted && !googleFormSuccess) {
+      return NextResponse.json(
+        { error: '신청서 데이터 구글 시트 적재에 실패했습니다. 잠시 후 다시 시도해 주세요.' },
+        { status: 500 }
+      );
+    }
 
     if (googleFormSuccess || (!googleFormAttempted && emailSendSuccess)) {
       return NextResponse.json({ success: true });
