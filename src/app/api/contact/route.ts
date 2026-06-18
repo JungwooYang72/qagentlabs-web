@@ -180,9 +180,10 @@ export async function POST(req: Request) {
     let gfStatusText = '';
     let gfBodyText = '';
 
-    const GOOGLE_FORM_ACTION_URL = 
-      process.env.GOOGLE_FORM_ACTION_URL || 
-      'https://docs.google.com/forms/d/e/1FAIpQLSdZasw3ehI5aLMPiT_VWRQ2TVDa75A4z452pABClbyZIGO1aw/formResponse';
+    const ACTUAL_ENV_URL = process.env.GOOGLE_FORM_ACTION_URL || 'NOT_SET';
+
+    // Vercel 환경변수 등록오류를 무시하고 실제 상용 구글폼 주소로 전송을 고정하기 위해 강제 오버라이드
+    const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdZasw3ehI5aLMPiT_VWRQ2TVDa75A4z452pABClbyZIGO1aw/formResponse';
 
     if (GOOGLE_FORM_ACTION_URL) {
       googleFormAttempted = true;
@@ -320,18 +321,27 @@ export async function POST(req: Request) {
         
         const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문 내 성공 문구 미검출`;
         return NextResponse.json(
-          { error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})` },
+          { 
+            error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})`,
+            debugEnvUrl: ACTUAL_ENV_URL
+          },
           { status: 500 }
         );
       }
     }
 
     if (googleFormSuccess || (!googleFormAttempted && emailSendSuccess)) {
-      return NextResponse.json({ success: true });
+      return NextResponse.json({ 
+        success: true,
+        debugEnvUrl: ACTUAL_ENV_URL
+      });
     } else {
       const detailError = `이메일 발송 실패(${emailErrorMsg || '오류없음'}) / 구글폼 전송 실패(${googleFormAttempted ? '실패' : '연동 주소 없음'})`;
       return NextResponse.json(
-        { error: `신청 처리에 실패했습니다. (${detailError})` },
+        { 
+          error: `신청 처리에 실패했습니다. (${detailError})`,
+          debugEnvUrl: ACTUAL_ENV_URL
+        },
         { status: 500 }
       );
     }
