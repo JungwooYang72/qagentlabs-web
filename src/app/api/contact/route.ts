@@ -220,6 +220,11 @@ export async function POST(req: Request) {
           formData.append("entry.153407753.other_option_response", pathText);
         }
 
+        // 구글 폼 정상 제출에 필요한 필수 부가 파라미터 추가
+        formData.append("fvv", "1");
+        formData.append("pageHistory", "0");
+        formData.append("submit", "제출");
+
         // [요구사항 3] POST payload 로깅 (개인정보 일부 마스킹)
         const maskedPayload: Record<string, string | string[]> = {};
         for (const [key, value] of Array.from(formData.entries())) {
@@ -311,7 +316,7 @@ export async function POST(req: Request) {
         console.error(`[CONTACT_FORM] Google Form submit verification failed`);
         console.error(`- Response Status: ${gfStatus} ${gfStatusText}`);
         console.error(`- Success keywords match: ${isRecorded}`);
-        console.error(`- Response Body snippet: ${gfBodyText.substring(0, 500).replace(/\n/g, ' ')}`);
+        console.error(`- Response Body snippet:\n${gfBodyText.substring(0, 15000)}`);
         
         const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문 내 성공 문구 미검출`;
         return NextResponse.json(
