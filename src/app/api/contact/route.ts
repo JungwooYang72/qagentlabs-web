@@ -221,7 +221,7 @@ export async function POST(req: Request) {
         }
 
         // [요구사항 3] POST payload 로깅 (개인정보 일부 마스킹)
-        const maskedPayload: Record<string, string> = {};
+        const maskedPayload: Record<string, string | string[]> = {};
         for (const [key, value] of Array.from(formData.entries())) {
           const keysToMask = [
             'entry.1996914439', // B2B 성함
@@ -232,14 +232,18 @@ export async function POST(req: Request) {
             'entry.1026788664', // 드라이버 카톡 ID
             'entry.945786966'   // 드라이버 전화번호
           ];
-          if (keysToMask.includes(key)) {
-            maskedPayload[key] = value.length > 3 ? value.substring(0, 3) + '***' : '***';
-          } else {
-            if (maskedPayload[key]) {
-              maskedPayload[key] += `, ${value}`;
+          const maskValue = (val: string) => val.length > 3 ? val.substring(0, 3) + '***' : '***';
+          const finalVal = keysToMask.includes(key) ? maskValue(value) : value;
+
+          if (key in maskedPayload) {
+            const current = maskedPayload[key];
+            if (Array.isArray(current)) {
+              current.push(finalVal);
             } else {
-              maskedPayload[key] = value;
+              maskedPayload[key] = [current, finalVal];
             }
+          } else {
+            maskedPayload[key] = finalVal;
           }
         }
         console.log("[CONTACT_FORM] Google Form POST Payload:", JSON.stringify(maskedPayload));
@@ -258,7 +262,7 @@ export async function POST(req: Request) {
         const snippet = gfBodyText.substring(0, 5000).replace(/\n/g, ' ');
 
         if (!gfResponse.ok) {
-          console.error(`[CONTACT_FORM] Google Form submit failed`);
+          console.error(`[CONTACT_FORM] Google Form submit failed (HTTP Error)`);
           console.error(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
           console.error(`[CONTACT_FORM] Response Body Snippet: ${snippet}`);
 
@@ -272,9 +276,7 @@ export async function POST(req: Request) {
             }
           });
         } else {
-          googleFormSuccess = true;
-          console.log("[CONTACT_FORM] Google Form submit success");
-          console.log(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
+          console.log("[CONTACT_FORM] Google Form HTTP POST complete with status 200 (Proceeding to content verification)");
         }
       } catch (gfError: any) {
         console.error("[CONTACT_FORM] Google Form submit failed (Fetch Exception)");
@@ -287,13 +289,31 @@ export async function POST(req: Request) {
 
     console.log("[CONTACT_FORM] Process complete. emailSendSuccess:", emailSendSuccess, "googleFormSuccess:", googleFormSuccess);
 
-    // 구글 폼 연동이 시도되었으나 데이터 적재에 실패한 경우 무조건 에러 리턴 (Silent Fail 제거)
-    if (googleFormAttempted && !googleFormSuccess) {
-      const isRecorded = gfBodyText.includes("제출되었습니다") || gfBodyText.includes("Your response has been recorded");
-      if (gfStatus === 200 || isRecorded) {
+    // 구글 폼 연동이 시도된 경우 strict 검증 수행
+    if (googleFormAttempted) {
+      const successKeywords = [
+        "제출되었습니다",
+        "응답이 기록되었습니다",
+        "기록되었습니다",
+        "Your response has been recorded",
+        "has been recorded"
+      ];
+      
+      const isRecorded = successKeywords.some(keyword => gfBodyText.includes(keyword));
+      
+      const isOk = gfStatus >= 200 && gfStatus < 300;
+      
+      if (isOk && isRecorded) {
         googleFormSuccess = true;
+        console.log("[CONTACT_FORM] Google Form submission verified successfully (recorded).");
       } else {
-        const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문: ${gfBodyText.substring(0, 100).trim()}`;
+        googleFormSuccess = false;
+        console.error(`[CONTACT_FORM] Google Form submit verification failed`);
+        console.error(`- Response Status: ${gfStatus} ${gfStatusText}`);
+        console.error(`- Success keywords match: ${isRecorded}`);
+        console.error(`- Response Body snippet: ${gfBodyText.substring(0, 500).replace(/\n/g, ' ')}`);
+        
+        const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문 내 성공 문구 미검출`;
         return NextResponse.json(
           { error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})` },
           { status: 500 }
