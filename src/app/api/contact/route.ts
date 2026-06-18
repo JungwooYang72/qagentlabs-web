@@ -1,19 +1,4 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
-// Server-side initialization
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL || '';
-const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || '';
-
-function extractEmailAddress(value: string): string {
-  const match = value.match(/<([^>]+)>/);
-  return (match ? match[1] : value).trim();
-}
-
-function extractDomain(value: string): string {
-  const email = extractEmailAddress(value);
-  return email.split("@")[1]?.toLowerCase() || "";
-}
 
 export async function POST(req: Request) {
   try {
@@ -60,114 +45,19 @@ export async function POST(req: Request) {
       }
     }
 
-    let titleText = 'QAgentLabs 신규 문의 접수';
     let pathText = '일반 홈페이지 문의';
     let noteText = '일반 문의 접수';
-    let mailSubject = `[QAgentLabs 문의] ${subject || '신규 문의가 접수되었습니다'}`;
-    let htmlContent = '';
 
     if (isDriverHub) {
       if (inquiryType === 'beta-apply') {
-        titleText = 'QAgent Driver Hub 베타 신청';
         pathText = 'QAgent Driver Hub 무료 베타';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 베타 신청';
-        mailSubject = `[QAgent Driver Hub 베타신청] ${nickname} 기사님 신청`;
       } else if (inquiryType === 'feedback') {
-        titleText = 'QAgent Driver Hub 오류/피드백 접수';
         pathText = 'QAgent Driver Hub 오류/피드백';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 오류/피드백';
-        mailSubject = `[QAgent Driver Hub 오류/피드백] ${nickname} 기사님 제보`;
       } else {
-        titleText = 'QAgent Driver Hub 사용 문의';
         pathText = 'QAgent Driver Hub 사용문의';
         noteText = '홈페이지 Driver Hub 페이지 작성 - 사용 문의';
-        mailSubject = `[QAgent Driver Hub 사용문의] ${nickname} 기사님 문의`;
-      }
-
-      htmlContent = `
-        <h3>${titleText}</h3>
-        <p><strong>닉네임 또는 이름:</strong> ${nickname}</p>
-        <p><strong>이메일:</strong> ${email || '미입력'}</p>
-        <p><strong>카카오톡 ID:</strong> ${kakaoId || '미입력'}</p>
-        <p><strong>휴대폰 번호:</strong> ${phone || '미입력'}</p>
-        <p><strong>주 활동 지역:</strong> ${activityArea}</p>
-        <p><strong>사용 플랫폼:</strong> ${Array.isArray(platforms) ? platforms.join(', ') : (platforms || '미선택')}</p>
-        <p><strong>사용 기기:</strong> ${device}</p>
-        <p><strong>Android 버전:</strong> ${androidVersion}</p>
-        <p><strong>대리기사 경력:</strong> ${experience}</p>
-        <p><strong>개인정보 동의:</strong> ${consentPrivacy || '동의안함'}</p>
-        <p><strong>베타 약관 동의:</strong> ${consentTerms || '동의안함'}</p>
-        <p><strong>오류 캡처 동의:</strong> ${consentScreenshot || '동의안함'}</p>
-        <p><strong>추가 문의/제보 내용:</strong></p>
-        <p>${(message || '없음').replace(/\n/g, '<br/>')}</p>
-        <br/>
-        <p><strong>유입경로:</strong> ${pathText}</p>
-        <p><strong>비고:</strong> ${noteText}</p>
-      `;
-    } else {
-      htmlContent = `
-        <h3>${titleText}</h3>
-        <p><strong>이름:</strong> ${firstName} ${lastName || ''}</p>
-        <p><strong>이메일:</strong> ${email}</p>
-        <p><strong>연락처:</strong> ${phone}</p>
-        <p><strong>제목:</strong> ${subject || '입력되지 않음'}</p>
-        <p><strong>유입경로:</strong> ${pathText}</p>
-        <p><strong>비고:</strong> ${noteText}</p>
-        <p><strong>문의 내용:</strong></p>
-        <p>${message.replace(/\n/g, '<br/>')}</p>
-      `;
-    }
-
-    const extractedFromEmail = extractEmailAddress(FROM_EMAIL);
-    const fromDomain = extractDomain(FROM_EMAIL);
-    const toDomain = extractDomain(TO_EMAIL);
-
-    // Production & Development Logging
-    console.log("[CONTACT_FORM] ======================");
-    console.log(`[CONTACT_FORM] HAS_CONTACT_FROM_EMAIL: ${!!process.env.CONTACT_FROM_EMAIL}`);
-    console.log(`[CONTACT_FORM] HAS_CONTACT_TO_EMAIL: ${!!process.env.CONTACT_TO_EMAIL}`);
-    console.log(`[CONTACT_FORM] extractedFromEmail: ${extractedFromEmail}`);
-    console.log(`[CONTACT_FORM] fromDomain: ${fromDomain || 'None'}`);
-    console.log(`[CONTACT_FORM] toDomain: ${toDomain || 'None'}`);
-    
-    // 이메일 전송 결과 상태 변수
-    let emailSendSuccess = false;
-    let emailErrorMsg = '';
-
-    // 이메일 설정 검증 및 발송 시도
-    if (!process.env.RESEND_API_KEY) {
-      console.log("[CONTACT_FORM] RESEND_API_KEY missing, skipping email send");
-      emailErrorMsg = '이메일 발송 서버 키가 없습니다.';
-    } else if (!FROM_EMAIL || !TO_EMAIL) {
-      const errMsg = '발신자 또는 수신자 이메일이 설정되지 않았습니다.';
-      console.log(`[CONTACT_FORM] ${errMsg}`);
-      emailErrorMsg = errMsg;
-    } else if (extractedFromEmail === 'onboarding@resend.dev' || fromDomain !== 'qagentlabs.com') {
-      const errMsg = '발신자는 반드시 qagentlabs.com 도메인을 사용해야 하며 onboarding@resend.dev는 허용되지 않습니다.';
-      console.log(`[CONTACT_FORM] ${errMsg}`);
-      emailErrorMsg = errMsg;
-    } else {
-      try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        const { data, error } = await resend.emails.send({
-          from: FROM_EMAIL,
-          to: [TO_EMAIL],
-          subject: mailSubject,
-          html: htmlContent,
-          replyTo: isDriverHub ? (email || FROM_EMAIL) : email,
-        });
-
-        if (error) {
-          console.log(`[CONTACT_FORM] Resend Error Status: ${error.statusCode || 'Unknown'}`);
-          console.log(`[CONTACT_FORM] Resend Error Message: ${error.message}`);
-          emailErrorMsg = error.message;
-        } else {
-          emailSendSuccess = true;
-          console.log("[CONTACT_FORM] Resend Email Send Success:", data);
-        }
-      } catch (err: any) {
-        console.error("[CONTACT_FORM] Resend Exception:", err);
-        emailErrorMsg = err.message || 'Unknown Resend error';
       }
     }
 
@@ -179,8 +69,6 @@ export async function POST(req: Request) {
     let gfStatus = 0;
     let gfStatusText = '';
     let gfBodyText = '';
-
-    const ACTUAL_ENV_URL = process.env.GOOGLE_FORM_ACTION_URL || 'NOT_SET';
 
     // Vercel 환경변수 등록오류를 무시하고 실제 상용 구글폼 주소로 전송을 고정하기 위해 강제 오버라이드
     const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdZasw3ehI5aLMPiT_VWRQ2TVDa75A4z452pABClbyZIGO1aw/formResponse';
@@ -293,7 +181,7 @@ export async function POST(req: Request) {
     }
     // =========================================================================
 
-    console.log("[CONTACT_FORM] Process complete. emailSendSuccess:", emailSendSuccess, "googleFormSuccess:", googleFormSuccess);
+    console.log("[CONTACT_FORM] Process complete. googleFormSuccess:", googleFormSuccess);
 
     // 구글 폼 연동이 시도된 경우 strict 검증 수행
     if (googleFormAttempted) {
@@ -317,31 +205,22 @@ export async function POST(req: Request) {
         console.error(`[CONTACT_FORM] Google Form submit verification failed`);
         console.error(`- Response Status: ${gfStatus} ${gfStatusText}`);
         console.error(`- Success keywords match: ${isRecorded}`);
-        console.error(`- Response Body snippet:\n${gfBodyText.substring(0, 15000)}`);
+        console.error(`- Response Body snippet:\n${gfBodyText.substring(0, 1000)}`);
         
         const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문 내 성공 문구 미검출`;
         return NextResponse.json(
-          { 
-            error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})`,
-            debugEnvUrl: ACTUAL_ENV_URL
-          },
+          { error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})` },
           { status: 500 }
         );
       }
     }
 
-    if (googleFormSuccess || (!googleFormAttempted && emailSendSuccess)) {
-      return NextResponse.json({ 
-        success: true,
-        debugEnvUrl: ACTUAL_ENV_URL
-      });
+    if (googleFormSuccess) {
+      return NextResponse.json({ success: true });
     } else {
-      const detailError = `이메일 발송 실패(${emailErrorMsg || '오류없음'}) / 구글폼 전송 실패(${googleFormAttempted ? '실패' : '연동 주소 없음'})`;
+      const detailError = `구글폼 전송 실패(${googleFormAttempted ? '실패' : '연동 주소 없음'})`;
       return NextResponse.json(
-        { 
-          error: `신청 처리에 실패했습니다. (${detailError})`,
-          debugEnvUrl: ACTUAL_ENV_URL
-        },
+        { error: `신청 처리에 실패했습니다. (${detailError})` },
         { status: 500 }
       );
     }
