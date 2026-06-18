@@ -308,25 +308,39 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
     }
   };
 
+  if (status === "success") {
+    return (
+      <div className="w-full bg-slate-900/60 border border-slate-800 rounded-3xl p-8 md:p-12 text-center shadow-2xl space-y-6 max-w-xl mx-auto my-8 animate-in fade-in zoom-in-95 duration-200">
+        <div className="mx-auto w-16 h-16 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full flex items-center justify-center text-3xl font-bold">
+          ✓
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl md:text-2xl font-black text-white">
+            {isDriverHub ? "베타 신청 완료!" : "문의가 접수되었습니다"}
+          </h3>
+          <p className="text-slate-400 text-sm leading-relaxed whitespace-pre-line">
+            {isDriverHub ? (
+              `신청이 성공적으로 완료되었습니다.\n검토 후 입력하신 연락 수단(카카오톡/이메일)으로\n신속히 개별 연락드리겠습니다.`
+            ) : (
+              `문의가 정상적으로 접수되었습니다.\n확인 후 등록하신 이메일로 빠르게 답변드리겠습니다.`
+            )}
+          </p>
+        </div>
+        <div className="pt-2">
+          <Button
+            onClick={() => setStatus("idle")}
+            className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold h-11 text-sm rounded-xl"
+          >
+            {isDriverHub ? "확인" : "새로 문의하기"}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {status === "success" && (
-          <div className="p-4 bg-green-950/40 text-green-300 border border-green-900 rounded-md text-sm leading-relaxed">
-            {isDriverHub ? (
-              <>
-                신청이 성공적으로 완료되었습니다.<br/>
-                검토 후 입력하신 연락 수단(카카오톡/이메일)으로 신속히 개별 연락드리겠습니다.
-              </>
-            ) : (
-              <>
-                문의가 정상적으로 접수되었습니다.<br/>
-                확인 후 빠르게 답변드리겠습니다.
-              </>
-            )}
-          </div>
-        )}
-        
         {status === "error" && (
           <div className="p-4 bg-red-950/40 text-red-300 border border-red-900 rounded-md text-sm break-all">
             <strong>제출에 실패했습니다.</strong><br/>
@@ -679,6 +693,13 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
                 placeholder="How can we help? (문의 내용을 입력해주세요)"
               ></textarea>
             </div>
+          </div>
+        )}
+
+        {status === "error" && (
+          <div className="p-4 bg-red-950/40 text-red-300 border border-red-900 rounded-md text-sm break-all">
+            <strong>제출에 실패했습니다.</strong><br/>
+            <span className="text-xs mt-1 block opacity-90">사유: {errorMessage}</span>
           </div>
         )}
 
