@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# drafts
+BETA_TERMS_DRAFT.md
+ERROR_SCREENSHOT_CONSENT_DRAFT.md
+PRIVACY_POLICY_DRAFT.md
+
