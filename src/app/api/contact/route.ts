@@ -176,8 +176,16 @@ export async function POST(req: Request) {
     // =========================================================================
     let googleFormSuccess = false;
     let googleFormAttempted = false;
-    const GOOGLE_FORM_ACTION_URL = process.env.GOOGLE_FORM_ACTION_URL;
+    let gfStatus = 0;
+    let gfStatusText = '';
+    let gfBodyText = '';
+
+    const GOOGLE_FORM_ACTION_URL = 
+      process.env.GOOGLE_FORM_ACTION_URL || 
+      'https://docs.google.com/forms/d/e/1FAIpQLSdZasw3ehI5aLMPiT_VWRQ2TVDa75A4z452pABClbyZIGO1aw/formResponse';
+
     if (GOOGLE_FORM_ACTION_URL) {
+      googleFormAttempted = true;
       try {
         const formData = new URLSearchParams();
 
@@ -244,9 +252,9 @@ export async function POST(req: Request) {
           },
         });
 
-        const gfStatus = gfResponse.status;
-        const gfStatusText = gfResponse.statusText;
-        const gfBodyText = await gfResponse.text();
+        gfStatus = gfResponse.status;
+        gfStatusText = gfResponse.statusText;
+        gfBodyText = await gfResponse.text();
         const snippet = gfBodyText.substring(0, 5000).replace(/\n/g, ' ');
 
         if (!gfResponse.ok) {
@@ -281,10 +289,16 @@ export async function POST(req: Request) {
 
     // 구글 폼 연동이 시도되었으나 데이터 적재에 실패한 경우 무조건 에러 리턴 (Silent Fail 제거)
     if (googleFormAttempted && !googleFormSuccess) {
-      return NextResponse.json(
-        { error: '신청서 데이터 구글 시트 적재에 실패했습니다. 잠시 후 다시 시도해 주세요.' },
-        { status: 500 }
-      );
+      const isRecorded = gfBodyText.includes("제출되었습니다") || gfBodyText.includes("Your response has been recorded");
+      if (gfStatus === 200 || isRecorded) {
+        googleFormSuccess = true;
+      } else {
+        const errorDetail = `구글 응답 코드: ${gfStatus || '없음'} (${gfStatusText || '없음'}), 본문: ${gfBodyText.substring(0, 100).trim()}`;
+        return NextResponse.json(
+          { error: `신청서 데이터 구글 시트 적재에 실패했습니다. (상세: ${errorDetail})` },
+          { status: 500 }
+        );
+      }
     }
 
     if (googleFormSuccess || (!googleFormAttempted && emailSendSuccess)) {
