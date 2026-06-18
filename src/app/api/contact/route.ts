@@ -130,46 +130,52 @@ export async function POST(req: Request) {
     console.log(`[CONTACT_FORM] fromDomain: ${fromDomain || 'None'}`);
     console.log(`[CONTACT_FORM] toDomain: ${toDomain || 'None'}`);
     
-    // Server Configuration Validation
+    // 이메일 전송 결과 상태 변수
+    let emailSendSuccess = false;
+    let emailErrorMsg = '';
+
+    // 이메일 설정 검증 및 발송 시도
     if (!process.env.RESEND_API_KEY) {
-      console.log("[CONTACT_FORM] Blocked: RESEND_API_KEY missing");
-      return NextResponse.json(
-        { error: '서버 환경변수 오류: 이메일 발송 서버 키가 없습니다.' },
-        { status: 500 }
-      );
-    }
+      console.log("[CONTACT_FORM] RESEND_API_KEY missing, skipping email send");
+      emailErrorMsg = '이메일 발송 서버 키가 없습니다.';
+    } else if (!FROM_EMAIL || !TO_EMAIL) {
+      const errMsg = '발신자 또는 수신자 이메일이 설정되지 않았습니다.';
+      console.log(`[CONTACT_FORM] ${errMsg}`);
+      emailErrorMsg = errMsg;
+    } else if (extractedFromEmail === 'onboarding@resend.dev' || fromDomain !== 'qagentlabs.com') {
+      const errMsg = '발신자는 반드시 qagentlabs.com 도메인을 사용해야 하며 onboarding@resend.dev는 허용되지 않습니다.';
+      console.log(`[CONTACT_FORM] ${errMsg}`);
+      emailErrorMsg = errMsg;
+    } else {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const { data, error } = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: [TO_EMAIL],
+          subject: mailSubject,
+          html: htmlContent,
+          replyTo: isDriverHub ? (email || FROM_EMAIL) : email,
+        });
 
-    if (!FROM_EMAIL || !TO_EMAIL) {
-      const errMsg = '서버 환경변수 오류: 발신자 또는 수신자 이메일이 설정되지 않았습니다.';
-      console.log(`[CONTACT_FORM] Blocked: ${errMsg}`);
-      return NextResponse.json({ error: errMsg }, { status: 500 });
-    }
-
-    if (extractedFromEmail === 'onboarding@resend.dev' || fromDomain !== 'qagentlabs.com') {
-      const errMsg = '서버 설정 오류: 발신자는 반드시 qagentlabs.com 도메인을 사용해야 하며 onboarding@resend.dev는 허용되지 않습니다.';
-      console.log(`[CONTACT_FORM] Blocked: ${errMsg}`);
-      return NextResponse.json({ error: errMsg }, { status: 500 });
-    }
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: [TO_EMAIL],
-      subject: mailSubject,
-      html: htmlContent,
-      replyTo: isDriverHub ? (email || FROM_EMAIL) : email,
-    });
-
-    if (error) {
-      console.log(`[CONTACT_FORM] Resend Error Status: ${error.statusCode || 'Unknown'}`);
-      console.log(`[CONTACT_FORM] Resend Error Message: ${error.message}`);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+        if (error) {
+          console.log(`[CONTACT_FORM] Resend Error Status: ${error.statusCode || 'Unknown'}`);
+          console.log(`[CONTACT_FORM] Resend Error Message: ${error.message}`);
+          emailErrorMsg = error.message;
+        } else {
+          emailSendSuccess = true;
+          console.log("[CONTACT_FORM] Resend Email Send Success:", data);
+        }
+      } catch (err: any) {
+        console.error("[CONTACT_FORM] Resend Exception:", err);
+        emailErrorMsg = err.message || 'Unknown Resend error';
+      }
     }
 
     // =========================================================================
     // [2] Google Form 연동 로직 (1:1 매핑으로 전면 개편)
     // =========================================================================
+    let googleFormSuccess = false;
+    let googleFormAttempted = false;
     const GOOGLE_FORM_ACTION_URL = process.env.GOOGLE_FORM_ACTION_URL;
     if (GOOGLE_FORM_ACTION_URL) {
       try {
@@ -258,6 +264,7 @@ export async function POST(req: Request) {
             }
           });
         } else {
+          googleFormSuccess = true;
           console.log("[CONTACT_FORM] Google Form submit success");
           console.log(`[CONTACT_FORM] Status: ${gfStatus} ${gfStatusText}`);
         }
@@ -270,9 +277,17 @@ export async function POST(req: Request) {
     }
     // =========================================================================
 
-    console.log("[CONTACT_FORM] Success:", data);
+    console.log("[CONTACT_FORM] Process complete. emailSendSuccess:", emailSendSuccess, "googleFormSuccess:", googleFormSuccess);
 
-    return NextResponse.json({ success: true, data });
+    if (googleFormSuccess || (!googleFormAttempted && emailSendSuccess)) {
+      return NextResponse.json({ success: true });
+    } else {
+      const detailError = `이메일 발송 실패(${emailErrorMsg || '오류없음'}) / 구글폼 전송 실패(${googleFormAttempted ? '실패' : '연동 주소 없음'})`;
+      return NextResponse.json(
+        { error: `신청 처리에 실패했습니다. (${detailError})` },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error('API Contact Error:', error);
     return NextResponse.json(
