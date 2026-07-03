@@ -39,9 +39,10 @@ function unauthorized() {
 }
 
 function isAuthorized(req: Request) {
-  const adminToken = process.env.DRIVER_HUB_ADMIN_TOKEN;
-  const authHeader = req.headers.get("authorization") || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice("Bearer ".length).trim() : "";
+  const adminToken = process.env.DRIVER_HUB_ADMIN_TOKEN?.trim();
+  const authHeader = (req.headers.get("authorization") || "").trim();
+  const bearerMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+  const token = bearerMatch?.[1]?.trim() || "";
 
   return Boolean(adminToken && token && token === adminToken);
 }
