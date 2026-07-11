@@ -45,8 +45,19 @@ export default function PrivacyPage() {
               </li>
             </ul>
           </Subsection>
+          <Subsection title="나) 위치정보 (전략보고서 기능 사용 시)">
+            <ul>
+              <li>전략보고서 기능을 사용할 때, 기기의 위치 정보를 읽습니다.</li>
+              <li>
+                읽은 위치는 기기 안에서만 사용되며(주변 지역 추천, 콜 가능성 점수 계산), 서버로 전송하거나 저장하지 않습니다.
+              </li>
+              <li>
+                위치 권한을 허용하지 않아도 콜 판정 기능은 정상적으로 작동합니다. 이 경우 전략보고서는 시간 기준으로만 제공됩니다.
+              </li>
+            </ul>
+          </Subsection>
 
-          <Subsection title="나) 앱 사용 시 (서버와 주고받는 정보)">
+          <Subsection title="다) 앱 사용 시 (서버와 주고받는 정보)">
             <ul>
               <li>
                 <strong>기기 승인 코드</strong>(익명 설치 식별자) — 전화번호·IMEI·Android ID가 아니며, 특정 개인을 식별하지 않습니다. 서비스 사용 권한을 확인하기 위한 익명 코드입니다.
@@ -60,7 +71,7 @@ export default function PrivacyPage() {
             </ul>
           </Subsection>
 
-          <Subsection title="다) 베타 신청 시 (이용자가 직접 입력)">
+          <Subsection title="라) 베타 신청 시 (이용자가 직접 입력)">
             <ul>
               <li>(필수) 네이버 카페 닉네임</li>
               <li>(필수) 연락 수단(카카오톡 ID 또는 이메일 중 택1)</li>
@@ -69,7 +80,7 @@ export default function PrivacyPage() {
             </ul>
           </Subsection>
 
-          <Subsection title="라) 오류 제보 시 (이용자가 직접 제출)">
+          <Subsection title="마) 오류 제보 시 (이용자가 직접 제출)">
             <ul>
               <li>플랫폼·화면 유형·기기명·Android 버전·앱 버전·증상 등</li>
               <li>
@@ -78,7 +89,7 @@ export default function PrivacyPage() {
             </ul>
           </Subsection>
 
-          <Subsection title="마) 수집하지 않는 정보">
+          <Subsection title="바) 수집하지 않는 정보">
             <ul>
               <li>주민등록번호 등 고유식별정보, 위치정보의 서버 전송, 통신사·금융 정보, 콜 화면 정보의 외부 전송, 기타 민감정보</li>
             </ul>
@@ -187,8 +198,8 @@ export default function PrivacyPage() {
         <Section title="11. 고지 의무">
           <p>본 방침의 변경 시 시행 전 서비스 내 또는 운영 채널을 통해 안내합니다.</p>
           <ul>
-            <li>시행일: 2026-07-08</li>
-            <li>버전: 1.0</li>
+            <li>시행일: 2026-07-11</li>
+            <li>버전: 1.1</li>
           </ul>
         </Section>
       </article>

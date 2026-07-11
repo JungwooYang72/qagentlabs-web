@@ -11,72 +11,6 @@ interface ContactFormProps {
 // ==========================================
 // [초안 문서 텍스트] - 모달 노출용
 // ==========================================
-const PRIVACY_POLICY_TEXT = `개인정보 처리방침 (초안)
-
-## 1. 총칙
-큐에이전트랩스(대표 양*우, 이하 "운영자")은(는) Driver Hub 베타 서비스(이하 "서비스") 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다. 본 처리방침은 베타 단계 기준이며, 정식 출시 시 변경될 수 있습니다.
-
-## 2. 수집하는 개인정보 항목
-서비스는 자동수락·자동클릭 기능이 없는 콜판정 보조 도구이며, 최소한의 정보만 수집합니다.
-
-가) 베타 신청 시 (이용자가 직접 입력)
-- (필수) 닉네임 또는 이름
-- (필수) 연락 수단 1개: 카카오톡 ID 또는 이메일 중 택1
-- (필수) 주 활동 지역, 사용 플랫폼(카카오T/티맵/로지/콜마너/아이드라이버/기타), 사용 기기, Android 버전, 대리기사 경력
-- (선택) 전화번호 — 강제하지 않으며, 명시적 동의 시에만 수집
-
-나) 앱 사용 시
-- 기기 승인 코드(익명 설치 식별자) — 전화번호·IMEI·Android ID가 아니며 개인식별정보로 사용하지 않음
-- 베타 사용권(entitlement) 상태, 만료일 등 운영 관리 정보
-
-다) 오류 제보 시 (이용자가 직접 제출)
-- 플랫폼/화면 유형/기기명/Android 버전/앱 버전/증상/화면 캡처(선택)
-* 화면 캡처에 포함될 수 있는 고객 정보·목적지 등 민감 항목은 가린 뒤 제출하도록 안내합니다.
-* 신청 폼으로 제출한 정보는 이메일 발송 서비스(Resend) 및 Google(폼/시트)을 통해 운영자에게 전달·보관됩니다.
-
-라) 수집하지 않는 정보
-- 주민등록번호 등 고유식별정보, 위치정보의 서버 전송, 통신사·금융 정보, 기타 민감정보
-
-## 3. 수집·이용 목적
-- 베타 참여자 식별 및 사용권 승인/연장/차단
-- 설치·권한 설정 지원 및 오류 대응
-- 서비스 품질 개선 및 베타 운영 공지
-
-## 4. 보유 및 이용 기간
-- 베타 종료 또는 이용자의 탈퇴/삭제 요청 시까지 보유 후 지체 없이 파기
-- 관련 법령상 보존 의무가 있는 경우 해당 기간 동안 보관
-- 오류 캡처 자료: 오류 처리 완료 후 30일 이내 파기
-
-## 5. 제3자 제공 및 처리 위탁
-- 운영자는 이용자의 동의 없이 개인정보를 제3자에게 제공하지 않습니다.
-- 다만 서비스 운영을 위해 아래와 같이 개인정보 처리를 위탁합니다.
-* 수탁자: Resend (신청·문의 내용의 이메일 전송)
-* 수탁자: Google (Forms/Sheets) (신청자 명단 저장·관리)
-
-- 위 수탁자는 각사의 개인정보 보호정책에 따라 데이터를 처리하며, 위탁 업무 변경 시 본 방침에 반영합니다.
-- 카카오톡방/네이버카페 이용 시에는 각 플랫폼(카카오, 네이버)의 약관·정책이 별도로 적용됩니다.
-
-## 6. 정보주체의 권리
-이용자는 언제든지 본인 개인정보의 열람·정정·삭제·처리정지를 요청할 수 있습니다. 요청은 harrison.park@qagentlabs.com 연락처로 접수합니다.
-
-## 7. 파기 절차 및 방법
-보유기간 경과 또는 목적 달성 시, 전자적 파일은 복구 불가능한 방법으로 삭제하고 출력물은 분쇄합니다.
-
-## 8. 안전성 확보 조치
-- 접근 권한 최소화 및 관리자 통제
-- 기기 승인 코드의 익명 처리
-- 캡처 자료 내 민감정보 마스킹 안내
-
-## 9. 개인정보 보호책임자
-- 책임자: 양*우 / 운영책임자
-- 연락처: harrison.park@qagentlabs.com
-
-## 10. 고지 의무
-본 방침의 변경 시 시행 7일 전 공지(네이버카페 공지 등)를 통해 안내합니다.
-
-- 시행일: [폼 오픈일]
-- 버전: 0.2 (초안)`;
-
 const BETA_TERMS_TEXT = `Driver Hub 베타 이용약관 (초안)
 
 ## 제1조 (목적)
@@ -169,7 +103,6 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
   const [consentScreenshot, setConsentScreenshot] = useState(false);
 
   // 모달 제어 상태
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showScreenshotModal, setShowScreenshotModal] = useState(false);
 
@@ -563,13 +496,14 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
                   />
                   <span>[필수] 개인정보 수집·이용 동의</span>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setShowPrivacyModal(true)}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-xs text-slate-500 hover:text-slate-300 underline font-semibold"
                 >
                   [전문 보기]
-                </button>
+                </a>
               </div>
 
               {/* 이용약관 동의 */}
@@ -715,34 +649,6 @@ export default function ContactForm({ source = "general", defaultInquiryType = "
       {/* ==========================================
       // [약관 동의 팝업 모달]
       // ========================================== */}
-      {/* 1. 개인정보 동의 모달 */}
-      {showPrivacyModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <div className="p-6 border-b border-slate-800 flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-lg text-white">개인정보 수집 및 이용 동의 전문</h3>
-                <p className="text-xs text-yellow-500 font-semibold mt-1">※ 초안 — 추후 변경될 수 있음</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPrivacyModal(false)}
-                className="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1"
-              >
-                &times;
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto text-xs md:text-sm text-slate-300 leading-relaxed whitespace-pre-wrap font-sans select-text">
-              {PRIVACY_POLICY_TEXT}
-            </div>
-            <div className="p-4 border-t border-slate-800 flex justify-end gap-2 bg-slate-950/40 rounded-b-2xl">
-              <Button variant="outline" onClick={() => setShowPrivacyModal(false)} className="border-slate-700 text-slate-300 hover:text-white">닫기</Button>
-              <Button onClick={() => { setConsentPrivacy(true); setShowPrivacyModal(false); }} className="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold">확인 및 동의</Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* 2. 베타 이용약관 모달 */}
       {showTermsModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">

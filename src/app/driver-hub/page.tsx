@@ -224,24 +224,39 @@ export default function DriverHubPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2 flex-1">
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 break-keep">
-                  카카오/티맵 콜 목록 및 수락 팝업 화면에서 AI 엔진이 목적지, 단가, 이동 시간 등을 분석하여 적합도를 즉시 직관적인 색상 신호로 알려줍니다.
+                  카카오/티맵 콜 목록 및 수락 팝업 화면에서 콜 화면의 정보를 기기 안에서 분석하여 적합도를 즉시 직관적인 색상 신호로 알려줍니다.
                 </p>
                 <div className="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/50">
                   <div className="flex items-center gap-3">
                     <span className="h-3.5 w-3.5 rounded-full bg-emerald-500 animate-ping absolute"></span>
                     <span className="h-3.5 w-3.5 rounded-full bg-emerald-500 relative"></span>
-                    <span className="text-sm font-semibold text-emerald-400">GREEN</span>
-                    <span className="text-xs text-slate-400">단가와 복귀 환경이 매우 우수한 추천 콜</span>
+                    <span className="text-sm font-semibold text-emerald-400">초록</span>
+                    <span className="text-xs text-slate-400">아주 좋은 콜</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="h-3.5 w-3.5 rounded-full bg-lime-400"></span>
+                    <span className="text-sm font-semibold text-lime-300">연두</span>
+                    <span className="text-xs text-slate-400">좋은 콜</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="h-3.5 w-3.5 rounded-full bg-orange-500"></span>
+                    <span className="text-sm font-semibold text-orange-400">주황</span>
+                    <span className="text-xs text-slate-400">괜찮은 콜</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="h-3.5 w-3.5 rounded-full bg-yellow-500"></span>
-                    <span className="text-sm font-semibold text-yellow-400">YELLOW</span>
-                    <span className="text-xs text-slate-400">평이하고 무난하게 운행 가능한 일반 콜</span>
+                    <span className="text-sm font-semibold text-yellow-400">노랑</span>
+                    <span className="text-xs text-slate-400">일반적인 콜</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="h-3.5 w-3.5 rounded-full bg-slate-600"></span>
-                    <span className="text-sm font-semibold text-slate-400">무반응 (신호 없음)</span>
-                    <span className="text-xs text-slate-400">단가가 낮거나 오지 진입 위험이 큰 패스 후보</span>
+                    <span className="h-3.5 w-3.5 rounded-full bg-slate-500"></span>
+                    <span className="text-sm font-semibold text-slate-300">회색</span>
+                    <span className="text-xs text-slate-400">단가가 낮거나 판단이 어려운 콜</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="h-3.5 w-3.5 rounded-full border border-slate-600 bg-transparent"></span>
+                    <span className="text-sm font-semibold text-slate-500">표시 없음</span>
+                    <span className="text-xs text-slate-400">오지·장거리 픽업 등 권하지 않는 콜</span>
                   </div>
                 </div>
               </CardContent>
@@ -352,7 +367,7 @@ export default function DriverHubPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2 flex-1">
                 <p className="text-slate-400 text-sm leading-relaxed mb-4 break-keep">
-                  티맵대리 및 카카오대리 앱의 폰트나 레이아웃 패치로 인해 신호 미노출 또는 잘못된 콜 판정이 나타날 때, 기사님이 피드백 제보 양식으로 제보하시면 엔진 모델을 업데이트하여 등급 수치를 실시간으로 개선합니다. 기사님들의 생생한 주행 로그가 쌓일수록 필터링 정확도가 정교해집니다.
+                  티맵대리 및 카카오대리 앱의 폰트나 레이아웃 패치로 인해 신호 미노출 또는 잘못된 콜 판정이 나타날 때, 기사님들의 오류 제보를 반영해 판정 기준을 개선합니다.
                 </p>
                 <div className="flex justify-end">
                   <Button variant="ghost" className="text-blue-400 hover:text-blue-300 p-0 font-semibold flex items-center gap-1" asChild>
@@ -402,7 +417,7 @@ export default function DriverHubPage() {
                 <ul className="space-y-2.5 text-xs text-slate-400">
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                    <span>콜 등급 색상 신호 (Green / Yellow / 무반응)</span>
+                    <span>콜 등급 색상 신호 (초록 / 연두 / 주황 / 노랑 / 회색 / 표시 없음)</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -585,7 +600,7 @@ export default function DriverHubPage() {
               <div className="absolute -left-10 top-0.5 w-6 h-6 rounded-full bg-slate-950 border-2 border-blue-500 flex items-center justify-center font-bold text-xs text-blue-400">4</div>
               <div>
                 <h4 className="font-bold text-lg text-white mb-1">운행 현장 실제 콜 판정 확인</h4>
-                <p className="text-slate-400 text-sm break-keep">티맵대리 혹은 카카오대리 기사용 화면에 띄워지는 콜 목록에서 등급 신호(초록, 노랑)를 확인합니다.</p>
+                <p className="text-slate-400 text-sm break-keep">티맵대리 혹은 카카오대리 기사용 화면에 띄워지는 콜 목록에서 6단계 등급 신호(초록, 연두, 주황, 노랑, 회색, 표시 없음)를 확인합니다.</p>
               </div>
             </div>
 
@@ -705,7 +720,7 @@ export default function DriverHubPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">7</span>
-                    <p><strong>카카오/티맵 콜 화면에서 신호등 확인:</strong> 기사용 앱에서 초록/노랑 불빛이 정상 작동하는지 주행 확인합니다.</p>
+                    <p><strong>카카오/티맵 콜 화면에서 신호등 확인:</strong> 기사용 앱에서 6단계 불빛과 표시 없음 상태가 정상 작동하는지 주행 확인합니다.</p>
                   </li>
                   <li className="flex gap-3">
                     <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">8</span>
@@ -750,11 +765,11 @@ export default function DriverHubPage() {
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-left font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed select-all relative group max-w-xl mx-auto">
               {`대리기사 콜 판단 신호등 앱 QAgent Driver Hub 무료 베타테스터를 모집합니다.
 
-카카오·티맵 콜 화면 위에 YELLOW/GREEN 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
+카카오·티맵 콜 화면 위에 초록·연두·주황·노랑·회색·표시 없음의 6단계 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
 
 자동수락이나 자동클릭은 없으며, 기사님의 최종 판단을 돕는 참고 정보입니다.
 
-무료 베타 기간 동안 사용해보시고 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
+무료 베타 기간 동안 사용해보시고 6단계 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
 
 신청 링크: https://qagentlabs.com/driver-hub`}
             </div>
@@ -764,11 +779,11 @@ export default function DriverHubPage() {
                 onClick={() => {
                   const textToCopy = `대리기사 콜 판단 신호등 앱 QAgent Driver Hub 무료 베타테스터를 모집합니다.
 
-카카오·티맵 콜 화면 위에 YELLOW/GREEN 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
+카카오·티맵 콜 화면 위에 초록·연두·주황·노랑·회색·표시 없음의 6단계 신호를 표시해 콜 판단을 돕는 보조 앱입니다.
 
 자동수락이나 자동클릭은 없으며, 기사님의 최종 판단을 돕는 참고 정보입니다.
 
-무료 베타 기간 동안 사용해보시고 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
+무료 베타 기간 동안 사용해보시고 6단계 불빛 위치나 콜판정 오류를 알려주실 기사님을 찾습니다.
 
 신청 링크: https://qagentlabs.com/driver-hub`;
                   void navigator.clipboard.writeText(textToCopy);
@@ -970,7 +985,7 @@ export default function DriverHubPage() {
               </button>
               {openFaqIndex === 4 && (
                 <div className="p-5 pt-0 text-xs md:text-sm text-slate-400 border-t border-slate-900 bg-slate-950/40 leading-relaxed break-keep">
-                  A. 전략보고서의 지표는 대리기사님이 보고서를 요청하신 실시간 위치의 위경도 정보, 현재의 시간대, 오늘 요일, 그리고 과거 동일 조건 하에서의 표준적인 대리콜 발생 빈도 규칙(Rule)을 종합한 <strong>기초 예측 추정값</strong>입니다. 실시간으로 접수되는 필드 데이터를 기사님들의 오류 리포트를 통해 꾸준히 모델에 피드백하여 정확도를 다듬어가고 있습니다.
+                  A. 전략보고서의 지표는 대리기사님이 보고서를 요청하신 실시간 위치의 위경도 정보, 현재의 시간대, 오늘 요일, 그리고 과거 동일 조건 하에서의 표준적인 대리콜 발생 빈도 규칙(Rule)을 종합한 <strong>기초 예측 추정값</strong>입니다. 기사님들의 오류 제보를 반영해 판정 기준을 꾸준히 다듬어가고 있습니다.
                 </div>
               )}
             </div>
@@ -986,7 +1001,7 @@ export default function DriverHubPage() {
               </button>
               {openFaqIndex === 5 && (
                 <div className="p-5 pt-0 text-xs md:text-sm text-slate-400 border-t border-slate-900 bg-slate-950/40 leading-relaxed break-keep">
-                  A. 위치정보는 단지 기사님이 서 계신 자리에서 가장 가깝고 적합도가 양호한 도보 이동 경로 및 10km 대기지 후보를 산출하는 용도로만 일시 참조됩니다. 그 외 마케팅 목적으로 제3자에게 위치를 유출하지 않으며, 베타 진행 중에 수합하는 의견 정보들은 오로지 대기지 예측 신뢰도를 정교화하고 신호 정확도를 튜닝하기 위해 익명성 로그로만 수집합니다.
+                  A. 전략보고서 기능을 사용할 때만 기기의 위치를 읽습니다. 읽은 위치는 기기 안에서만 사용되어 주변 대기지 후보와 콜 가능성 점수를 계산하며, 서버로 전송하거나 저장하지 않습니다. 위치 권한을 허용하지 않으셔도 콜 판정 기능은 정상적으로 작동합니다. 자세한 내용은 개인정보처리방침을 참고해 주세요.
                 </div>
               )}
             </div>
