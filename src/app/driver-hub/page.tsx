@@ -203,6 +203,23 @@ export default function DriverHubPage() {
         </div>
       </section>
 
+      {/* Naver Cafe Guide Banner */}
+      <section className="container-custom bg-slate-950 border-b border-slate-900 py-8">
+        <div className="max-w-4xl mx-auto bg-blue-950/20 border border-blue-500/20 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-2">설치 방법과 사용법은 네이버 카페에서 확인하세요</h2>
+            <p className="text-sm text-slate-400 break-keep">
+              베타 승인 후 APK 설치, 권한 설정, 기본 사용법 안내를 카페에서 확인할 수 있습니다.
+            </p>
+          </div>
+          <Button className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 h-12 shrink-0" asChild>
+            <a href="https://cafe.naver.com/qagentlabs" target="_blank" rel="noopener noreferrer">
+              네이버 카페 바로가기 <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
+        </div>
+      </section>
+
       {/* Core Features Section */}
       <section className="section-padding container-custom bg-slate-950 border-b border-slate-900">
         <div className="max-w-5xl mx-auto">
@@ -744,6 +761,13 @@ export default function DriverHubPage() {
               <div>• <strong>무료 베타 신청:</strong> 무료 베타 신청서를 남겨주시면 확인 후 APK 설치 안내를 개별 연락드립니다. (자동수락/자동클릭은 제공하지 않습니다)</div>
               <div>• <strong>오류/피드백 제보:</strong> 오류 화면 캡처, 콜 화면에서 신호가 뜨지 않은 상황, 판정이 이상했던 내용을 남겨주시면 개선에 참고하겠습니다. (캡처 파일은 회신 안내 후 전달받겠습니다)</div>
               <div>• <strong>일반 문의사항:</strong> 지원 기종, 설치 방법, 카카오·티맵 지원 범위, 권한 설정 관련 문의를 남겨주세요.</div>
+              <div>
+                • 신청 후 설치와 사용법은{" "}
+                <a href="https://cafe.naver.com/qagentlabs" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-4">
+                  네이버 카페
+                </a>
+                를 참고해 주세요.
+              </div>
             </div>
 
             <div className="text-slate-200 text-left">
@@ -1006,6 +1030,20 @@ export default function DriverHubPage() {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Bottom Cafe Link Section */}
+      <section className="container-custom bg-slate-950 pt-4 pb-16">
+        <div className="max-w-3xl mx-auto text-center bg-slate-900/30 border border-slate-900 rounded-3xl p-6 md:p-8">
+          <p className="text-sm text-slate-400 mb-4 break-keep">
+            설치 가이드와 사용법 업데이트는 네이버 카페에서 계속 안내됩니다.
+          </p>
+          <Button variant="outline" className="border-slate-600 text-slate-200 hover:text-white font-bold px-6 h-11" asChild>
+            <a href="https://cafe.naver.com/qagentlabs" target="_blank" rel="noopener noreferrer" className="text-slate-200 hover:text-white">
+              네이버 카페 바로가기 <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
+          </Button>
         </div>
       </section>
 

@@ -81,7 +81,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             <div className="flex flex-col gap-4">
               <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50">
                 <iframe
@@ -124,6 +124,24 @@ export default function Home() {
                 ></iframe>
               </div>
               <h3 className="font-semibold text-lg text-center text-foreground">유통분야 자동화 업그레이드버전</h3>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-border shadow-lg bg-black/50 flex justify-center">
+                <iframe
+                  className="h-full aspect-[9/16] max-w-full"
+                  src="https://www.youtube.com/embed/AJOBk6G0D9U"
+                  title="Driver Hub — 대리기사 콜 판정 (Shorts)"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <h3 className="font-semibold text-lg text-center text-foreground text-balance">
+                <span className="block">Driver Hub — 대리기사 콜 판정</span>
+                <span className="block">(Shorts)</span>
+              </h3>
             </div>
           </div>
         </div>
