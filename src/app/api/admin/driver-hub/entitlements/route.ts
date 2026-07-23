@@ -47,6 +47,10 @@ function isAuthorized(req: Request) {
   return Boolean(adminToken && token && token === adminToken);
 }
 
+// ★야간근무 원칙 (개별 승인/연장 시 반드시 준수)
+// 대리기사는 야간 근무자이므로 만료를 달력 날짜(자정)로 설정하면 근무 중 앱이 잠긴다.
+// 개별 연장 시에도 expiresAt 는 "근무 종료 후 = 다음날 정오"(예: 2026-09-30 근무자 →
+// 2026-10-01T12:00:00+09:00) 기준으로 넘길 것. (조회 API의 전역 정책과 동일 원칙)
 function isValidExpiresAt(value: unknown) {
   if (value === undefined || value === null || value === "") return true;
   if (typeof value !== "string") return false;

@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
-import ContactForm from "@/app/contact/ContactForm";
 import {
   ArrowRight,
   Bot,
@@ -22,12 +21,17 @@ import {
   Smartphone,
   Navigation,
   Sparkles,
-  Download,
   Copy
 } from "lucide-react";
 
 // ==========================================
 
+// 베타 신청 구글 폼 (새 탭). 폼 주소 변경 시 이 상수만 수정.
+const BETA_APPLY_FORM_URL = "https://forms.gle/tGaJG14hH8YG9rVX7";
+
+// 베타 기간 무료 운영 중 — 정식 요금표(가격/계좌 정보) 렌더링 보류.
+// 정식 요금 공지 시 true 로 되돌리면 기존 요금 카드가 그대로 복구됨.
+const SHOW_PRICING_PLANS = false;
 
 type ChatMessage = {
   sender: "ai" | "user";
@@ -408,10 +412,25 @@ export default function DriverHubPage() {
             </div>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">베타 요금 안내</h2>
             <p className="text-slate-400 break-keep max-w-xl mx-auto text-sm">
-              초기 베타 참여자분들을 위한 한정 혜택과 투명한 가격 정책을 안내해 드립니다.
+              현재 8월 한 달 무료 베타를 진행하고 있습니다. 정식 요금은 베타 기간 중 별도 공지할 예정입니다.
             </p>
           </div>
 
+          {/* 무료 베타 안내 (정식 요금표 대체) */}
+          <div className="max-w-2xl mx-auto bg-blue-950/20 border border-blue-500/20 rounded-3xl p-8 md:p-10 text-center">
+            <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-950/50 px-4 py-1.5 text-xs text-blue-400 font-semibold mb-5 tracking-widest uppercase">
+              Free Beta
+            </div>
+            <p className="text-lg md:text-xl font-bold text-white leading-relaxed break-keep mb-2">
+              현재 8월 한 달 무료 베타를 진행하고 있습니다.
+            </p>
+            <p className="text-sm md:text-base text-slate-400 leading-relaxed break-keep">
+              정식 요금은 베타 기간 중 별도 공지할 예정입니다.
+            </p>
+          </div>
+
+          {/* 정식 요금표(가격/계좌 정보) — 베타 기간 렌더링 보류. SHOW_PRICING_PLANS=true 로 복구. */}
+          {SHOW_PRICING_PLANS && (
           <div className="grid md:grid-cols-12 gap-8 items-stretch">
             {/* Price Card (5 cols) */}
             <div className="md:col-span-5 bg-gradient-to-b from-slate-900/60 to-slate-900/40 border-2 border-blue-500/40 rounded-3xl p-8 flex flex-col justify-between shadow-xl relative overflow-hidden">
@@ -520,6 +539,7 @@ export default function DriverHubPage() {
               </div>
             </div>
           </div>
+          )}
         </div>
       </section>
 
@@ -578,7 +598,7 @@ export default function DriverHubPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-extrabold tracking-tight text-white mb-4">서비스 이용 절차</h2>
             <p className="text-slate-400 break-keep max-w-xl mx-auto text-sm">
-              베타 승인 후 앱 설치부터 실제 운행 적용 및 피드백 제보까지의 6단계 프로세스입니다.
+              테스트 참여 신청 후 앱 설치부터 실제 운행 적용 및 피드백 제보까지의 6단계 프로세스입니다.
             </p>
           </div>
 
@@ -589,8 +609,8 @@ export default function DriverHubPage() {
             <div className="relative z-10 flex gap-4 items-start">
               <div className="absolute -left-10 top-0.5 w-6 h-6 rounded-full bg-slate-950 border-2 border-blue-500 flex items-center justify-center font-bold text-xs text-blue-400">1</div>
               <div>
-                <h4 className="font-bold text-lg text-white mb-1">앱 다운로드 및 설치</h4>
-                <p className="text-slate-400 text-sm break-keep">베타 테스터에 당첨되신 후 안내받으신 다운로드 파일(APK)을 안드로이드 폰에 설치합니다.</p>
+                <h4 className="font-bold text-lg text-white mb-1">구글 플레이스토어에서 설치</h4>
+                <p className="text-slate-400 text-sm break-keep">신청하신 구글 계정(Gmail)으로 테스트 참여 링크를 받으신 뒤, 링크에서 ‘테스터 되기’를 누르고 플레이스토어에서 Driver Hub를 설치합니다.</p>
               </div>
             </div>
 
@@ -642,125 +662,99 @@ export default function DriverHubPage() {
         </div>
       </section>
 
-      {/* APK Download & Guide Section */}
+      {/* Install Guide Section (Play Store 비공개 테스트) */}
       <section id="download" className="section-padding container-custom bg-slate-950 border-b border-slate-900">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-4">APK 다운로드 및 설치 안내</h2>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white mb-4">설치 안내</h2>
             <p className="text-slate-400 break-keep max-w-xl mx-auto text-sm">
-              QAgent Driver Hub APK는 무료 베타 신청 승인 후 개별 안내됩니다.<br />
-              무단 배포를 막고 현장 피드백을 정확히 받기 위해 신청자 확인 후 다운로드 링크와 설치 가이드를 제공합니다.
+              QAgent Driver Hub는 구글 플레이스토어 비공개 테스트로 제공됩니다.<br />
+              아래 순서대로 진행하시면 앱을 설치할 수 있습니다.
             </p>
           </div>
 
           <div className="grid md:grid-cols-12 gap-8 items-stretch">
-            {/* Download Card */}
-            <div className="md:col-span-5 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-3">
-                  <Download className="w-4 h-4" />
-                  <span>무료 베타 승인 후 제공</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">QAgent Driver Hub</h3>
-                
-                <ul className="space-y-3.5 text-xs text-slate-400 border-b border-slate-800 pb-5 mb-5 font-mono">
-                  <li className="flex justify-between">
-                    <span>버전</span>
-                    <span className="text-slate-200">베타 승인 후 안내</span>
+            {/* Install Steps */}
+            <div className="md:col-span-7 bg-slate-900/10 border border-slate-900 rounded-3xl p-8 flex flex-col justify-between">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-white">설치 순서</h3>
+                <ul className="space-y-3.5 text-xs md:text-sm text-slate-300 leading-relaxed break-keep">
+                  <li className="flex gap-3">
+                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">1</span>
+                    <p>아래 <strong>신청 폼</strong>을 작성해 주세요. 구글 계정(Gmail)이 필요합니다.</p>
                   </li>
-                  <li className="flex justify-between">
-                    <span>업데이트 날짜</span>
-                    <span className="text-slate-200">베타 운영 중</span>
+                  <li className="flex gap-3">
+                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">2</span>
+                    <p>등록이 완료되면 <strong>테스트 참여 링크</strong>를 보내드립니다.</p>
                   </li>
-                  <li className="flex justify-between">
-                    <span>파일 크기</span>
-                    <span className="text-slate-200">승인 후 안내</span>
+                  <li className="flex gap-3">
+                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">3</span>
+                    <p>링크를 휴대폰에서 열고 <strong>“테스터 되기”</strong>를 눌러주세요.</p>
                   </li>
-                  <li className="flex justify-between">
-                    <span>상태</span>
-                    <span className="text-amber-500 font-bold">베타 승인 후 제공</span>
+                  <li className="flex gap-3">
+                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">4</span>
+                    <p>구글 플레이스토어에서 <strong>Driver Hub</strong>를 설치합니다.</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold shrink-0">5</span>
+                    <div>
+                      <p>앱 실행 후 <strong>두 가지 권한</strong>을 허용해 주세요.</p>
+                      <ul className="mt-2 space-y-1.5 text-xs text-slate-400">
+                        <li className="flex gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                          <span><strong className="text-slate-300">접근성</strong> (콜 화면 인식)</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                          <span><strong className="text-slate-300">다른 앱 위에 표시</strong> (화면 위 불빛 표시)</span>
+                        </li>
+                      </ul>
+                    </div>
                   </li>
                 </ul>
-
-                <div className="text-xs font-semibold text-slate-300 mb-2">기사 주안점</div>
-                <p className="text-[11px] text-slate-400 leading-relaxed mb-6 break-keep">
-                  - 카카오 대리 / 티맵 대리 콜 목록 신호등 분석<br/>
-                  - 리스트형 및 수락 팝업 신호 분석 연동<br/>
-                  - 실시간 500m 반경 콜 가능성 지표 제공 (데모)
-                </p>
               </div>
 
-              <div className="space-y-3">
-                <button 
-                  disabled 
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800 text-slate-500 border border-slate-700 font-bold h-12 text-sm cursor-not-allowed"
+              <div className="mt-8">
+                <a
+                  href="#contact-form"
+                  className="w-full flex items-center justify-center rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black h-12 text-sm transition-colors"
                 >
-                  베타 신청 후 다운로드 안내 받기
-                </button>
-                <a 
-                  href="#contact-form" 
-                  className="w-full flex items-center justify-center rounded-xl bg-transparent border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-semibold h-10 text-xs transition-colors"
-                >
-                  베타 테스터 신청하기
+                  베타 신청하러 가기
                 </a>
               </div>
             </div>
 
-            {/* Quick Installation Reference */}
-            <div className="md:col-span-7 bg-slate-900/10 border border-slate-900 rounded-3xl p-8 flex flex-col justify-between">
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-white">이용 및 설치 흐름</h3>
-                <ul className="space-y-3 text-xs md:text-sm text-slate-400 leading-relaxed break-keep">
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">1</span>
-                    <p><strong>무료 베타 신청:</strong> 하단 신청 폼을 통해 신청서를 제출합니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">2</span>
-                    <p><strong>QAgentLabs 확인 및 개별 연락:</strong> 심사를 거쳐 기사님께 개별 승인 전화를 드립니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">3</span>
-                    <p><strong>APK 다운로드 링크 수신:</strong> 다운로드 경로와 개별 비밀번호를 전송받습니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">4</span>
-                    <p><strong>Android 보안 설정 확인:</strong> '출처를 알 수 없는 앱 설치 ＞ 이 출처 허용'을 켭니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">5</span>
-                    <p><strong>접근성 권한 허용:</strong> 콜 텍스트 식별을 위해 스마트폰 접근성 설정을 활성화합니다. (자동 조작 기능 무관)</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">6</span>
-                    <p><strong>오버레이 권한 허용:</strong> 다른 앱 위에 표시 권한을 허용하여 신호등 창을 띄웁니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">7</span>
-                    <p><strong>카카오/티맵 콜 화면에서 신호등 확인:</strong> 기사용 앱에서 6단계 불빛과 표시 없음 상태가 정상 작동하는지 주행 확인합니다.</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="h-5 w-5 rounded-full bg-slate-800 text-slate-300 text-xs flex items-center justify-center font-bold shrink-0">8</span>
-                    <p><strong>피드백 제보:</strong> 콜 판정이 이상하거나 신호가 안 뜨는 경우 캡처와 함께 하단 폼으로 의견을 전달합니다.</p>
-                  </li>
-                </ul>
+            {/* Notes */}
+            <div className="md:col-span-5 bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 flex flex-col shadow-xl">
+              <div className="flex items-center gap-2 text-xs font-bold text-amber-500 mb-4">
+                <AlertTriangle className="w-4 h-4" />
+                <span>신청 전 꼭 확인해 주세요</span>
               </div>
+              <ul className="space-y-4 text-sm text-slate-400 leading-relaxed break-keep">
+                <li className="flex gap-2.5">
+                  <Smartphone className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                  <p><strong className="text-slate-200">안드로이드 전용</strong> (삼성 갤럭시 권장). iPhone은 지원하지 않습니다.</p>
+                </li>
+                <li className="flex gap-2.5">
+                  <Shield className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                  <p>신청하신 <strong className="text-slate-200">구글 계정으로만</strong> 설치할 수 있습니다. 휴대폰에서 실제 사용 중인 계정을 적어주세요.</p>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Internal ContactForm Section */}
+      {/* Beta Apply (Google Form) Section */}
       <section id="contact-form" className="section-padding container-custom bg-slate-950 border-b border-slate-900">
         <div className="max-w-xl mx-auto">
           <div className="bg-slate-900/50 border border-slate-800 p-8 md:p-12 rounded-3xl shadow-lg relative overflow-hidden">
             <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-4">무료 베타 신청 및 문의</h2>
             
             <div className="bg-slate-950/60 border border-slate-900 rounded-2xl p-5 mb-8 text-xs text-slate-400 space-y-3 leading-relaxed break-keep">
-              <div className="font-semibold text-slate-300 text-sm mb-1">📋 유형별 안내 사항</div>
-              <div>• <strong>무료 베타 신청:</strong> 무료 베타 신청서를 남겨주시면 확인 후 APK 설치 안내를 개별 연락드립니다. (자동수락/자동클릭은 제공하지 않습니다)</div>
-              <div>• <strong>오류/피드백 제보:</strong> 오류 화면 캡처, 콜 화면에서 신호가 뜨지 않은 상황, 판정이 이상했던 내용을 남겨주시면 개선에 참고하겠습니다. (캡처 파일은 회신 안내 후 전달받겠습니다)</div>
-              <div>• <strong>일반 문의사항:</strong> 지원 기종, 설치 방법, 카카오·티맵 지원 범위, 권한 설정 관련 문의를 남겨주세요.</div>
+              <div className="font-semibold text-slate-300 text-sm mb-1">📋 안내 사항</div>
+              <div>• <strong>무료 베타 신청:</strong> 아래 ‘베타 신청하기’ 버튼으로 신청서를 작성해 주시면, 등록 후 테스트 참여 링크를 보내드립니다. (자동수락/자동클릭은 제공하지 않습니다)</div>
+              <div>• <strong>오류/피드백·일반 문의:</strong> 지원 기종, 설치 방법, 카카오·티맵 지원 범위, 권한 설정, 신호 오류 제보 등은 신청서의 문의 항목 또는 네이버 카페로 남겨주세요.</div>
               <div>
                 • 신청 후 설치와 사용법은{" "}
                 <a href="https://cafe.naver.com/qagentlabs" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-semibold underline underline-offset-4">
@@ -770,8 +764,19 @@ export default function DriverHubPage() {
               </div>
             </div>
 
-            <div className="text-slate-200 text-left">
-              <ContactForm source="driver-hub" defaultInquiryType="beta-apply" />
+            <div className="text-center">
+              <p className="text-sm text-slate-400 mb-4 break-keep">
+                신청 시 사용하시는 구글 계정(Gmail)이 필요합니다.
+              </p>
+              <a
+                href={BETA_APPLY_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black h-14 px-8 text-base transition-colors"
+              >
+                베타 신청하기
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
           </div>
         </div>

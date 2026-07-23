@@ -3,6 +3,33 @@ import { NextResponse } from "next/server";
 
 const VALID_PLANS = new Set(["BASIC", "STANDARD", "PRO_PLUS", "PREMIUM", "VIP", "MASTER"]);
 
+// ============================================================
+// 전역 자동승인 정책 (2026년 8월 무료 베타 / 플레이스토어 비공개 테스트)
+// - 미등록 installId도 approved:true + 전역 만료일을 반환 → 참여 링크로 설치한
+//   기사 전원이 승인 절차 없이 즉시 사용.
+// - 개별 레코드의 만료일은 전역값과 비교해 "더 늦은 쪽"을 사용(floor).
+//   저장된 KV 값은 변경하지 않고 조회 시점에만 계산하므로 개별 승인/연장은 보존됨.
+// - isBlocked 레코드는 최우선으로 차단 유지(악용자 차단 수단).
+// - 9월 원복: DRIVER_HUB_AUTO_APPROVE 를 false 로만 바꾸면 개별 승인 체계로 복귀.
+//   (미등록 = 잠금, 개별 결제자 레코드만 통과)
+// ============================================================
+const DRIVER_HUB_AUTO_APPROVE = true;
+// 앱 파싱 형식 yyyy-MM-dd'T'HH:mm:ssXXX (KST).
+// ★야간근무 원칙: 대리기사는 야간 근무자이므로 만료를 달력 날짜(자정)로 잡으면
+//   8/31 밤 근무 중인 기사가 자정에 앱이 잠겨 그날 영업을 망친다.
+//   만료는 반드시 "근무 종료 후 = 다음날 정오" 기준으로 설정한다.
+//   → 8월 베타는 9/1 12:00(KST)에 만료. 9월 이후 결제자 개별 연장에도 동일 원칙 적용.
+const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-09-01T12:00:00+09:00";
+
+// 두 만료일 문자열 중 더 늦은 값을 원본 형식 그대로 반환. 파싱 불가/빈 값은 과거로 취급.
+function laterExpiresAt(a: string, b: string): string {
+  const ta = Date.parse(a);
+  const tb = Date.parse(b);
+  const va = Number.isFinite(ta) ? ta : -Infinity;
+  const vb = Number.isFinite(tb) ? tb : -Infinity;
+  return va >= vb ? a : b;
+}
+
 type DriverPlan = "BASIC" | "STANDARD" | "PRO_PLUS" | "PREMIUM" | "VIP" | "MASTER";
 
 type EntitlementRecord = {
@@ -89,8 +116,30 @@ export async function GET(req: Request) {
   try {
     const kv = getKvClient();
     const saved = await kv.get<EntitlementRecord>(entitlementKey(installId));
+    const hasRecord = saved !== null && saved !== undefined;
+    const record = normalizeEntitlement(saved, installId);
 
-    return NextResponse.json(normalizeEntitlement(saved, installId));
+    // 1) 개별 차단(isBlocked)은 자동승인보다 우선 — 저장된 차단 상태를 그대로 반환.
+    if (record.isBlocked) {
+      return NextResponse.json(record);
+    }
+
+    // 2) 전역 자동승인 ON: 미등록/일반 기기 모두 승인 + 전역 만료일(개별값과 floor 비교).
+    if (DRIVER_HUB_AUTO_APPROVE) {
+      return NextResponse.json({
+        installId,
+        approved: true,
+        plan: record.plan,
+        expiresAt: laterExpiresAt(record.expiresAt, DRIVER_HUB_GLOBAL_EXPIRES_AT),
+        isBlocked: false,
+        graceHours: record.graceHours,
+        // 미등록 기기의 기본 안내문("승인되지 않은...")은 노출하지 않음. 개별 지정값만 유지.
+        serverMessage: hasRecord ? record.serverMessage : "",
+      });
+    }
+
+    // 3) 전역 자동승인 OFF(9월 이후): 개별 승인 체계로 복귀 — 저장된 레코드/기본(잠금) 반환.
+    return NextResponse.json(record);
   } catch (error) {
     console.error("[DRIVER_HUB_ENTITLEMENT] GET failed", error);
     return NextResponse.json(
