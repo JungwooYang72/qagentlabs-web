@@ -21,6 +21,13 @@ const DRIVER_HUB_AUTO_APPROVE = true;
 //   → 8월 베타는 9/1 12:00(KST)에 만료. 9월 이후 결제자 개별 연장에도 동일 원칙 적용.
 const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-09-01T12:00:00+09:00";
 
+type DriverPlan = "BASIC" | "STANDARD" | "PRO_PLUS" | "PREMIUM" | "VIP" | "MASTER";
+
+// 8월 무료 베타는 전원 카카오+티맵 모두 사용 → STANDARD(2개 플랫폼) 적용.
+// 개별 레코드의 plan(basic 등)도 8월엔 이 값으로 덮는다(전원 카카오+티맵 정책).
+// 9월 유료 전환(AUTO_APPROVE=false) 시엔 개별 레코드의 결제 plan으로 복귀.
+const DRIVER_HUB_GLOBAL_PLAN: DriverPlan = "STANDARD";
+
 // 두 만료일 문자열 중 더 늦은 값을 원본 형식 그대로 반환. 파싱 불가/빈 값은 과거로 취급.
 function laterExpiresAt(a: string, b: string): string {
   const ta = Date.parse(a);
@@ -29,8 +36,6 @@ function laterExpiresAt(a: string, b: string): string {
   const vb = Number.isFinite(tb) ? tb : -Infinity;
   return va >= vb ? a : b;
 }
-
-type DriverPlan = "BASIC" | "STANDARD" | "PRO_PLUS" | "PREMIUM" | "VIP" | "MASTER";
 
 type EntitlementRecord = {
   installId: string;
@@ -129,7 +134,8 @@ export async function GET(req: Request) {
       return NextResponse.json({
         installId,
         approved: true,
-        plan: record.plan,
+        // 8월 전원 dual: 개별 레코드 plan도 전역값으로 덮음(정책상 전원 카카오+티맵).
+        plan: DRIVER_HUB_GLOBAL_PLAN,
         expiresAt: laterExpiresAt(record.expiresAt, DRIVER_HUB_GLOBAL_EXPIRES_AT),
         isBlocked: false,
         graceHours: record.graceHours,
