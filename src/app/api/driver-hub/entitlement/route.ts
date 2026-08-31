@@ -4,13 +4,13 @@ import { NextResponse } from "next/server";
 const VALID_PLANS = new Set(["BASIC", "STANDARD", "PRO_PLUS", "PREMIUM", "VIP", "MASTER"]);
 
 // ============================================================
-// 전역 자동승인 정책 (2026년 8월 무료 베타 / 플레이스토어 비공개 테스트)
+// 전역 자동승인 정책 (2026년 8~9월 무료 베타 / 플레이스토어 비공개 테스트)
 // - 미등록 installId도 approved:true + 전역 만료일을 반환 → 참여 링크로 설치한
 //   기사 전원이 승인 절차 없이 즉시 사용.
 // - 개별 레코드의 만료일은 전역값과 비교해 "더 늦은 쪽"을 사용(floor).
 //   저장된 KV 값은 변경하지 않고 조회 시점에만 계산하므로 개별 승인/연장은 보존됨.
 // - isBlocked 레코드는 최우선으로 차단 유지(악용자 차단 수단).
-// - 9월 원복: DRIVER_HUB_AUTO_APPROVE 를 false 로만 바꾸면 개별 승인 체계로 복귀.
+// - 10월 원복: DRIVER_HUB_AUTO_APPROVE 를 false 로만 바꾸면 개별 승인 체계로 복귀.
 //   (미등록 = 잠금, 개별 결제자 레코드만 통과)
 // ============================================================
 const DRIVER_HUB_AUTO_APPROVE = true;
@@ -18,8 +18,8 @@ const DRIVER_HUB_AUTO_APPROVE = true;
 // ★야간근무 원칙: 대리기사는 야간 근무자이므로 만료를 달력 날짜(자정)로 잡으면
 //   8/31 밤 근무 중인 기사가 자정에 앱이 잠겨 그날 영업을 망친다.
 //   만료는 반드시 "근무 종료 후 = 다음날 정오" 기준으로 설정한다.
-//   → 8월 베타는 9/1 12:00(KST)에 만료. 9월 이후 결제자 개별 연장에도 동일 원칙 적용.
-const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-09-01T12:00:00+09:00";
+//   → 8~9월 무료 베타는 10/1 12:00(KST)에 만료(9월 연장). 이후 결제자 개별 연장에도 동일 원칙 적용.
+const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-10-01T12:00:00+09:00";
 
 type DriverPlan = "BASIC" | "STANDARD" | "PRO_PLUS" | "PREMIUM" | "VIP" | "MASTER";
 
