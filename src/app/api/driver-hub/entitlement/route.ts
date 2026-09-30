@@ -19,7 +19,8 @@ const DRIVER_HUB_AUTO_APPROVE = true;
 //   8/31 밤 근무 중인 기사가 자정에 앱이 잠겨 그날 영업을 망친다.
 //   만료는 반드시 "근무 종료 후 = 다음날 정오" 기준으로 설정한다.
 //   → 8~9월 무료 베타는 10/1 12:00(KST)에 만료(9월 연장). 이후 결제자 개별 연장에도 동일 원칙 적용.
-const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-10-01T12:00:00+09:00";
+//   → 공개테스트 무료 기간 연장: 2026-10-16 11:59:59(KST) 종료, 유료 전환 예정 10/16 12:00(KST).
+const DRIVER_HUB_GLOBAL_EXPIRES_AT = "2026-10-16T11:59:59+09:00";
 
 type DriverPlan = "BASIC" | "STANDARD" | "PRO_PLUS" | "PREMIUM" | "VIP" | "MASTER";
 
