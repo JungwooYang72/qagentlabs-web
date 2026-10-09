@@ -108,7 +108,7 @@ export default function DriverHubPage() {
                 <CardHeader className="p-5 pb-4"><CardTitle className="text-white text-xl">앱 {plan.apps}개 이용</CardTitle><p className="text-sm text-slate-400 mt-2">{plan.selection}</p></CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-1 gap-4 p-5 pt-0 items-center">
                   <div><p className="text-xs text-slate-400 mb-2">정상 월요금</p><p className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white whitespace-nowrap">{plan.monthly}</p></div>
-                  <div className="rounded-xl border border-yellow-400/20 bg-yellow-400/5 p-3"><p className="text-xs text-yellow-200 mb-2">10월 첫 이용료</p><p className="text-lg sm:text-2xl font-bold text-yellow-300 whitespace-nowrap">{plan.october}</p></div>
+                  <div className="rounded-xl border border-yellow-400/20 bg-yellow-400/5 p-2 sm:p-3"><p className="text-xs text-yellow-200 mb-2">10월 첫 이용료</p><p className="text-lg sm:text-2xl font-bold text-yellow-300 whitespace-nowrap">{plan.october}</p></div>
                 </CardContent>
               </Card>
             ))}
