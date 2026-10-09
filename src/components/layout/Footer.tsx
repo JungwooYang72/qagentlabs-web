@@ -20,7 +20,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/driver-hub" className="hover:text-foreground transition-colors">
-                  Driver Hub Beta
+                  Driver Hub
                 </Link>
               </li>
               <li className="flex items-center gap-2">

@@ -210,19 +210,19 @@ export default function Home() {
                 </div>
                 <CardTitle className="text-xl">Driver Hub</CardTitle>
                 <CardDescription className="text-base mt-2">
-                  대리기사 콜 판단 보조 앱 & 이동 전략 솔루션
+                  대리기사 콜 정보 분석·선택 보조 앱
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4">
-                  카카오·티맵 대리 콜 화면 위에 YELLOW/GREEN 신호등을 표시하여 콜 판단을 돕고, 실시간 대기지 추천 및 이동 전략을 지원하는 안전한 보조도구입니다.
+                  카카오T·티맵·콜마너의 콜 정보를 분석해 설정한 조건에 맞는 콜을 표시합니다. 마커와 큰 오버레이를 기사님이 직접 눌러 콜 선택·확인·수락 단계를 진행합니다.
                 </p>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>카카오·티맵 콜 판단 신호등</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>카카오T·티맵·콜마너 지원</span>
                   </div>
                   <div className="flex items-center">
-                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>자동수락 아님 / 안전한 보조도구</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-border mr-2" /> <span>449 출시 · Google Play에서 설치</span>
                   </div>
                 </div>
               </CardContent>
