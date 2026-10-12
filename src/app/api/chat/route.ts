@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { classifyIntent, getRecommendation, retrieveContext, Intent, retrieveDriverContext } from "@/lib/rag/retriever";
+import { callbackAvailable } from "@/lib/machinecare-callback-store";
 import { MACHINECARE_PROMPT, machineCareGuard } from "@/lib/machinecare-chat";
 import { isMachineCareInquiry, MACHINECARE_INQUIRIES } from "@/lib/machinecare";
 
@@ -86,9 +87,10 @@ export async function POST(req: Request) {
     if (service === "machinecare") {
       const inquiry = body.inquiry ?? "pc";
       if (!isMachineCareInquiry(inquiry)) return NextResponse.json({ error: "문의 구분을 확인해 주세요." }, { status: 400 });
-      const guarded = machineCareGuard(lastUserMessage, inquiry, messages.filter(m => m.role === "user").length === 1);
+      const acceptingCallbacks = await callbackAvailable();
+      const guarded = machineCareGuard(lastUserMessage, inquiry, messages.filter(m => m.role === "user").length === 1, acceptingCallbacks);
       if (guarded) return NextResponse.json({ reply: guarded, sources: ["MachineCare 공개 안내"], service });
-      systemPrompt = MACHINECARE_PROMPT + "\n[현재 상담 분기]\n" + MACHINECARE_INQUIRIES[inquiry];
+      systemPrompt = MACHINECARE_PROMPT + "\n[현재 접수 상태]\n" + (acceptingCallbacks ? "콜백 접수 가능. 문의 양식에서 5개 필수 정보를 확인한 뒤 최종 제출합니다. 본부에서 확인 후 담당자 수동 배정. 방문 예약 확정 아님." : "콜백 접수 준비 중. 문의 안내에서 검토한 메모로 이메일을 작성하고 메일 앱에서 직접 전송합니다. 웹 접수 성공으로 안내하지 않습니다.") + "\n[현재 상담 분기]\n" + MACHINECARE_INQUIRIES[inquiry];
       sources = ["MachineCare 공개 안내"];
     } else if (service === "driver") {
       const driver = retrieveDriverContext(lastUserMessage);

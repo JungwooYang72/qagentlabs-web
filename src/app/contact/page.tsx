@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import ContactForm from "./ContactForm";
+import { callbackAvailable } from "@/lib/machinecare-callback-store";
 import MachineCareInquiry from "./MachineCareInquiry";
 import { isMachineCareInquiry, MACHINECARE_CONTACT } from "@/lib/machinecare";
 import { Mail, Building, Clock } from "lucide-react";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 export default async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
   const machinecare = params.service === "machinecare";
+  const acceptingCallbacks = machinecare && await callbackAvailable();
   const inquiry = isMachineCareInquiry(params.inquiry) ? params.inquiry : "pc";
   return (
     <div className="flex flex-col w-full pb-16">
@@ -22,7 +24,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             {machinecare ? "MachineCare 상담 문의" : "Contact Us"}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl break-keep">
-            {machinecare ? "챗봇에서 정리한 증상을 이메일로 문의해 주세요. 온라인 접수·콜백 요청은 준비 중이며, 방문은 담당 기사와 협의한 후 확정됩니다." : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
+            {machinecare ? (acceptingCallbacks ? "내용을 확인한 뒤 상담을 요청해 주세요. 본부에서 확인 후 담당자를 배정하며, 방문은 담당 기사와 통화해 협의한 후 확정됩니다." : "챗봇에서 정리한 증상을 이메일로 문의해 주세요. 콜백 접수는 준비 중이며, 방문은 담당 기사와 협의한 후 확정됩니다.") : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
           </p>
         </div>
       </section>
@@ -30,7 +32,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
       <section className="section-padding container-custom max-w-5xl grid md:grid-cols-5 gap-12">
         <div className="md:col-span-3 min-w-0">
           <div className={"bg-background rounded-xl border border-border shadow-sm " + (machinecare ? "p-5 sm:p-8" : "p-8")}>
-            <h2 className="text-2xl font-bold mb-6">{machinecare ? "이메일 문의 안내" : "Business Inquiry"}</h2>
+            <h2 className="text-2xl font-bold mb-6">{machinecare ? (acceptingCallbacks ? "콜백 상담 요청" : "이메일 문의 안내") : "Business Inquiry"}</h2>
             {machinecare ? <MachineCareInquiry initialInquiry={inquiry} /> : <ContactForm />}
           </div>
         </div>
