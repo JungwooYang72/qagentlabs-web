@@ -19,4 +19,4 @@ export function parseCallbackInput(value: unknown): CallbackInput | null {
 export type CallbackRecord = CallbackInput & {
   id: string; createdAt: string; expiresAt: string; verification: boolean;
 };
-export type CallbackAssignment = { role: "primary" | "backup"; email: string; assignedAt: string };
+export type CallbackAssignment = { role: "primary" | "backup"; assignedAt: string };

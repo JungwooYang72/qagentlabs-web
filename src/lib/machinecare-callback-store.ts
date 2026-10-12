@@ -10,11 +10,9 @@ export const validRequestId = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9
 export function callbackConfig() {
   const get = (key: string) => process.env[key]?.trim() ?? "";
   return {
-    url: get("KV_REST_API_URL"), token: get("KV_REST_API_TOKEN"),
+    url: get("MACHINECARE_KV_REST_API_URL"), token: get("MACHINECARE_KV_REST_API_TOKEN"),
     adminToken: get("MACHINECARE_CALLBACK_ADMIN_TOKEN"),
     hqEmail: get("MACHINECARE_CALLBACK_HQ_EMAIL"),
-    primaryEmail: get("MACHINECARE_CALLBACK_PRIMARY_EMAIL"),
-    backupEmail: get("MACHINECARE_CALLBACK_BACKUP_EMAIL"),
     from: get("MACHINECARE_CALLBACK_FROM_EMAIL"), resendKey: get("RESEND_API_KEY"),
     enabled: get("MACHINECARE_CALLBACK_ENABLED") === "true",
     verifiedId: get("MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID"),
@@ -23,8 +21,7 @@ export function callbackConfig() {
 export function callbackConfigured() {
   const c = callbackConfig();
   return Boolean(c.url && c.token && c.adminToken.length >= 32 && c.resendKey &&
-    [c.hqEmail, c.primaryEmail, c.backupEmail, c.from].every(value => emailPattern.test(value)) &&
-    c.primaryEmail !== c.backupEmail);
+    [c.hqEmail, c.from].every(value => emailPattern.test(value)));
 }
 export function callbackKv() {
   const c = callbackConfig();
@@ -41,7 +38,7 @@ export function callbackAuthorized(req: Request) {
 }
 function verificationFingerprint() {
   const c = callbackConfig();
-  return createHash("sha256").update(JSON.stringify([c.url, c.adminToken, c.hqEmail, c.primaryEmail, c.backupEmail, c.from, c.resendKey])).digest("hex");
+  return createHash("sha256").update(JSON.stringify([c.url, c.token, c.adminToken, c.hqEmail, c.from, c.resendKey])).digest("hex");
 }
 export async function callbackAvailable() {
   const c = callbackConfig();
@@ -109,12 +106,10 @@ export async function listCallbacks() {
 export async function assignCallback(id: string, role: "primary" | "backup") {
   const item = await readCallback(id);
   if (!item || item.record.verification) return false;
-  const c = callbackConfig();
-  const email = role === "primary" ? c.primaryEmail : c.backupEmail;
-  if (!emailPattern.test(email)) return false;
+  if (!["primary", "backup"].includes(role)) return false;
   const ttl = Math.floor((Date.parse(item.record.expiresAt) - Date.now()) / 1000);
   if (ttl <= 0) return false;
-  await callbackKv().set(PREFIX + "assignment:" + id, { role, email, assignedAt: new Date().toISOString() }, { ex: ttl });
+  await callbackKv().set(PREFIX + "assignment:" + id, { role, assignedAt: new Date().toISOString() }, { ex: ttl });
   return true;
 }
 export async function confirmCallbackVerification(id: string) {

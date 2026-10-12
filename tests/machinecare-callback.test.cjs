@@ -6,7 +6,7 @@ const path = require("node:path");
 const { randomUUID } = require("node:crypto");
 const ts = require("typescript");
 const root = path.resolve(__dirname, "..");
-const keys = ["KV_REST_API_URL", "KV_REST_API_TOKEN", "MACHINECARE_CALLBACK_ADMIN_TOKEN",
+const keys = ["KV_REST_API_URL", "KV_REST_API_TOKEN", "MACHINECARE_KV_REST_API_URL", "MACHINECARE_KV_REST_API_TOKEN", "MACHINECARE_CALLBACK_ADMIN_TOKEN",
   "MACHINECARE_CALLBACK_HQ_EMAIL", "MACHINECARE_CALLBACK_PRIMARY_EMAIL", "MACHINECARE_CALLBACK_BACKUP_EMAIL",
   "MACHINECARE_CALLBACK_FROM_EMAIL", "RESEND_API_KEY", "MACHINECARE_CALLBACK_ENABLED", "MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID"];
 function harness() {
@@ -45,9 +45,8 @@ function harness() {
   }
   const token = "synthetic-test-token-never-used-in-production";
   const configure = () => Object.assign(process.env, {
-    KV_REST_API_URL: "https://synthetic-storage.example.com", KV_REST_API_TOKEN: "synthetic-kv",
+    MACHINECARE_KV_REST_API_URL: "https://synthetic-storage.example.com", MACHINECARE_KV_REST_API_TOKEN: "synthetic-kv",
     MACHINECARE_CALLBACK_ADMIN_TOKEN: token, MACHINECARE_CALLBACK_HQ_EMAIL: "hq@example.com",
-    MACHINECARE_CALLBACK_PRIMARY_EMAIL: "primary@example.com", MACHINECARE_CALLBACK_BACKUP_EMAIL: "backup@example.com",
     MACHINECARE_CALLBACK_FROM_EMAIL: "sender@example.com", RESEND_API_KEY: "synthetic-resend",
   });
   return { db, ttl, emails, configure, token,
@@ -87,7 +86,10 @@ test("closed intake and unauthorized admin cannot store or expose customer infor
     assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...input, requestId: randomUUID(), consent: true }))).status, 503);
     for (const method of ["GET", "POST", "PATCH"]) assert.equal((await h.admin[method](request("/api/admin/machinecare/requests", method, method === "GET" ? undefined : {}))).status, 401);
     assert.equal((await h.api.POST(new Request("http://localhost:3111/api/machinecare/callback", { method: "POST", headers: { Origin: "https://www.qagentlabs.com", Host: "www.qagentlabs.com" }, body: "{}" }))).status, 503);
+    process.env.KV_REST_API_URL = "https://driver-storage.example.com"; process.env.KV_REST_API_TOKEN = "driver-token";
+    assert.equal(h.store.callbackConfig().url, "", "Driver Hub storage must never be used as a callback fallback");
     h.configure();
+    assert.equal(h.store.callbackConfigured(), true, "technician emails are not required for HQ manual assignment");
     assert.equal((await h.admin.GET(request("/api/admin/machinecare/requests", "GET", undefined, { Authorization: "Bearer " + "é".repeat(h.token.length) }))).status, 401);
     assert.equal(h.db.size, 0);
   } finally { h.restore(); }
@@ -99,11 +101,11 @@ test("test save/read, explicit HQ confirmation and unchanged configuration gate 
     assert.equal((await response.json()).items[0].record.id, id);
     assert.equal(h.emails[0].data.to[0], "hq@example.com");
     assert(!h.emails[0].data.text.includes("000-0000"));
-    process.env.MACHINECARE_CALLBACK_PRIMARY_EMAIL = "changed@example.com";
-    assert.equal(await h.store.callbackAvailable(), false, "changing a real operator requires verification again");
+    process.env.MACHINECARE_CALLBACK_HQ_EMAIL = "changed@example.com";
+    assert.equal(await h.store.callbackAvailable(), false, "changing the HQ notification recipient requires verification again");
   } finally { h.restore(); }
 });
-test("reviewed submit is stored once, retry is idempotent, manual assignment uses server operators", async () => {
+test("reviewed submit is stored once, retry is idempotent, manual assignment records HQ-selected roles without technician accounts", async () => {
   const h = harness(); try {
     const { auth } = await open(h), id = randomUUID();
     const body = { ...input, requestId: id, consent: true, assignedTo: "attacker@example.com", verification: true };
@@ -117,7 +119,7 @@ test("reviewed submit is stored once, retry is idempotent, manual assignment use
     assert.equal(record.record.verification, false); assert.equal(record.assignment, null);
     for (const role of ["primary", "backup"]) {
       assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, role }, auth))).status, 200);
-      record = await h.store.readCallback(id); assert.equal(record.assignment.email, role + "@example.com");
+      record = await h.store.readCallback(id); assert.equal(record.assignment.role, role); assert.equal(record.assignment.email, undefined);
     }
     assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, role: "admin" }, auth))).status, 400);
     assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...body, summary: "different payload" }))).status, 502);
