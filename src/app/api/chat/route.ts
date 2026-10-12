@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { classifyIntent, getRecommendation, retrieveContext, Intent, retrieveDriverContext } from "@/lib/rag/retriever";
+import { MACHINECARE_PROMPT, machineCareGuard } from "@/lib/machinecare-chat";
+import { isMachineCareInquiry, MACHINECARE_INQUIRIES } from "@/lib/machinecare";
 
-// 드라이버용 시스템 프롬프트 정의
 const DRIVER_SYSTEM_PROMPT = `당신은 QAgent Driver Hub의 공식 안내 도우미입니다.
 QAgent Driver Hub 449는 Google Play 프로덕션 출시 버전이며 카카오T·티맵·콜마너를 지원합니다.
 Driver Hub는 콜 정보를 분석해 설정한 조건에 맞는 콜을 표시합니다. 표시된 마커·큰 오버레이는 기사님이 직접 누르는 버튼이며, 각 화면의 콜 선택·확인·수락 단계를 직접 진행합니다.
@@ -20,59 +21,7 @@ Google Play 설치·업데이트: https://play.google.com/store/apps/details?id=
 자동수락·자동 연속 클릭·배정 보장으로 설명하지 않습니다. 검증되지 않은 속도 배수·수입 증가 수치나 픽업거리 제한 확대·해제 권고를 하지 않습니다.
 공개 답변에 계좌번호, 관리자용 폼 편집 링크나 응답 시트 링크를 넣지 않습니다.`;
 
-export async function POST(req: Request) {
-    try {
-        const { messages, mode } = await req.json();
-
-        // 1. 유저의 마지막 메시지 추출
-        const lastUserMessage = [...messages].reverse().find(m => m.role === "user")?.content || "";
-
-        let systemPrompt = "";
-        let sources: string[] = [];
-        let recommendedPlan: string | null = null;
-
-        if (mode === "driver") {
-            // driver mode: business RAG를 우회(bypass)하고 드라이버용 로직 실행
-            const { contextString, sources: driverSources } = retrieveDriverContext(lastUserMessage);
-            systemPrompt = DRIVER_SYSTEM_PROMPT;
-            if (contextString) {
-                systemPrompt += `\n\n[참고 FAQ 지식베이스]\n${contextString}`;
-            }
-            sources = driverSources;
-        } else {
-            // mode가 없거나 mode === "automation" 등 기존 비즈니스 모드인 경우
-            // 2. Intent Classification 및 Recommendation 계산
-            const intent = classifyIntent(lastUserMessage);
-            recommendedPlan = getRecommendation(lastUserMessage);
-
-            // 3. Development Logging
-            if (process.env.NODE_ENV === 'development') {
-                console.log("\n--- [RAG DEBUG LOG] ---");
-                console.log(`[Query]: ${lastUserMessage}`);
-                console.log(`[Intent]: ${intent}`);
-                console.log(`[Recommended]: ${recommendedPlan || "None"}`);
-            }
-
-            // 4. 위험/무관 질문 사전 차단
-            if (intent === Intent.DANGER || intent === Intent.UNRELATED) {
-                if (process.env.NODE_ENV === 'development') console.log("[Blocked]: 정책 위반 또는 무관한 질문");
-                return NextResponse.json({ 
-                    reply: "QAgentLabs 업무 자동화 및 서비스 관련 문의에 집중해서 안내드리고 있습니다. 자동화하고 싶으신 업무를 알려주시면 도움을 드리겠습니다.",
-                    sources: [] 
-                });
-            }
-
-            // 5. Hybrid Retrieval & Dynamic Budget
-            const retrievalResult = retrieveContext(lastUserMessage, intent);
-            const contextString = retrievalResult.contextString;
-            sources = retrievalResult.sources;
-            
-            if (process.env.NODE_ENV === 'development') {
-                console.log(`[Sources]: ${sources.join(", ")}`);
-                console.log("-----------------------\n");
-            }
-
-            systemPrompt = `당신은 'QAgentLabs'의 공식 컨설턴트 겸 AI 어시스턴트입니다.
+const COMPANY_PROMPT = (contextString: string) => `당신은 'QAgentLabs'의 공식 컨설턴트 겸 AI 어시스턴트입니다.
 컨설턴트처럼 전문적으로 방향을 제시하며, 너무 사과하거나 회피하지 말고 짧고 명확하게 답변하세요.
 
 [답변 정책]
@@ -101,73 +50,83 @@ export async function POST(req: Request) {
 
 [회사 정보 Context]
 ${contextString ? contextString : "현재 관련된 상세 정보가 검색되지 않았습니다. 하지만 서비스 관련 질문이라면 가장 가까운 자동화 플랜 방향성을 제안해 주세요."}`;
-        }
 
-        // 6. 프론트엔드에서 넘어온 messages 배열을 조작하여 System Prompt 교체
-        let augmentedMessages: any[] = [];
-
-        if (mode === "driver") {
-            // driver mode: 클라이언트가 보낸 system role 메시지가 있을 시 완벽하게 필터링/무시
-            const filteredMessages = messages.filter((m: any) => m.role !== "system");
-            // 서버 내부의 systemPrompt(DRIVER_SYSTEM_PROMPT + RAG context)를 최상단에 주입
-            augmentedMessages = [
-                { role: "system", content: systemPrompt },
-                ...filteredMessages
-            ];
-        } else {
-            // 기존 자동화 챗봇 동작 유지
-            augmentedMessages = messages.map((m: any) => {
-                if (m.role === "system") {
-                    return { ...m, content: systemPrompt };
-                }
-                return m;
-            });
-
-            // (기존 시스템 프롬프트가 없을 경우 대비)
-            if (!augmentedMessages.some((m: any) => m.role === "system")) {
-                augmentedMessages.unshift({ role: "system", content: systemPrompt });
-            }
-        }
-
-        const apiKey = process.env.DEEPSEEK_API_KEY;
-
-        console.log("=========================================");
-        console.log("컴퓨터가 잡아챈 키:", apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : "🚨키를 아예 못 찾음 (undefined)🚨");
-        console.log("=========================================");
-
-        const apiUrl = "https://api.deepseek.com/chat/completions";
-
-        if (!apiKey) {
-            return NextResponse.json({ error: "서버가 API 키를 찾지 못했습니다." }, { status: 500 });
-        }
-
-        const response = await fetch(apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: "deepseek-chat",
-                messages: augmentedMessages,
-                temperature: 0.3, // Hallucination 최소화를 위해 온도 낮춤
-            }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error?.message || "딥시크 API 요청 실패");
-        }
-
-        // 8. 응답 반환 (Optional하게 sources 및 recommendedPlan 포함)
-        return NextResponse.json({ 
-            reply: data.choices[0].message.content,
-            sources: sources,
-            recommendedPlan: recommendedPlan
-        });
-    } catch (error: any) {
-        console.error("DeepSeek API Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+type ChatMessage = { role: "user" | "assistant"; content: string };
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
+}
+export const maxDuration = 60;
+export async function POST(req: Request) {
+  try {
+    const body: unknown = await req.json();
+    if (!isRecord(body) || !Array.isArray(body.messages) || body.messages.length > 24) {
+      return NextResponse.json({ error: "상담 내용을 확인해 주세요." }, { status: 400 });
     }
+    const service = body.service ?? (body.mode === "driver" ? "driver" : "company");
+    if (!["company", "machinecare", "driver"].includes(String(service)) ||
+        (body.mode !== undefined && !["driver", "automation"].includes(String(body.mode))) ||
+        (body.service !== undefined && body.mode !== undefined &&
+          ((service === "driver") !== (body.mode === "driver") || service === "machinecare"))) {
+      return NextResponse.json({ error: "지원하지 않는 상담 맥락입니다." }, { status: 400 });
+    }
+    const messages: ChatMessage[] = [];
+    for (const item of body.messages) {
+      if (!isRecord(item)) return NextResponse.json({ error: "잘못된 상담 내용입니다." }, { status: 400 });
+      if (item.role === "system") continue; // Only the server selects system instructions.
+      if (!["user", "assistant"].includes(String(item.role)) || typeof item.content !== "string" || item.content.length > 4000) {
+        return NextResponse.json({ error: "상담 내용을 4,000자 이내로 입력해 주세요." }, { status: 400 });
+      }
+      messages.push({ role: item.role as ChatMessage["role"], content: item.content });
+    }
+    const lastUserMessage = messages.findLast(m => m.role === "user")?.content.trim();
+    if (!lastUserMessage) return NextResponse.json({ error: "질문을 입력해 주세요." }, { status: 400 });
+    let systemPrompt: string;
+    let sources: string[] = [];
+    let recommendedPlan: string | null = null;
+    if (service === "machinecare") {
+      const inquiry = body.inquiry ?? "pc";
+      if (!isMachineCareInquiry(inquiry)) return NextResponse.json({ error: "문의 구분을 확인해 주세요." }, { status: 400 });
+      const guarded = machineCareGuard(lastUserMessage, inquiry, messages.filter(m => m.role === "user").length === 1);
+      if (guarded) return NextResponse.json({ reply: guarded, sources: ["MachineCare 공개 안내"], service });
+      systemPrompt = MACHINECARE_PROMPT + "\n[현재 상담 분기]\n" + MACHINECARE_INQUIRIES[inquiry];
+      sources = ["MachineCare 공개 안내"];
+    } else if (service === "driver") {
+      const driver = retrieveDriverContext(lastUserMessage);
+      systemPrompt = DRIVER_SYSTEM_PROMPT + "\n[참고 FAQ]\n" + driver.contextString;
+      sources = driver.sources;
+    } else {
+      if (/machinecare|머신케어|PC 점검/i.test(lastUserMessage)) {
+        return NextResponse.json({ reply: "QAgent MachineCare는 고객 Windows PC의 현장 점검·보고서와 기사 업무 관리를 연결하는 사업으로, 현재 현장 운영 준비 중 · 서비스 도입 및 제휴 상담 단계입니다. 다운로드나 기사 로그인은 공개하지 않습니다. /machinecare 페이지에서 PC 증상, 기업 PC 관리, 수리점·기사 도입/제휴를 구분해 새 상담을 시작할 수 있습니다.", sources: ["MachineCare 서비스 개요"], service });
+      }
+      const intent = classifyIntent(lastUserMessage);
+      if (intent === Intent.DANGER || intent === Intent.UNRELATED) {
+        return NextResponse.json({ reply: "QAgentLabs 서비스 관련 문의를 안내합니다. 어떤 서비스를 찾으시는지 알려주세요.", sources: [] });
+      }
+      recommendedPlan = getRecommendation(lastUserMessage);
+      const company = retrieveContext(lastUserMessage, intent);
+      const contextString = company.contextString;
+      sources = company.sources;
+      systemPrompt = COMPANY_PROMPT(contextString);
+    }
+    const apiKey = process.env.DEEPSEEK_API_KEY;
+    if (!apiKey) return NextResponse.json({ error: "상담 연결을 준비 중입니다. 회사 문의를 이용해 주세요." }, { status: 503 });
+    const response = await fetch("https://api.deepseek.com/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + apiKey },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        temperature: 0.3,
+        max_tokens: 700,
+      }),
+      signal: AbortSignal.timeout(45000),
+    });
+    if (!response.ok) return NextResponse.json({ error: "상담 연결이 지연되고 있습니다. 잠시 후 다시 시도하거나 회사 문의를 이용해 주세요." }, { status: 502 });
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content;
+    if (typeof reply !== "string" || !reply.trim()) return NextResponse.json({ error: "상담 답변을 받지 못했습니다." }, { status: 502 });
+    return NextResponse.json({ reply, sources, recommendedPlan, service });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: error instanceof SyntaxError ? "요청 형식을 확인해 주세요." : "상담 연결을 완료하지 못했습니다. 회사 문의를 이용해 주세요." }, { status: error instanceof SyntaxError ? 400 : 502 });
+  }
 }

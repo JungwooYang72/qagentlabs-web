@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import AIChatbot from '@/components/features/AIChatbot';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
@@ -25,6 +26,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
+        <AIChatbot />
       </body>
     </html>
   );

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import AIChatbot from "@/components/features/AIChatbot";
 import {
   Card,
   CardContent,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/Card";
 import {
   ArrowRight,
+  Monitor,
   Bot,
   Box,
   Cpu,
@@ -159,7 +159,24 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="flex flex-col h-full border-border bg-background">
+              <CardHeader>
+              <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4 text-accent">
+              <Monitor className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-xl">QAgent MachineCare</CardTitle>
+              <CardDescription className="text-base mt-2">PC 점검부터 현장 업무 기록까지</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1">
+              <p className="text-sm text-muted-foreground leading-7 break-keep">현장 기사와 수리점의 PC 점검·보고서·업무 관리를 연결하는 플랫폼을 준비하고 있습니다.</p>
+              <p className="mt-4 text-sm font-medium">현장 운영 준비 중 · 서비스 도입 및 제휴 상담</p>
+              </CardContent>
+              <CardFooter className="pt-4 border-t border-border">
+              <Link href="/machinecare" className="text-accent text-sm font-medium flex items-center">MachineCare 자세히 보기 <ArrowRight className="ml-1 h-3 w-3" />
+              </Link>
+              </CardFooter>
+              </Card>
             <Card className="flex flex-col h-full border-accent/20 shadow-md transition-all hover:shadow-lg hover:border-accent/40 bg-background relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4">
                 <span className="inline-flex items-center rounded-md bg-accent/10 px-2 py-1 text-xs font-semibold text-accent ring-1 ring-inset ring-accent/20">
@@ -456,7 +473,7 @@ export default function Home() {
         </div>
       </section>
 
-      <AIChatbot />
+
     </div>
   );
 }

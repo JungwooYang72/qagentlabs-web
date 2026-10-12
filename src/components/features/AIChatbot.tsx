@@ -1,330 +1,106 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { MACHINECARE_DRAFT_KEY, MACHINECARE_INQUIRIES, MACHINECARE_CONTACT, type MachineCareInquiry } from "@/lib/machinecare";
 
-type Message = {
-  sender: "ai" | "user";
-  text: string;
-  sources?: string[];
-  recommendedPlan?: string;
+type Service = "company" | "machinecare";
+type Message = { sender: "ai" | "user"; text: string };
+const greetings = {
+  company: "안녕하세요! QAgent Labs입니다. 회사 서비스와 업무 자동화에 대해 무엇을 도와드릴까요?",
+  machinecare: "QAgent MachineCare는 현장 운영 준비 중 · 서비스 도입 및 제휴 상담 단계입니다. 아래에서 PC 증상, 기업 PC 관리, 수리점·기사 도입/제휴를 선택해 주세요. 홈페이지에서 실제 PC 진단이나 수리를 실행하지 않습니다.",
 };
 
-function extractTextFromUnknown(value: unknown): string {
-  if (typeof value === "string") return value;
-
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => {
-        if (typeof item === "string") return item;
-        if (item && typeof item === "object") {
-          const text = (item as { text?: unknown }).text;
-          if (typeof text === "string") return text;
-        }
-        return "";
-      })
-      .filter(Boolean)
-      .join("\n")
-      .trim();
-  }
-
-  return "";
+export function ChatLauncher() {
+  return <Button size="lg" onClick={() => window.dispatchEvent(new Event("qagent-open-chat"))}>상담 도우미 열기</Button>;
 }
 
-function getAIResponse(data: unknown): string {
-  if (typeof data === "string") return data;
+function ChatPanel({ service, isOpen, close, reset }: { service: Service; isOpen: boolean; close: () => void; reset: () => void }) {
+  const panel = useRef<HTMLElement>(null);
+  useEffect(() => { if (isOpen) panel.current?.focus(); }, [isOpen]);
+  const router = useRouter();
+  const [messages, setMessages] = useState<Message[]>([{ sender: "ai", text: greetings[service] }]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [inquiry, setInquiry] = useState<MachineCareInquiry | null>(null);
+  const [review, setReview] = useState(false);
+  const [summary, setSummary] = useState("");
+  const request = useRef<AbortController | null>(null);
+  const log = useRef<HTMLDivElement>(null);
+  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => { log.current?.scrollTo({ top: log.current.scrollHeight, behavior: "smooth" }); }, [messages]);
 
-  if (!data || typeof data !== "object") {
-    return "";
+  async function send(text = input, selected = inquiry) {
+    if (!text.trim() || loading || (service === "machinecare" && !selected)) return;
+    const next: Message[] = [...messages, { sender: "user", text: text.trim() }];
+    setMessages(next); setInput(""); setLoading(true);
+    const controller = new AbortController(); request.current = controller;
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service, inquiry: selected,
+          messages: next.map(m => ({ role: m.sender === "ai" ? "assistant" : "user", content: m.text })),
+        }), signal: controller.signal,
+      });
+      const data = await response.json();
+      if (!response.ok || typeof data.reply !== "string") throw new Error("response");
+      setMessages(previous => [...previous, { sender: "ai", text: data.reply }]);
+    } catch {
+      if (!controller.signal.aborted) setMessages(previous => [...previous, { sender: "ai", text: "상담 연결을 완료하지 못했습니다. 잠시 후 다시 시도하거나 회사 문의를 이용해 주세요." }]);
+    } finally { if (!controller.signal.aborted) setLoading(false); }
   }
 
-  const record = data as {
-    choices?: Array<{ message?: { content?: unknown } }>;
-    message?: unknown;
-    reply?: unknown;
-    content?: unknown;
-    output_text?: unknown;
-    response?: unknown;
-    answer?: unknown;
-  };
-
-  const candidates = [
-    record.choices?.[0]?.message?.content,
-    record.message,
-    record.reply,
-    record.content,
-    record.output_text,
-    record.response,
-    record.answer,
-  ];
-
-  for (const candidate of candidates) {
-    const text = extractTextFromUnknown(candidate);
-    if (text) return text;
-  }
-
-  return "";
+  return (
+    <section ref={panel} tabIndex={-1} onKeyDown={event => { if (event.key === "Escape") close(); }} role="dialog" aria-label={service === "machinecare" ? "MachineCare 상담" : "QAgent Labs 회사 상담"} className="flex flex-col w-[min(370px,calc(100vw-24px))] h-[min(640px,calc(100dvh-100px))] min-h-0 overflow-hidden rounded-2xl border border-border bg-background text-foreground shadow-2xl">
+      <div className="flex items-center justify-between gap-2 bg-slate-900 p-4 text-white">
+        <h2 className="text-sm font-bold">{service === "machinecare" ? "MachineCare 상담" : "QAgent Labs 회사 상담"}</h2>
+        <div className="flex gap-3 text-xs"><button onClick={reset} disabled={loading} className="underline">새 상담</button><button onClick={close} aria-label="상담 닫기" className="text-xl leading-none">×</button></div>
+      </div>
+      <p className="border-b border-border px-4 py-3 text-xs text-muted-foreground">현재: {service === "machinecare" ? "MachineCare 전용" : "회사 전체 서비스"} 안내. 페이지를 바꾸면 새 상담 맥락으로 전환되며 이전 서비스의 대화는 전달하지 않습니다.</p>
+      <div ref={log} role="log" aria-live="polite" aria-label="상담 대화" className="min-h-0 flex-1 overflow-y-auto overscroll-contain space-y-3 p-4">
+        {messages.map((m, i) => <div key={i} className={"rounded-xl p-3 text-sm leading-relaxed whitespace-pre-wrap break-words " + (m.sender === "user" ? "ml-6 bg-accent text-accent-foreground" : "mr-4 bg-muted text-foreground")}>{m.text}</div>)}
+        {loading && <p role="status" className="text-xs text-muted-foreground">답변 준비 중…</p>}
+      </div>
+      {service === "machinecare" && !inquiry && <div className="grid gap-2 px-4 pb-3" aria-label="상담 시작 선택">
+        {(Object.entries(MACHINECARE_INQUIRIES) as [MachineCareInquiry, string][]).map(([key, label]) => <button key={key} disabled={loading} className="rounded-lg border border-border px-3 py-2 text-left text-xs hover:bg-muted" onClick={() => { setInquiry(key); void send(label, key); }}>{key === "pc" ? "PC 증상 상담" : label}</button>)}
+      </div>}
+      {review ? <div className="border-t border-border p-4 space-y-3">
+        <label htmlFor="machinecare-summary" className="block text-xs font-semibold">문의에 전달할 상담 메모를 확인·수정하세요</label>
+        <textarea id="machinecare-summary" value={summary} onChange={e => setSummary(e.target.value)} maxLength={1200} rows={3} className="w-full resize-y rounded-md border border-border bg-background p-2 text-sm" />
+        <p className="text-xs text-muted-foreground">대화 전체·연락처를 자동 전송하지 않습니다. 이메일 문의 안내에서 내용을 검토하고 메일 앱에서 직접 전송합니다. 현재 콜백 접수는 준비 중입니다.</p>
+        <div className="flex flex-wrap gap-2"><Button size="sm" onClick={() => {
+          try { sessionStorage.setItem(MACHINECARE_DRAFT_KEY, summary); } catch { /* Contact remains available without browser storage. */ }
+          router.push("/contact?service=machinecare&inquiry=" + (inquiry ?? "pc"));
+        }}>검토한 메모로 문의하기</Button><Button size="sm" variant="outline" onClick={() => setReview(false)}>취소</Button></div>
+      </div> : <>
+        <form onSubmit={e => { e.preventDefault(); void send(); }} className="border-t border-border p-3 flex gap-2">
+          <input aria-label="상담 질문" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder={service === "machinecare" && !inquiry ? "먼저 상담 구분을 선택해 주세요" : "질문을 입력하세요"} disabled={loading || (service === "machinecare" && !inquiry)} className="min-w-0 flex-1 rounded-lg border border-border bg-background p-2 text-sm" />
+          <Button type="submit" size="sm" disabled={loading || !input.trim()}>전송</Button>
+        </form>
+        <div className="px-4 pb-4 text-xs flex flex-wrap gap-3">
+          {service === "machinecare" ? <button className="text-accent underline" onClick={() => { setSummary(messages.filter(m => m.sender === "user").at(-1)?.text.slice(0, 1000) ?? ""); setReview(true); }}>상담 메모 확인 후 문의</button> : <a className="text-accent underline" href="/contact">회사 문의</a>}
+          {service === "machinecare" && <a href={"mailto:" + MACHINECARE_CONTACT.email} className="text-accent underline">이메일 문의</a>}
+        </div>
+      </>}
+    </section>
+  );
 }
 
 export default function AIChatbot() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { sender: "ai", text: "안녕하세요! QAgent Labs입니다. 무엇을 도와드릴까요?" },
-  ]);
-  const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [generation, setGeneration] = useState(0);
   useEffect(() => {
-    if (isOpen) scrollToBottom();
-  }, [messages, isOpen]);
-
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
-
-    const userText = inputValue;
-    setMessages((prev) => [...prev, { sender: "user", text: userText }]);
-    setInputValue("");
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: `당신은 'QAgent Labs'의 공식 AI 어시스턴트입니다. 항상 정중하고 전문적으로 답변하세요.
-
-              [회사 핵심 정체성]
-              - QAgent Labs는 AI 에이전트 기술을 활용하여 복잡한 설계와 비즈니스 워크플로우를 자동화하는 혁신적인 기업입니다.
-              - 사람이 수작업으로 하던 복잡한 엔지니어링 설계와 업무 과정을 AI가 스스로 판단하고 처리할 수 있도록 만드는 기술을 연구·개발합니다.
-
-              [주요 사업 및 서비스]
-              1. 지능형 업무 자동화: 'OpenClaw'와 'n8n'을 결합한 자율형 AI 자동화 시스템을 통해 기업의 실무 프로세스를 지능화하고 반복 업무를 자율적으로 처리합니다.
-              2. 차세대 엔지니어링 솔루션 (준비 중): 3D MEP(기계/전기/배관) 설계 과정을 AI로 자동화하는 혁신적인 시스템(Project Super-Engineer)을 개발 중입니다.
-
-              [답변 가이드라인]
-              - 기술적 배경 문의 시: "자체적인 AI 프레임워크와 자율 실행 프로토콜을 활용한다"고 전문성 있게 답변하세요.
-              - 가치 강조: "사람의 수작업을 획기적으로 줄이고 비즈니스 효율을 극대화하는 지능형 자동화 파트너"임을 강조하세요.
-              - 3D MEP 설계 답변 시: "축적된 AI 자동화 기술을 엔지니어링 분야로 확장하여 혁신적인 설계 자동화를 준비하고 있다"고 언급하세요.
-              - 모든 답변은 간결하면서도 신뢰감 있는 비즈니스 톤을 유지하세요.`,
-            },
-            ...messages.map((m) => ({
-              role: m.sender === "ai" ? "assistant" : "user",
-              content: m.text,
-            })),
-            { role: "user", content: userText },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`서버 응답 오류: ${response.status}`);
-      }
-
-      const data: unknown = await response.json();
-      const aiResponse = getAIResponse(data);
-      const sources = (data as any).sources || [];
-      const recommendedPlan = (data as any).recommendedPlan || null;
-
-      if (!aiResponse) {
-        console.error("Unexpected API response shape:", data);
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "ai",
-            text: "답변 형식을 해석하지 못했습니다. 관리자에게 문의해주세요.",
-          },
-        ]);
-        return;
-      }
-
-      setMessages((prev) => [...prev, { sender: "ai", text: aiResponse, sources, recommendedPlan }]);
-    } catch (error: unknown) {
-      console.error("Chat Error:", error);
-      const message = error instanceof Error ? error.message : "알 수 없는 오류";
-      setMessages((prev) => [
-        ...prev,
-        { sender: "ai", text: `오류가 발생했습니다: ${message}. 잠시 후 다시 시도해주세요.` },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div style={{ position: "fixed", bottom: "30px", right: "30px", zIndex: 999999 }}>
-      {!isOpen ? (
-        <div
-          style={{ display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer" }}
-          onClick={() => setIsOpen(true)}
-        >
-          <div
-            style={{
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              backgroundColor: "#0f172a",
-              color: "#ffffff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "32px",
-              marginBottom: "10px",
-              boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
-            }}
-          >
-            💬
-          </div>
-          <div
-            style={{
-              backgroundColor: "#0f172a",
-              color: "#ffffff",
-              fontWeight: "bold",
-              padding: "10px 22px",
-              borderRadius: "30px",
-              fontSize: "16px",
-              border: "2px solid #ffffff",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            무엇이든 물어보세요!
-          </div>
-        </div>
-      ) : (
-        <div
-          style={{
-            width: "370px",
-            height: "550px",
-            backgroundColor: "#ffffff",
-            border: "1px solid #e5e7eb",
-            borderRadius: "20px",
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#0f172a",
-              color: "#ffffff",
-              padding: "20px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <span style={{ fontWeight: "bold", fontSize: "16px" }}>QAgent Labs AI 상담</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpen(false);
-              }}
-              style={{ background: "none", border: "none", color: "#ffffff", cursor: "pointer", fontSize: "20px" }}
-            >
-              ✕
-            </button>
-          </div>
-
-          <div
-            style={{
-              flex: 1,
-              padding: "20px",
-              overflowY: "auto",
-              backgroundColor: "#f8fafc",
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
-          >
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                style={{
-                  alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                  backgroundColor: msg.sender === "user" ? "#0f172a" : "#e2e8f0",
-                  color: msg.sender === "user" ? "#ffffff" : "#334155",
-                  padding: "12px 16px",
-                  borderRadius: "15px",
-                  maxWidth: "85%",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
-                  wordBreak: "keep-all",
-                }}
-              >
-                <div>{msg.text}</div>
-                {msg.recommendedPlan && (
-                  <div style={{ marginTop: "12px", display: "inline-block", padding: "4px 10px", backgroundColor: "#3b82f6", color: "#ffffff", borderRadius: "12px", fontSize: "12px", fontWeight: "bold" }}>
-                    ⭐ 추천 플랜: {msg.recommendedPlan}
-                  </div>
-                )}
-                {msg.sources && msg.sources.length > 0 && (
-                  <div style={{ marginTop: "8px", paddingTop: "8px", borderTop: "1px solid rgba(0,0,0,0.1)", fontSize: "12px", color: "#64748b" }}>
-                    <strong>참고:</strong> {msg.sources.join(", ")}
-                  </div>
-                )}
-              </div>
-            ))}
-            {isLoading && <div style={{ alignSelf: "flex-start", color: "#64748b", fontSize: "13px" }}>답변 준비 중...</div>}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div
-            style={{
-              padding: "15px",
-              borderTop: "1px solid #e5e7eb",
-              display: "flex",
-              gap: "8px",
-              backgroundColor: "#ffffff",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  void handleSendMessage();
-                }
-              }}
-              placeholder="메시지를 입력하세요..."
-              style={{
-                flex: 1,
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #cbd5e1",
-                outline: "none",
-                color: "#000",
-              }}
-            />
-            <button
-              onClick={() => {
-                void handleSendMessage();
-              }}
-              disabled={isLoading}
-              style={{
-                backgroundColor: "#0f172a",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "8px",
-                padding: "0 15px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              전송
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    const onOpen = () => setOpen(true);
+    window.addEventListener("qagent-open-chat", onOpen);
+    return () => window.removeEventListener("qagent-open-chat", onOpen);
+  }, []);
+  if (pathname !== "/" && pathname !== "/machinecare") return null;
+  const service: Service = pathname === "/machinecare" ? "machinecare" : "company";
+  return <div data-chat-widget className="fixed bottom-3 right-3 md:bottom-6 md:right-6 z-[100]">
+    <div hidden={!open}><ChatPanel key={service + generation} service={service} isOpen={open} close={() => setOpen(false)} reset={() => setGeneration(n => n + 1)} /></div>
+    {!open && <button onClick={() => setOpen(true)} aria-label="상담 도우미 열기" className="rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-xl">💬 {service === "machinecare" ? "MachineCare 상담" : "무엇이든 물어보세요!"}</button>}
+  </div>;
 }

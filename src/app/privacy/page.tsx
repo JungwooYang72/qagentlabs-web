@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "개인정보 처리방침",
-  description: "Driver Hub 개인정보 처리방침",
+  description: "웹사이트 상담·MachineCare 문의 및 Driver Hub 개인정보 처리 안내",
 };
 
 export default function PrivacyPage() {
@@ -16,6 +16,12 @@ export default function PrivacyPage() {
         <p className="mb-8 leading-8 text-muted-foreground">
           큐에이전트랩스(대표 양정우, 이하 &quot;운영자&quot;)은(는) Driver Hub(이하 &quot;서비스&quot;)를 이용하는 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다.
         </p>
+
+        <Section title="웹사이트 상담·MachineCare 온라인 문의 (2026-10-12 추가)">
+          <p>웹 챗봇의 질문과 현재 상담 대화는 답변 생성을 위해 회사 서버를 거쳐 기존 DeepSeek API에 전달됩니다. 대화는 브라우저 메모리에 유지되며 다른 서비스 상담으로 전환하면 이전 대화를 전달하지 않습니다. 비밀번호나 개인 문서는 입력하지 마세요.</p>
+          <p>MachineCare는 현재 웹 제출·콜백 접수를 제공하지 않습니다. 사용자가 검토한 상담 메모는 문의 안내로 이동하는 동안 브라우저 세션 저장소를 사용하고 양식에 불러온 뒤 삭제합니다. 이메일 작성 버튼은 메모를 사용자의 메일 앱에 전달하며, 사용자가 직접 메일을 보내야 회사에 전달됩니다. 전체 대화와 연락처를 자동 전송하지 않습니다. 이메일 상담 내용은 문의 응대에 사용합니다.</p>
+          <p>개인정보 처리·삭제 관련 요청은 harrison.park@qagentlabs.com으로 문의해 주세요. 아래 Driver Hub 안내는 기존 앱의 처리 범위입니다.</p>
+        </Section>
 
         <Section title="1. 서비스의 성격">
           <p>
