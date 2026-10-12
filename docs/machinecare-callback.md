@@ -19,7 +19,7 @@
 - MACHINECARE_CALLBACK_ADMIN_TOKEN: 본부 전용 관리자 인증키(32자 이상). Driver Hub 키와 분리하고 본부에 안전하게 전달한다.
 - MACHINECARE_CALLBACK_HQ_EMAIL: 사용자가 지정한 본부 Gmail 알림 수신처.
 - MACHINECARE_CALLBACK_FROM_EMAIL: 운영 사이트에서 실제 발송 가능한 검증된 Resend 발신 주소.
-- RESEND_API_KEY: 운영 사이트의 서버 전용 메일 발신 키. ChatGPT Gmail 연결과 별개다.
+- MACHINECARE_RESEND_API_KEY: MachineCare 서버 전용 메일 발신 키. 미등록 시 기존 RESEND_API_KEY를 사용한다. ChatGPT Gmail 연결과 별개다.
 - MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID: 아래 실제 시험 접수 번호.
 - MACHINECARE_CALLBACK_ENABLED: 검증 전 false 또는 미설정. 검증 완료 후에만 true.
 
@@ -59,7 +59,10 @@ Production에 본부 알림 수신처·실제 시험한 발신 주소·전용 �
 사용자는 전용 유료 DB에 월 US$1 초과 과금을 막는 실제 한도를 요구했다. 단순 비용 알림·자동 충전 임계값으로 대체하지 않는다. 자동 업그레이드·Prod Pack·유료 추가 옵션은 끄고 Vercel 연동 별도 요금도 확인해야 한다. 조건을 충족하지 못하면 생성하지 않는다.
 현재 팀에서 무료 플랜 생성은 Billing plan not found: free로 거절됐다. 실제 Vercel Redis 상품 스키마는 primaryRegion·readRegions·eviction·prodPack·autoUpgrade만 허용하며 budget 항목이 없다(additionalProperties=false).
 실제 Pay As You Go 플랜 응답은 명령 10만 회당 US$0.20, preauthorizationAmount=0, quote=[]이다. 별도 연동 고정료는 응답에 표시되지 않았지만 이것만으로 별도 청구가 없다고 확정하지 않았다.
-Upstash 공식 문서는 월 예산 도달 시 요청을 제한해 초과 비용을 막는다고 설명하고, Developer API는 생성 요청의 budget 지정 및 조회를 지원한다. 현재 그 관리 API 인증은 없으며 Vercel SSO 콘솔의 Account → API Keys 접근을 요청했다. Vercel 인증과 Upstash 관리 API 인증은 별개다.
-새 MachineCare DB는 생성하지 않았다. 기존 Driver Hub DB는 재사용·변경하지 않았다. 실제 전용 저장소 저장·본부 조회·운영 발신 Gmail 수신은 미검증이며 공개 접수는 닫혀 있다.
+Upstash 공식 문서는 월 예산 도달 시 요청을 제한해 초과 비용을 막는다고 설명한다. 단, Developer API는 직접 가입한 Upstash 계정만 지원하며 Vercel 등 제3자 플랫폼에서 만든 계정은 지원하지 않는다. 현재 설치는 Vercel API의 installationType=marketplace인 Vercel 관리 연동이다. 이 계정에 UPSTASH_EMAIL·UPSTASH_API_KEY를 요구했던 안내는 철회한다.
+현재 Vercel 연동의 생성 옵션은 유료 플랜만 제공하고 월 예산 입력은 지원하지 않는다. 연결된 브라우저가 없어 SSO 관리 화면의 비용 한도 설정은 직접 확인하지 못했다. 이를 한도 설정 가능 또는 불가능의 화면 검증으로 보고하지 않는다.
+사용자가 직접 가입 계정의 무료 전용 DB 생성과 카드 미등록을 확인했다. 등록한 REST URL·읽기/쓰기 토큰을 MachineCare 전용 변수에 매핑하고 Vercel Production의 Secret으로 연결했다. 관리 API 키는 사용하지 않는다. 실제 REST 인증·익명 접근 거부·INFO의 maxmemory_policy=noeviction을 확인했다. Free와 카드 미등록은 사용자 확인이며 관리 화면을 직접 조회한 결과는 아니다. 공식 문서상 유료 전환에는 결제수단 등록이 필요하고 Free에는 Prod Pack을 제공하지 않는다. 카드 등록·유료 추가 옵션·새 Vercel Marketplace 리소스 생성 없이 외부 DB에 직접 REST로 연결했다. 기존 Vercel 호스팅 사용료는 DB 요금과 별개다. 무료를 유지할 수 없으면 앞서 승인한 월 US$1 초과 과금 차단 조건을 실제 설정·조회할 수 있을 때만 유료 DB를 사용한다.
+직접 가입 DB는 전용 REST URL·토큰을 기존 Vercel 프로젝트의 MACHINECARE_KV_REST_API_URL·MACHINECARE_KV_REST_API_TOKEN에 서버 전용으로 등록할 수 있다. 기존 Driver Hub 연동을 교체하거나 자동으로 일반 KV 환경변수를 덮어쓰지 않는다. 무료 여부·자동 업그레이드 비활성·유료 옵션 비활성은 실제 계정 설정으로 확인하고, 유료인 경우 월 한도와 별도 연동 요금도 확인한다.
+에이전트가 새 DB를 생성하거나 기존 Driver Hub DB를 재사용·변경하지 않았다. 사용자가 생성한 무료 DB로 운영 시험 접수 저장 및 인증된 본부 화면의 조회·360px 표시·잠금을 확인했다. 최초 시험 접수 d4200a14-2af9-4817-9476-965f623c0340의 메일 발송은 미확인이다. 원인 진단에서 기존 운영 RESEND_API_KEY는 로컬의 수신 검증된 키와 달랐고 Resend 발신 API가 401을 반환했다. 기존 서비스의 공용 설정을 보존하기 위해 검증된 로컬 발신 키를 MACHINECARE_RESEND_API_KEY로 별도 등록한다. 새 발신 설정을 포함한 실제 저장·조회·Gmail 수신 검증 전까지 공개 접수는 닫혀 있다.
 
 저장 실패나 한도 오류로 저장 확인이 불가능하면 접수 완료를 반환하지 않는다. 제출 화면은 입력을 유지하며 재시도·이메일 문의를 안내한다. 한도 거절 시험은 모의 오류로 검증하며 실제 과금을 발생시켜 한도를 소진하지 않는다.

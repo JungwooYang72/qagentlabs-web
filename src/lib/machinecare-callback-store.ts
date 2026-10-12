@@ -13,7 +13,7 @@ export function callbackConfig() {
     url: get("MACHINECARE_KV_REST_API_URL"), token: get("MACHINECARE_KV_REST_API_TOKEN"),
     adminToken: get("MACHINECARE_CALLBACK_ADMIN_TOKEN"),
     hqEmail: get("MACHINECARE_CALLBACK_HQ_EMAIL"),
-    from: get("MACHINECARE_CALLBACK_FROM_EMAIL"), resendKey: get("RESEND_API_KEY"),
+    from: get("MACHINECARE_CALLBACK_FROM_EMAIL"), resendKey: get("MACHINECARE_RESEND_API_KEY") || get("RESEND_API_KEY"),
     enabled: get("MACHINECARE_CALLBACK_ENABLED") === "true",
     verifiedId: get("MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID"),
   };

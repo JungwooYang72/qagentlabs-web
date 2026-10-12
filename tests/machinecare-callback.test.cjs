@@ -8,7 +8,7 @@ const ts = require("typescript");
 const root = path.resolve(__dirname, "..");
 const keys = ["KV_REST_API_URL", "KV_REST_API_TOKEN", "MACHINECARE_KV_REST_API_URL", "MACHINECARE_KV_REST_API_TOKEN", "MACHINECARE_CALLBACK_ADMIN_TOKEN",
   "MACHINECARE_CALLBACK_HQ_EMAIL", "MACHINECARE_CALLBACK_PRIMARY_EMAIL", "MACHINECARE_CALLBACK_BACKUP_EMAIL",
-  "MACHINECARE_CALLBACK_FROM_EMAIL", "RESEND_API_KEY", "MACHINECARE_CALLBACK_ENABLED", "MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID"];
+  "MACHINECARE_CALLBACK_FROM_EMAIL", "MACHINECARE_RESEND_API_KEY", "RESEND_API_KEY", "MACHINECARE_CALLBACK_ENABLED", "MACHINECARE_CALLBACK_VERIFIED_REQUEST_ID"];
 function harness() {
   const original = Object.fromEntries(keys.map(key => [key, process.env[key]]));
   for (const key of keys) delete process.env[key];
@@ -22,7 +22,8 @@ function harness() {
     scanIterator: async function* () { for (const key of db.keys()) if (key.startsWith("machinecare:callback:record:")) yield key; },
   };
   class MockResend {
-    emails = { send: async (data, options) => { emails.push({ data, options }); return mailFailed ? { error: { message: "test delivery failure" }, data: null } : { data: { id: "mock-mail-id" }, error: null }; } };
+    constructor(key) { this.key = key; }
+    emails = { send: async (data, options) => { emails.push({ data, options, key: this.key }); return mailFailed ? { error: { message: "test delivery failure" }, data: null } : { data: { id: "mock-mail-id" }, error: null }; } };
   }
   function load(file) {
     if (cache.has(file)) return cache.get(file);
@@ -103,6 +104,17 @@ test("test save/read, explicit HQ confirmation and unchanged configuration gate 
     assert(!h.emails[0].data.text.includes("000-0000"));
     process.env.MACHINECARE_CALLBACK_HQ_EMAIL = "changed@example.com";
     assert.equal(await h.store.callbackAvailable(), false, "changing the HQ notification recipient requires verification again");
+  } finally { h.restore(); }
+});
+
+test("dedicated mail credential reaches the sender independently of the shared credential and rotation requires verification", async () => {
+  const h = harness(); try {
+    process.env.MACHINECARE_RESEND_API_KEY = "synthetic-machinecare-mail";
+    await open(h);
+    assert.equal(h.emails[0].key, "synthetic-machinecare-mail");
+    assert.equal(process.env.RESEND_API_KEY, "synthetic-resend", "shared mail configuration stays unchanged");
+    process.env.MACHINECARE_RESEND_API_KEY = "synthetic-rotated-machinecare-mail";
+    assert.equal(await h.store.callbackAvailable(), false, "a new sender credential must be verified again");
   } finally { h.restore(); }
 });
 test("reviewed submit is stored once, retry is idempotent, manual assignment records HQ-selected roles without technician accounts", async () => {
