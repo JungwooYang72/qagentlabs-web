@@ -50,7 +50,16 @@
 
 ## 확인 상태 (2026-10-12)
 
-Gmail 연결 계정과 본부 알림 수신처는 사용자 확인을 받았다. 로컬 비공개 설정에 수신처만 반영했으며 Vercel 등록은 아직 하지 못했다.
-Vercel 플러그인은 미설치·미연결 상태이고 연결된 브라우저도 없다. main 자동 배포 성공과 설정 관리 접근은 별개다.
-로컬에 MachineCare 전용 저장소 연결과 검증된 운영 발신 주소가 없다. 기존 Resend 키는 발신 전용이어서 도메인 목록 조회는 불가능했다.
-실제 전용 저장소 저장·본부 조회·Gmail 알림 수신은 미검증이며 공개 접수는 닫혀 있다.
+Vercel CLI 63.1.2 로그인 계정과 기존 qagentlabs-web 프로젝트 접근을 확인하고 로컬 연결을 완료했다. 플러그인 없이 CLI의 env 설정·통합 조회·REST API를 사용할 수 있다. CLI는 artifacts/vercel-cli에만 설치했다.
+Production에 본부 알림 수신처·실제 시험한 발신 주소·전용 관리자키·ENABLED=false를 Secret으로 등록했다. 로컬 원본과 본부 관리자키 사본은 Git에서 제외한다. 기존 Driver Hub 설정은 변경하지 않았다.
+기존 Resend 키로 회사 주소에서 지정 본부 Gmail로 비개인 발신 시험을 수행했다. API 200과 Gmail 받은편지함의 동일 검증번호, SPF·DKIM 통과를 확인했다. 검증번호: machinecare-sender-990c2508-159f-47fc-be6c-3325c6d30969. 이는 로컬 발신 시험으로 운영 사이트의 콜백 저장·조회·알림 전체 검증을 대신하지 않는다.
+
+### DB 생성의 필수 비용 조건
+
+사용자는 전용 유료 DB에 월 US$1 초과 과금을 막는 실제 한도를 요구했다. 단순 비용 알림·자동 충전 임계값으로 대체하지 않는다. 자동 업그레이드·Prod Pack·유료 추가 옵션은 끄고 Vercel 연동 별도 요금도 확인해야 한다. 조건을 충족하지 못하면 생성하지 않는다.
+현재 팀에서 무료 플랜 생성은 Billing plan not found: free로 거절됐다. 실제 Vercel Redis 상품 스키마는 primaryRegion·readRegions·eviction·prodPack·autoUpgrade만 허용하며 budget 항목이 없다(additionalProperties=false).
+실제 Pay As You Go 플랜 응답은 명령 10만 회당 US$0.20, preauthorizationAmount=0, quote=[]이다. 별도 연동 고정료는 응답에 표시되지 않았지만 이것만으로 별도 청구가 없다고 확정하지 않았다.
+Upstash 공식 문서는 월 예산 도달 시 요청을 제한해 초과 비용을 막는다고 설명하고, Developer API는 생성 요청의 budget 지정 및 조회를 지원한다. 현재 그 관리 API 인증은 없으며 Vercel SSO 콘솔의 Account → API Keys 접근을 요청했다. Vercel 인증과 Upstash 관리 API 인증은 별개다.
+새 MachineCare DB는 생성하지 않았다. 기존 Driver Hub DB는 재사용·변경하지 않았다. 실제 전용 저장소 저장·본부 조회·운영 발신 Gmail 수신은 미검증이며 공개 접수는 닫혀 있다.
+
+저장 실패나 한도 오류로 저장 확인이 불가능하면 접수 완료를 반환하지 않는다. 제출 화면은 입력을 유지하며 재시도·이메일 문의를 안내한다. 한도 거절 시험은 모의 오류로 검증하며 실제 과금을 발생시켜 한도를 소진하지 않는다.

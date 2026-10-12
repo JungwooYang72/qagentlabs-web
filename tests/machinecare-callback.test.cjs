@@ -15,8 +15,8 @@ function harness() {
   const db = new Map(), ttl = new Map(), cache = new Map(), emails = [];
   let storageFailed = false, mailFailed = false, dropRecordWrites = false;
   const kv = {
-    get: async key => { if (storageFailed) throw Error("test offline"); return db.has(key) ? structuredClone(db.get(key)) : null; },
-    set: async (key, value, options = {}) => { if (storageFailed) throw Error("test offline"); if (options.nx && db.has(key)) return null; if (dropRecordWrites && key.startsWith("machinecare:callback:record:")) return "OK"; db.set(key, structuredClone(value)); if (options.ex) ttl.set(key, options.ex); return "OK"; },
+    get: async key => { if (storageFailed) throw storageFailed instanceof Error ? storageFailed : Error("test offline"); return db.has(key) ? structuredClone(db.get(key)) : null; },
+    set: async (key, value, options = {}) => { if (storageFailed) throw storageFailed instanceof Error ? storageFailed : Error("test offline"); if (options.nx && db.has(key)) return null; if (dropRecordWrites && key.startsWith("machinecare:callback:record:")) return "OK"; db.set(key, structuredClone(value)); if (options.ex) ttl.set(key, options.ex); return "OK"; },
     incr: async key => { const next = (db.get(key) || 0) + 1; db.set(key, next); return next; },
     expire: async (key, seconds) => { ttl.set(key, seconds); return 1; },
     scanIterator: async function* () { for (const key of db.keys()) if (key.startsWith("machinecare:callback:record:")) yield key; },
@@ -157,5 +157,17 @@ test("rate limit applies to new requests and Driver Hub namespace stays untouche
     for (let i = 0; i < 5; i++) assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...input, requestId: randomUUID(), consent: true }))).status, 200);
     assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...input, requestId: randomUUID(), consent: true }))).status, 429);
     assert.deepEqual(h.db.get("driver-hub:entitlement:existing"), { approved: true });
+  } finally { h.restore(); }
+});
+
+
+test("monthly storage budget rejection cannot report a completed callback", async () => {
+  const h = harness(); try {
+    await open(h);
+    const id = randomUUID(); h.failStorage(new Error("monthly budget exceeded"));
+    const response = await h.api.POST(request("/api/machinecare/callback", "POST", { ...input, requestId: id, consent: true }));
+    assert.equal(response.status, 503); assert.notEqual((await response.json()).success, true);
+    assert.deepEqual(await (await h.api.GET()).json(), { available: false });
+    assert.equal(h.db.has("machinecare:callback:record:" + id), false);
   } finally { h.restore(); }
 });
