@@ -1,6 +1,6 @@
 export const MACHINECARE_CONTACT = {
   email: "harrison.park@qagentlabs.com",
-  person: "박희수 사업본부장",
+  person: "상담팀",
 } as const;
 export const MACHINECARE_INQUIRIES = {
   pc: "PC 점검·수리 상담",
