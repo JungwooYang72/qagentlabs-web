@@ -35,11 +35,16 @@ export default async function MachineCarePage() {
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight">QAgent MachineCare</h1>
         <p className="text-xl md:text-3xl font-semibold mt-5">PC 점검부터 현장 업무 기록까지</p>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">현장 기사와 수리점의 PC 점검·보고서·업무 관리를 연결하는 플랫폼을 준비하고 있습니다.</p>
-        <div className="flex flex-wrap gap-3 mt-8"><ChatLauncher /><Button size="lg" variant="outline" asChild><a href="#inquiry">문의 구분 확인</a></Button></div>
+        <div className="flex flex-wrap gap-3 mt-8"><ChatLauncher /><Button size="lg" variant="outline" asChild><a href="#inquiry">문의 구분 확인</a></Button><Button size="lg" variant="outline" asChild><Link href="/machinecare/guides">PC 문제 해결 안내</Link></Button></div>
         <p className="text-xs text-muted-foreground mt-5 leading-relaxed">현재 프로그램 다운로드·기사 로그인·보고서 조회는 공개하지 않습니다. 상담 후 제공 가능한 범위와 일정을 확인합니다.</p>
       </div>
     </section>
     <section className="section-padding container-custom max-w-5xl">
+      <aside className="mb-12 rounded-xl border border-border bg-muted/30 p-6">
+        <h2 className="text-xl font-bold">PC에 문제가 생겼나요?</h2>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">느려짐·부팅 오류·인터넷·저장장치·Windows 설치 문제에서 먼저 확인할 내용을 읽고 상담을 준비하세요.</p>
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold"><Link href="/machinecare/guides" className="text-accent underline">증상별 안내 10개 보기</Link><Link href="/machinecare/visit" className="text-accent underline">출장 지역·비용·진행 방식 확인</Link></div>
+      </aside>
       <h2 className="text-2xl md:text-3xl font-bold mb-8">이런 분들과 함께 준비합니다</h2>
       <div className="grid md:grid-cols-3 gap-5">{["PC 점검·수리 상담이 필요한 고객", "기업 PC 관리 담당자", "도입을 검토하는 수리점·현장 기사"].map(text => <Card key={text} className="bg-muted/40"><CardContent className="!pt-6 text-sm leading-relaxed font-medium">{text}</CardContent></Card>)}</div>
     </section>
