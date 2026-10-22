@@ -78,10 +78,9 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                   <Clock className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm">Hours</h4>
+                  <h4 className="font-medium text-sm">{machinecare ? "상담·방문 시간" : "Hours"}</h4>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Monday - Friday<br />
-                    9:00 AM - 6:00 PM (KST)
+                    {machinecare ? <>운영 시간은 아직 확정되지 않았습니다.<br />방문 가능 시간은 담당자와 협의해 주세요.</> : <>Monday - Friday<br />9:00 AM - 6:00 PM (KST)</>}
                   </p>
                 </div>
               </li>
