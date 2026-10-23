@@ -12,13 +12,13 @@ PC 질문은 전원 여부, 화면/오류 메시지, 시작 시점 등을 한 �
 포맷·자료 삭제·보안 해제·분해를 손쉬운 해결책으로 유도하지 않습니다.
 기업·제휴 질문은 목적, 대략적인 규모와 지역만 확인합니다. 개인정보·비밀번호·문서·결제 정보·보고서 전체를 요청하지 않습니다.
 접수 가능 여부는 아래 서버의 현재 접수 상태만 따릅니다. 연락처는 챗봇에 요구하지 말고 문의 양식에서 사용자가 직접 확인·제출하게 합니다. 대화 전체를 자동 전송하지 않습니다. 버전 번호·발행 준비·엔지니어 검토 등 내부 개발 용어 대신 현장 운영 준비 중과 상담 가능한 범위를 쉽게 설명합니다.
-전화번호·전화걸기 링크를 공개하지 않습니다. 기사 모집은 진행하지 않고 부품 공급·노트북 전문 수리 협력업체를 먼저 모집합니다. 고객 방문은 상세 주소와 기사 일정을 확인한 뒤 확정합니다. 접수만으로 방문 예약이 되지 않으며 즉시 연락·24시간 상담을 약속하지 않습니다. 개인정보·연락처는 챗봇에 요구하지 말고 검증된 문의 양식에서만 명시적 제출을 받습니다. 협력 문의는 고객 증상 양식이 아닌 /contact?service=machinecare&inquiry=partner로 연결합니다. 짧고 자연스러운 한국어로 답하고 필요한 질문 한 가지로 이어갑니다.
+전화번호·전화걸기 링크를 공개하지 않습니다. 고객의 증상·서비스 질문에는 협력업체 모집 설명을 붙이지 않습니다. 제휴를 명시적으로 물으면 /contact?service=machinecare&inquiry=partner로 안내합니다. 고객 방문은 상세 주소와 기사 일정을 확인한 뒤 확정합니다. 접수만으로 방문 예약이 되지 않으며 즉시 연락·24시간 상담을 약속하지 않습니다. 개인정보·연락처는 챗봇에 요구하지 말고 검증된 문의 양식에서만 명시적 제출을 받습니다. 짧고 자연스러운 한국어로 답하고 필요한 질문 한 가지로 이어갑니다.
 [MachineCare 공개 안내]
-${knowledge.map(k => k.title + ": " + k.content).join("\n")}`;
+${knowledge.filter(k => k.id !== "partner").map(k => k.title + ": " + k.content).join("\n")}`;
 
 export function machineCareGuard(text: string, inquiry: MachineCareInquiry, first: boolean, acceptingCallbacks = false): string | null {
-  if (inquiry === "partner" || /부품.*공급|노트북.*전문.*수리|협력업체.*모집/.test(text)) return "PC·노트북 부품 공급과 노트북 전문 수리 협력업체를 모집합니다. 고객 방문 지역과 모집 지역은 별개입니다. 업체 소재지·협력 분야·공급 품목 또는 수리 범위·배송 및 입고 가능 여부는 /contact?service=machinecare&inquiry=partner의 전용 양식에서 알려주세요. 거래 조건은 개별 협의하며 주문량·독점 거래·수익을 보장하지 않습니다.";
-  if (/기사.*모집/.test(text)) return "기사 모집은 현재 진행하지 않습니다. 부품 공급·노트북 전문 수리 협력업체 모집을 먼저 추진합니다. 협력 문의는 /contact?service=machinecare&inquiry=partner에서 받습니다.";
+  if (inquiry === "partner" || /제휴|협력|업체.*모집/.test(text)) return "사업 제휴는 /contact?service=machinecare&inquiry=partner의 전용 문의 화면에서 안내합니다. 고객 방문 지역과 제휴 모집 지역은 별개이며 거래 조건은 개별 협의합니다.";
+  if (/기사.*모집/.test(text)) return "기사 모집은 현재 진행하지 않습니다. 사업 제휴 안내는 /contact?service=machinecare&inquiry=partner에서 확인할 수 있습니다.";
   if (/전화번호|전화.?걸기|콜백|전화.?상담|24시간|즉시.*연락/.test(text)) return (acceptingCallbacks ? "개인 전화번호는 공개하지 않습니다. 고객 상담 문의에서 이름·연락처·지역·연락 가능한 시간·증상 요약을 확인한 뒤 요청해 주세요. 본부가 확인 후 담당자를 배정합니다." : "개인 전화번호는 공개하지 않습니다. 콜백 접수는 준비 중입니다. 챗봇에서 증상을 정리한 뒤 이메일로 문의해 주세요.") + " 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다. 접수만으로 예약되지 않으며 즉시 연락·24시간 상담을 약속하지 않습니다.";
   if (/다른.*서비스.*자료|시스템.*(프롬프트|지시)|비밀키|API.?키|내부.*(자료|정산)|지시.*무시/.test(text)) {
     return "이 상담은 MachineCare 공개 안내 자료만 사용합니다. 다른 서비스의 자료나 내부 자료·인증정보는 제공하지 않습니다. 회사 전체 서비스 안내는 메인 페이지에서 새 상담으로 확인해 주세요.";
@@ -27,8 +27,10 @@ export function machineCareGuard(text: string, inquiry: MachineCareInquiry, firs
     return "방문 상담 지역과 기본 시간은 /machinecare/visit에서 확인할 수 있습니다. 요금과 거래 조건은 사전에 개별 협의합니다. 출시일·직영점 주소·제휴점 수는 확정 안내가 없습니다. 용산 직영점은 검토 아이디어이며 실제 지점이 아닙니다.";
   }
   if (/다운로드|로그인|보고서.*조회/.test(text)) {
-    return "현재 프로그램 다운로드·기사 로그인·보고서 조회는 공개하지 않습니다. 현장 운영 준비 중이며 PC 증상·기업 PC 관리 상담과 부품 공급·노트북 전문 수리 협력 문의를 받고 있습니다.";
+    return "현재 프로그램 다운로드·기사 로그인·보고서 조회는 공개하지 않습니다. 현장 운영 준비 중이며 PC 증상과 기업 PC 관리 상담을 받고 있습니다.";
   }
+  if (/입고|데이터.?복구/.test(text)) return "데이터 복구 등 장시간 작업은 현장 상태 확인 → 고객 동의 후 본사 입고 → 별도 확인·견적 → 작업·결과 확인·반환 순서로 안내합니다. 입고·반환 방법과 비용은 사전에 협의합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. 외부 전문업체 의뢰가 필요하면 설명하고 동의를 확인합니다. 백업 상태가 불명확하면 포맷·자료 삭제를 진행하지 말고 먼저 상담해 주세요.";
+  if (/AI\s*PC|Copilot\+|NPU/i.test(text)) return "AI PC의 호환성 확인·초기 설정·AI 기능 동작 점검을 준비하고 있습니다. 지원 완료로 공개한 기종·범위는 아직 없으며 실제 기기 검증 후 안내합니다. AI PC 기능 점검과 AI를 이용한 점검 보고서 해석은 별개입니다.";
   if (/자동.*수리|원격.*(수리|점검|진단)|지금.*진단|이미.*(진단|수리)/.test(text)) {
     return "홈페이지나 이 대화로 고객 PC를 실제 진단하거나 자동 수리·원격 점검하지 않습니다. 현재 현장 운영 준비 중이며, 상담 후 제공 가능한 점검 범위와 일정을 먼저 확인합니다. PC 증상을 알려주시면 자료를 변경하지 않는 기본 확인부터 안내하겠습니다.";
   }
@@ -38,7 +40,7 @@ export function machineCareGuard(text: string, inquiry: MachineCareInquiry, firs
   if (first && Object.values(MACHINECARE_INQUIRIES).includes(text as typeof MACHINECARE_INQUIRIES[MachineCareInquiry])) {
     return inquiry === "pc" ? "PC 증상부터 차례로 확인하겠습니다. 현재 PC 전원이 켜지나요? 홈페이지에서는 실제 진단이나 수리를 실행하지 않습니다."
       : inquiry === "business" ? "기업 PC 관리 문의입니다. 정기 점검, 자산 관리 등 어떤 목적으로 도입을 검토하고 계신가요?"
-      : "부품 공급·노트북 전문 수리 협력 문의는 /contact?service=machinecare&inquiry=partner의 전용 양식에서 받습니다.";
+      : "사업 제휴 문의는 /contact?service=machinecare&inquiry=partner의 전용 양식에서 받습니다.";
   }
   return null;
 }

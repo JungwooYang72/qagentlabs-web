@@ -1,10 +1,16 @@
 export type CallbackInput = {
   name: string; phone: string; region: string; availableTime: string; summary: string;
 };
+export const PARTNER_COOPERATION_FIELDS = {
+  parts: "PC·노트북 부품 공급",
+  repair: "노트북 전문 수리",
+  both: "부품 공급·노트북 전문 수리 모두",
+  recovery: "전문 데이터 복구",
+} as const;
 export type PartnerInput = {
   inquiryType: "partner";
   companyName: string; contactName: string; phone: string; location: string;
-  cooperationField: "parts" | "repair" | "both";
+  cooperationField: keyof typeof PARTNER_COOPERATION_FIELDS;
   scope: string; logistics: string;
 };
 export type MachineCareRequestInput = CallbackInput | PartnerInput;
@@ -26,7 +32,7 @@ export function parseCallbackInput(value: unknown): CallbackInput | null {
 export function parsePartnerInput(value: unknown): PartnerInput | null {
   if (!value || typeof value !== "object") return null;
   const body = value as Record<string, unknown>;
-  if (body.inquiryType !== "partner" || typeof body.cooperationField !== "string" || !["parts", "repair", "both"].includes(body.cooperationField)) return null;
+  if (body.inquiryType !== "partner" || typeof body.cooperationField !== "string" || !Object.hasOwn(PARTNER_COOPERATION_FIELDS, body.cooperationField)) return null;
   const limits = { companyName: 120, contactName: 80, phone: 24, location: 150, scope: 2000, logistics: 500 } as const;
   const result = {} as PartnerInput;
   for (const key of Object.keys(limits) as (keyof typeof limits)[]) {

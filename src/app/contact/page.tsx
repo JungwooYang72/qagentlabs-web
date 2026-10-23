@@ -27,7 +27,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             {partner ? "MachineCare 협력업체 문의" : machinecare ? "MachineCare 상담 문의" : "Contact Us"}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl break-keep">
-            {partner ? "PC·노트북 부품 공급 및 노트북 전문 수리 협력업체를 먼저 모집합니다. 고객 방문 지역과 모집 지역은 별개이며 거래 조건은 개별 협의합니다." : machinecare ? (acceptingCallbacks ? "내용을 확인한 뒤 상담을 요청해 주세요. 본부에서 확인 후 담당자를 배정하며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다." : "챗봇에서 정리한 증상을 이메일로 문의해 주세요. 콜백 접수는 준비 중이며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다.") : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
+            {partner ? "PC·노트북 부품 공급, 노트북 전문 수리, 전문 데이터 복구 분야의 사업 제휴 문의를 받습니다. 고객 방문 지역과 모집 지역은 별개이며 거래 조건은 개별 협의합니다." : machinecare ? (acceptingCallbacks ? "내용을 확인한 뒤 상담을 요청해 주세요. 본부에서 확인 후 담당자를 배정하며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다." : "챗봇에서 정리한 증상을 이메일로 문의해 주세요. 콜백 접수는 준비 중이며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다.") : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
           </p>
         </div>
       </section>
@@ -45,7 +45,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             <h3 className="font-bold text-lg mb-6 tracking-tight">Direct Contact</h3>
             
             <ul className="space-y-6">
-              {machinecare && <li className="text-sm leading-7"><p className="font-semibold">{MACHINECARE_CONTACT.person}</p><p>{partner ? "협력 분야와 공급·수리 범위를 확인한 뒤 개별 연락합니다. 기사 모집은 현재 진행하지 않습니다." : "온라인 문의·이메일 상담을 먼저 이용해 주세요. 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다."}</p></li>}
+              {machinecare && <li className="text-sm leading-7"><p className="font-semibold">{MACHINECARE_CONTACT.person}</p><p>{partner ? "협력 분야와 공급·수리·복구 범위를 확인한 뒤 개별 연락합니다. 기사 모집은 현재 진행하지 않습니다." : "온라인 문의·이메일 상담을 먼저 이용해 주세요. 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다."}</p></li>}
               <li className="flex gap-4">
                 <div className="w-10 h-10 shrink-0 bg-background border border-border rounded-lg flex items-center justify-center text-muted-foreground">
                   <Mail className="w-5 h-5" />
@@ -76,7 +76,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                 </div>
               </li>
 
-              {partner && <li className="text-sm leading-7"><h4 className="font-medium">협력업체 모집 지역</h4><p className="mt-1">고객 방문 상담 지역과 별개입니다. 업체 소재지와 배송·입고 가능 여부를 확인해 협의합니다.</p></li>}
+              {partner && <li className="text-sm leading-7"><h4 className="font-medium">협력업체 모집 지역</h4><p className="mt-1">고객 방문 상담 13개 시·구로 제한하지 않습니다. 업체 소재지와 배송·입고·반환 조건을 확인해 개별 협의합니다.</p></li>}
               {machinecare && !partner && <li className="text-sm leading-7"><h4 className="font-medium">초기 방문 상담 지역</h4><p className="mt-1">경기: {MACHINECARE_VISIT_AREAS.gyeonggi.join(", ")}</p><p>서울: {MACHINECARE_VISIT_AREAS.seoul.join(", ")}</p><Link href="/machinecare/visit" className="text-accent underline">출장 상담 안내 보기</Link></li>}
 
               {!partner && <li className="flex gap-4">

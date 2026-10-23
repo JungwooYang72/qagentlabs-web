@@ -1,7 +1,7 @@
 import { createClient } from "@vercel/kv";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { Resend } from "resend";
-import { CALLBACK_RETENTION_DAYS, type CallbackRecord, type MachineCareRequestInput, type CallbackAssignment } from "./machinecare-callback";
+import { CALLBACK_RETENTION_DAYS, PARTNER_COOPERATION_FIELDS, type CallbackRecord, type MachineCareRequestInput, type CallbackAssignment } from "./machinecare-callback";
 
 const PREFIX = "machinecare:callback:";
 const TTL = CALLBACK_RETENTION_DAYS * 86400;
@@ -74,7 +74,7 @@ export async function saveCallback(id: string, input: MachineCareRequestInput, v
     try {
       const { error, data } = await new Resend(c.resendKey).emails.send({
         from: c.from, to: [c.hqEmail],
-        subject: verification ? "[MachineCare 검증] 시험 접수 — 실제 고객 요청 아님" : "inquiryType" in input ? "[MachineCare 협력] 부품 공급·노트북 수리 업체 문의" : "[MachineCare] 새 콜백 요청",
+        subject: verification ? "[MachineCare 검증] 시험 접수 — 실제 고객 요청 아님" : "inquiryType" in input ? "[MachineCare 협력] " + PARTNER_COOPERATION_FIELDS[input.cooperationField] + " 문의" : "[MachineCare] 새 콜백 요청",
         text: "접수번호: " + id + "\n본부 전용 조회: https://www.qagentlabs.com/machinecare/requests\n관리자 인증 후 내용을 확인해 주세요. 개인정보는 알림 메일에 첨부하지 않습니다.\n" + (verification ? "시험 접수입니다. 고객에게 연락하거나 방문을 배정하지 마세요." : "inquiryType" in input ? "협력 조건은 업체 담당자와 개별 협의해 주세요. 기사 배정 대상이 아닙니다." : "고객 방문은 아직 확정되지 않았습니다. 필요하면 담당 기사에게 수동 배정해 주세요."),
       }, { idempotencyKey: "machinecare-callback-" + id });
       accepted = !error && Boolean(data?.id);
