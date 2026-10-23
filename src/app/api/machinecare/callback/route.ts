@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseCallbackInput } from "@/lib/machinecare-callback";
+import { parseMachineCareRequestInput } from "@/lib/machinecare-callback";
 import { callbackAvailable, callbackRateAllowed, readCallback, saveCallback, validRequestId } from "@/lib/machinecare-callback-store";
 export const maxDuration = 60;
 export async function POST(req: Request) {
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const text = await req.text();
     if (text.length > 8000) return response({ error: "문의 내용을 줄여 주세요." }, 413);
     const body = JSON.parse(text);
-    const input = parseCallbackInput(body);
+    const input = parseMachineCareRequestInput(body);
     if (!input || body.consent !== true || typeof body.requestId !== "string" || !validRequestId(body.requestId)) return response({ error: "필수 정보와 개인정보 수집 동의를 확인해 주세요." }, 400);
     const existing = await readCallback(body.requestId);
     if (!existing && !await callbackRateAllowed(req)) return response({ error: "요청이 많습니다. 잠시 후 다시 시도해 주세요." }, 429);

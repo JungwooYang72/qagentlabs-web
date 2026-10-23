@@ -1,7 +1,7 @@
 import { createClient } from "@vercel/kv";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { Resend } from "resend";
-import { CALLBACK_RETENTION_DAYS, type CallbackInput, type CallbackRecord, type CallbackAssignment } from "./machinecare-callback";
+import { CALLBACK_RETENTION_DAYS, type CallbackRecord, type MachineCareRequestInput, type CallbackAssignment } from "./machinecare-callback";
 
 const PREFIX = "machinecare:callback:";
 const TTL = CALLBACK_RETENTION_DAYS * 86400;
@@ -52,18 +52,19 @@ export async function readCallback(id: string) {
   const kv = callbackKv();
   const record = await kv.get<CallbackRecord>(PREFIX + "record:" + id);
   if (!record) return null;
-  const [assignment, notification] = await Promise.all([
+  const [assignment, notification, partnerReview] = await Promise.all([
     kv.get<CallbackAssignment>(PREFIX + "assignment:" + id),
     kv.get<{ accepted: boolean; hqConfirmedAt?: string }>(PREFIX + "notification:" + id),
+    kv.get<{ reviewedAt: string }>(PREFIX + "partner-review:" + id),
   ]);
-  return { record, assignment, notification };
+  return { record, assignment, notification, partnerReview };
 }
-export async function saveCallback(id: string, input: CallbackInput, verification = false) {
+export async function saveCallback(id: string, input: MachineCareRequestInput, verification = false) {
   const kv = callbackKv();
   const record: CallbackRecord = { ...input, id, verification, createdAt: new Date().toISOString(), expiresAt: new Date(Date.now() + TTL * 1000).toISOString() };
   const written = await kv.set(PREFIX + "record:" + id, record, { nx: true, ex: TTL });
   const stored = await kv.get<CallbackRecord>(PREFIX + "record:" + id);
-  if (!stored || Object.keys(input).some(key => stored[key as keyof CallbackInput] !== input[key as keyof CallbackInput]) || stored.verification !== verification) {
+  if (!stored || Object.keys(input).some(key => (stored as unknown as Record<string, unknown>)[key] !== (input as unknown as Record<string, unknown>)[key]) || stored.verification !== verification) {
     throw new Error("callback_write_unconfirmed");
   }
   const previousNotification = await kv.get<{ accepted: boolean }>(PREFIX + "notification:" + id);
@@ -73,8 +74,8 @@ export async function saveCallback(id: string, input: CallbackInput, verificatio
     try {
       const { error, data } = await new Resend(c.resendKey).emails.send({
         from: c.from, to: [c.hqEmail],
-        subject: verification ? "[MachineCare 검증] 시험 접수 — 실제 고객 요청 아님" : "[MachineCare] 새 콜백 요청",
-        text: "접수번호: " + id + "\n본부 전용 조회: https://www.qagentlabs.com/machinecare/requests\n관리자 인증 후 내용을 확인하고 주담당 또는 보조담당에게 수동 배정해 주세요. 개인정보는 알림 메일에 첨부하지 않습니다.\n" + (verification ? "시험 접수입니다. 고객에게 연락하거나 방문을 배정하지 마세요." : "접수만으로 방문은 확정되지 않았습니다."),
+        subject: verification ? "[MachineCare 검증] 시험 접수 — 실제 고객 요청 아님" : "inquiryType" in input ? "[MachineCare 협력] 부품 공급·노트북 수리 업체 문의" : "[MachineCare] 새 콜백 요청",
+        text: "접수번호: " + id + "\n본부 전용 조회: https://www.qagentlabs.com/machinecare/requests\n관리자 인증 후 내용을 확인해 주세요. 개인정보는 알림 메일에 첨부하지 않습니다.\n" + (verification ? "시험 접수입니다. 고객에게 연락하거나 방문을 배정하지 마세요." : "inquiryType" in input ? "협력 조건은 업체 담당자와 개별 협의해 주세요. 기사 배정 대상이 아닙니다." : "고객 방문은 아직 확정되지 않았습니다. 필요하면 담당 기사에게 수동 배정해 주세요."),
       }, { idempotencyKey: "machinecare-callback-" + id });
       accepted = !error && Boolean(data?.id);
     } catch { /* The saved request remains available to HQ if mail delivery fails. */ }
@@ -105,11 +106,19 @@ export async function listCallbacks() {
 }
 export async function assignCallback(id: string, role: "primary" | "backup") {
   const item = await readCallback(id);
-  if (!item || item.record.verification) return false;
+  if (!item || item.record.verification || "inquiryType" in item.record) return false;
   if (!["primary", "backup"].includes(role)) return false;
   const ttl = Math.floor((Date.parse(item.record.expiresAt) - Date.now()) / 1000);
   if (ttl <= 0) return false;
   await callbackKv().set(PREFIX + "assignment:" + id, { role, assignedAt: new Date().toISOString() }, { ex: ttl });
+  return true;
+}
+export async function confirmPartnerReview(id: string) {
+  const item = await readCallback(id);
+  if (!item || item.record.verification || !("inquiryType" in item.record)) return false;
+  const ttl = Math.floor((Date.parse(item.record.expiresAt) - Date.now()) / 1000);
+  if (ttl <= 0) return false;
+  await callbackKv().set(PREFIX + "partner-review:" + id, { reviewedAt: new Date().toISOString() }, { ex: ttl });
   return true;
 }
 export async function confirmCallbackVerification(id: string) {
