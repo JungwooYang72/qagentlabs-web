@@ -32,7 +32,7 @@ function EmailInquiry({ initialInquiry }: { initialInquiry: MachineCareInquiry }
     </div>
     <p role="status" aria-live="polite" className="text-sm leading-6">{notice}</p>
     <p className="text-sm leading-7 break-all"><a className="underline text-accent" href={"mailto:" + MACHINECARE_CONTACT.email}>{MACHINECARE_CONTACT.email}</a><br />메일 앱이 열리지 않으면 주소를 복사해 사용 중인 이메일에서 보내주세요.</p>
-    <p className="text-sm leading-7 text-muted-foreground">문의만으로 방문이 예약되지 않습니다. 담당 기사가 내용을 확인하고 통화로 증상·방문 가능 여부·비용·일정을 협의한 후 방문을 확정하는 흐름을 준비합니다. 즉시 연락이나 24시간 상담을 약속하지 않습니다.</p>
+    <p className="text-sm leading-7 text-muted-foreground">문의만으로 방문이 예약되지 않습니다. 담당 기사가 내용을 확인하고 통화로 증상·상세 주소·기사 일정·비용을 협의한 뒤 방문을 확정합니다. 즉시 연락이나 24시간 상담을 약속하지 않습니다.</p>
   </div>;
 }
 

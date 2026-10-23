@@ -60,6 +60,7 @@ function harness() {
   };
 }
 const input = { name: "시험 고객", phone: "010-0000-0000", region: "시험 지역", availableTime: "연락 금지 — 자동 검증", summary: "실제 고객이 아닌 테스트 증상 요약" };
+const partnerInput = { inquiryType: "partner", companyName: "시험 협력업체", contactName: "시험 담당자", phone: "010-0000-0000", location: "시험 소재지", cooperationField: "both", scope: "시험 부품 공급·노트북 수리", logistics: "시험 배송·입고 가능" };
 const request = (url, method, body, headers = {}) => new Request("https://www.qagentlabs.com" + url, { method, headers: { Origin: "https://www.qagentlabs.com", "Content-Type": "application/json", ...headers }, body: body === undefined ? undefined : JSON.stringify(body) });
 async function open(h) {
   h.configure();
@@ -135,6 +136,30 @@ test("reviewed submit is stored once, retry is idempotent, manual assignment rec
     }
     assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, role: "admin" }, auth))).status, 400);
     assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...body, summary: "different payload" }))).status, 502);
+  } finally { h.restore(); }
+});
+test("partner inquiry retains its fields and type through storage, notification and HQ review", async () => {
+  const h = harness(); try {
+    const { auth } = await open(h), id = randomUUID();
+    assert.deepEqual(h.shared.parsePartnerInput(partnerInput), partnerInput);
+    assert.equal(h.shared.parsePartnerInput({ ...partnerInput, companyName: "" }), null);
+    assert.equal(h.shared.parsePartnerInput({ ...partnerInput, cooperationField: "other" }), null);
+    const submitted = await h.api.POST(request("/api/machinecare/callback", "POST", { ...partnerInput, requestId: id, consent: true }));
+    assert.equal(submitted.status, 200);
+    assert.equal((await submitted.json()).requestId, id);
+    assert.match(h.emails[1].data.subject, /협력/);
+    assert(!h.emails[1].data.text.includes(partnerInput.phone));
+    const fetched = await h.admin.GET(request("/api/admin/machinecare/requests?id=" + id, "GET", undefined, auth));
+    const item = (await fetched.json()).items[0];
+    assert.equal(item.record.inquiryType, "partner");
+    assert.equal(item.record.companyName, partnerInput.companyName);
+    assert.equal(item.record.scope, partnerInput.scope);
+    assert.equal(item.record.logistics, partnerInput.logistics);
+    assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, role: "primary" }, auth))).status, 400);
+    assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, action: "confirm-partner-review" }, auth))).status, 200);
+    assert.ok((await h.store.readCallback(id)).partnerReview.reviewedAt);
+    assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...partnerInput, requestId: id, consent: true }))).status, 200);
+    assert.equal(h.emails.length, 2);
   } finally { h.restore(); }
 });
 test("unconfirmed storage never returns success, and origin/consent are required", async () => {

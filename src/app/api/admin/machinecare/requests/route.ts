@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import { callbackAuthorized, callbackConfigured, callbackConfig, listCallbacks, readCallback, saveCallback, assignCallback, confirmCallbackVerification, validRequestId } from "@/lib/machinecare-callback-store";
+import { callbackAuthorized, callbackConfigured, callbackConfig, listCallbacks, readCallback, saveCallback, assignCallback, confirmCallbackVerification, confirmPartnerReview, validRequestId } from "@/lib/machinecare-callback-store";
 export const maxDuration = 60;
 const json = (body: object, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 export async function GET(req: Request) {
@@ -28,6 +28,8 @@ export async function PATCH(req: Request) {
     if (typeof body.id !== "string" || !validRequestId(body.id)) return json({ error: "invalid_id" }, 400);
     if (body.action === "confirm-verification") {
       if (body.confirmedReceiptAndNotification !== true || !await confirmCallbackVerification(body.id)) return json({ error: "실제 조회·알림 수신 확인이 필요합니다." }, 400);
+    } else if (body.action === "confirm-partner-review") {
+      if (!await confirmPartnerReview(body.id)) return json({ error: "확인할 협력 문의를 찾지 못했습니다." }, 400);
     } else {
       if (!["primary", "backup"].includes(body.role) || !await assignCallback(body.id, body.role)) return json({ error: "배정할 접수와 주담당·보조담당 구분을 확인해 주세요." }, 400);
     }
