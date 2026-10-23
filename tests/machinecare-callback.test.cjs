@@ -138,27 +138,33 @@ test("reviewed submit is stored once, retry is idempotent, manual assignment rec
     assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...body, summary: "different payload" }))).status, 502);
   } finally { h.restore(); }
 });
-test("partner inquiry retains its fields and type through storage, notification and HQ review", async () => {
+for (const cooperationField of ["parts", "repair", "both", "recovery"]) test(`${cooperationField} partner inquiry retains its fields and type through storage, notification and HQ review`, async () => {
   const h = harness(); try {
+    const currentInput = { ...partnerInput, cooperationField };
     const { auth } = await open(h), id = randomUUID();
-    assert.deepEqual(h.shared.parsePartnerInput(partnerInput), partnerInput);
+    assert.deepEqual(h.shared.parsePartnerInput(currentInput), currentInput);
     assert.equal(h.shared.parsePartnerInput({ ...partnerInput, companyName: "" }), null);
     assert.equal(h.shared.parsePartnerInput({ ...partnerInput, cooperationField: "other" }), null);
-    const submitted = await h.api.POST(request("/api/machinecare/callback", "POST", { ...partnerInput, requestId: id, consent: true }));
+    assert.equal(h.shared.parsePartnerInput({ ...partnerInput, cooperationField: "toString" }), null);
+    const submitted = await h.api.POST(request("/api/machinecare/callback", "POST", { ...currentInput, requestId: id, consent: true }));
     assert.equal(submitted.status, 200);
     assert.equal((await submitted.json()).requestId, id);
     assert.match(h.emails[1].data.subject, /협력/);
+    assert.ok(h.emails[1].data.subject.includes(h.shared.PARTNER_COOPERATION_FIELDS[cooperationField]));
     assert(!h.emails[1].data.text.includes(partnerInput.phone));
     const fetched = await h.admin.GET(request("/api/admin/machinecare/requests?id=" + id, "GET", undefined, auth));
     const item = (await fetched.json()).items[0];
     assert.equal(item.record.inquiryType, "partner");
+    assert.equal(item.record.cooperationField, cooperationField);
+    assert.equal(h.shared.PARTNER_COOPERATION_FIELDS.both, "부품 공급·노트북 전문 수리 모두");
+    assert.equal(h.shared.PARTNER_COOPERATION_FIELDS.recovery, "전문 데이터 복구");
     assert.equal(item.record.companyName, partnerInput.companyName);
     assert.equal(item.record.scope, partnerInput.scope);
     assert.equal(item.record.logistics, partnerInput.logistics);
     assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, role: "primary" }, auth))).status, 400);
     assert.equal((await h.admin.PATCH(request("/api/admin/machinecare/requests", "PATCH", { id, action: "confirm-partner-review" }, auth))).status, 200);
     assert.ok((await h.store.readCallback(id)).partnerReview.reviewedAt);
-    assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...partnerInput, requestId: id, consent: true }))).status, 200);
+    assert.equal((await h.api.POST(request("/api/machinecare/callback", "POST", { ...currentInput, requestId: id, consent: true }))).status, 200);
     assert.equal(h.emails.length, 2);
   } finally { h.restore(); }
 });

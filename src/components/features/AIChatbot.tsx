@@ -9,7 +9,7 @@ type Service = "company" | "machinecare";
 type Message = { sender: "ai" | "user"; text: string };
 const greetings = {
   company: "안녕하세요! QAgent Labs입니다. 회사 서비스와 업무 자동화에 대해 무엇을 도와드릴까요?",
-  machinecare: "QAgent MachineCare는 현장 운영 준비 중입니다. PC 증상·기업 PC 관리 상담과 부품 공급·노트북 전문 수리 협력 문의를 선택해 주세요. 기사 모집은 현재 진행하지 않습니다.",
+  machinecare: "QAgent MachineCare는 현장 운영 준비 중입니다. PC 증상 상담이나 기업 PC 관리 문의를 선택해 주세요. 필요한 점검 범위와 상담 순서를 안내합니다.",
 };
 
 export function ChatLauncher() {
@@ -64,7 +64,7 @@ function ChatPanel({ service, isOpen, close, reset }: { service: Service; isOpen
         {loading && <p role="status" className="text-xs text-muted-foreground">답변 준비 중…</p>}
       </div>
       {service === "machinecare" && !inquiry && <div className="grid gap-2 px-4 pb-3" aria-label="상담 시작 선택">
-        {(Object.entries(MACHINECARE_INQUIRIES) as [MachineCareInquiry, string][]).map(([key, label]) => <button key={key} disabled={loading} className="rounded-lg border border-border px-3 py-2 text-left text-xs hover:bg-muted" onClick={() => { if (key === "partner") { close(); router.push("/contact?service=machinecare&inquiry=partner"); return; } setInquiry(key); void send(label, key); }}>{key === "pc" ? "PC 증상 상담" : label}</button>)}
+        {(Object.entries(MACHINECARE_INQUIRIES) as [MachineCareInquiry, string][]).filter(([key]) => key !== "partner").map(([key, label]) => <button key={key} disabled={loading} className="rounded-lg border border-border px-3 py-2 text-left text-xs hover:bg-muted" onClick={() => { setInquiry(key); void send(label, key); }}>{key === "pc" ? "PC 증상 상담" : label}</button>)}
       </div>}
       {review ? <div className="border-t border-border p-4 space-y-3">
         <label htmlFor="machinecare-summary" className="block text-xs font-semibold">문의에 전달할 상담 메모를 확인·수정하세요</label>

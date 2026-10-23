@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import type { CallbackRecord, CallbackAssignment } from "@/lib/machinecare-callback";
+import { PARTNER_COOPERATION_FIELDS, type CallbackRecord, type CallbackAssignment } from "@/lib/machinecare-callback";
 type Item = { record: CallbackRecord; assignment: CallbackAssignment | null; notification: { accepted: boolean; hqConfirmedAt?: string } | null; partnerReview: { reviewedAt: string } | null };
 export default function MachineCareRequests() {
   const request = useRef<AbortController | null>(null);
@@ -42,7 +42,7 @@ export default function MachineCareRequests() {
     <div className="space-y-5">{items.map(({ record, assignment, notification, partnerReview }) => {
       const partner = "inquiryType" in record;
       const fields: [string, string][] = partner
-        ? [["업체명", record.companyName], ["담당자", record.contactName], ["연락처", record.phone], ["소재지", record.location], ["협력 분야", record.cooperationField === "parts" ? "PC·노트북 부품 공급" : record.cooperationField === "repair" ? "노트북 전문 수리" : "PC·노트북 부품 공급 / 노트북 전문 수리"], ["공급 품목·수리 범위", record.scope], ["배송·입고 가능 여부", record.logistics]]
+        ? [["업체명", record.companyName], ["담당자", record.contactName], ["연락처", record.phone], ["소재지", record.location], ["협력 분야", PARTNER_COOPERATION_FIELDS[record.cooperationField]], ["공급 품목·수리·복구 범위", record.scope], ["배송·입고 가능 여부", record.logistics]]
         : [["이름", record.name], ["연락처", record.phone], ["지역", record.region], ["연락 가능한 시간", record.availableTime], ["증상 요약", record.summary]];
       return <article key={record.id} className="rounded-xl border border-border p-5 space-y-4 text-sm leading-7 break-words">
         <h2 className="font-bold break-all">{record.verification ? "시험 접수 — 고객 연락·배정 금지" : partner ? "협력업체 문의" : "고객 상담 요청"} · {record.id}</h2>
