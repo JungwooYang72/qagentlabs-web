@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { COMPANY, POLICY_EFFECTIVE_DATE } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "개인정보 처리방침",
   description: "웹사이트 상담·MachineCare 문의 및 Driver Hub 개인정보 처리 안내",
+  alternates: { canonical: "https://www.qagentlabs.com/privacy" },
 };
 
 export default function PrivacyPage() {
@@ -13,9 +16,20 @@ export default function PrivacyPage() {
           개인정보 처리방침
         </h1>
 
-        <p className="mb-8 leading-8 text-muted-foreground">
-          큐에이전트랩스(대표 양정우, 이하 &quot;운영자&quot;)은(는) Driver Hub(이하 &quot;서비스&quot;)를 이용하는 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다.
-        </p>
+        <p className="mb-6 text-sm text-muted-foreground">웹사이트 안내 개정일: {POLICY_EFFECTIVE_DATE}</p>
+        <p className="mb-6 leading-8 text-muted-foreground">{COMPANY.legalName}(대표 {COMPANY.representative}, 이하 &quot;운영자&quot;)는 QAgentLabs 웹사이트 상담, MachineCare 온라인 문의와 Driver Hub 이용 과정에서 처리하는 개인정보의 항목·목적·보유기간 및 권리행사 방법을 안내합니다. 웹사이트 문의와 앱 내부 처리는 아래 각 항목의 범위를 구분해 확인해 주세요.</p>
+        <nav aria-label="약관 및 정책" className="mb-8 flex flex-wrap gap-x-6 gap-y-3 text-sm underline underline-offset-4"><Link href="/terms">이용약관</Link><Link href="/privacy">개인정보처리방침</Link><Link href="/refund">취소·환불정책</Link></nav>
+
+        <Section title="웹사이트 개인정보 처리 요약">
+          <ul>
+            <li>MachineCare 고객 문의: 이름·연락처·지역·연락 가능한 시간·증상 요약을 접수 확인·담당자 배정·상담 연락에 사용하며, 온라인 접수 기록은 접수일로부터 90일 후 자동 삭제합니다.</li>
+            <li>MachineCare 제휴 문의: 업체명·담당자·연락처·소재지·협력 분야·공급 및 수리 범위·배송 및 입고 가능 여부를 제휴 상담에 사용하며, 온라인 기록은 접수일로부터 90일 후 자동 삭제합니다.</li>
+            <li>웹 챗봇: 이용자가 입력한 질문과 현재 상담 대화를 답변 생성에 사용합니다. 상담 대화는 회사 서버를 거쳐 DeepSeek API에 전달되므로 연락처·고객 문서·비밀번호·복구 키를 입력하지 마세요.</li>
+            <li>기타 홈페이지·Driver Hub 신청 및 오류 문의: 각 양식에 표시한 필수·선택 항목을 신청 확인·사용 권한 처리·문의 응대에 사용합니다. Google Forms/Sheets 연동 및 이메일 전달 범위는 아래 처리 위탁 안내를 함께 확인해 주세요.</li>
+            <li>개인정보 열람·정정·삭제·처리정지 요청: <a href={"mailto:" + COMPANY.email} className="underline">{COMPANY.email}</a> 또는 고객센터 <a href={COMPANY.phoneHref} className="underline">{COMPANY.phone}</a>. 본인 확인 후 관계 법령에 따라 처리합니다.</li>
+          </ul>
+          <p>이 방침 링크가 있다는 사실만으로 결제정보를 수집하거나 카드결제가 개통되는 것은 아닙니다. 온라인 결제 서비스가 추가되면 실제 처리 항목·수탁자·보유기간 등을 안내하고 필요한 절차를 거친 뒤 적용합니다.</p>
+        </Section>
 
         <Section title="웹사이트 상담·MachineCare 온라인 문의 (2026-10-12 추가)">
           <p>웹 챗봇의 질문과 현재 상담 대화는 답변 생성을 위해 회사 서버를 거쳐 기존 DeepSeek API에 전달됩니다. 대화는 브라우저 메모리에 유지되며 다른 서비스 상담으로 전환하면 이전 대화를 전달하지 않습니다. 비밀번호나 개인 문서는 입력하지 마세요.</p>
@@ -197,16 +211,16 @@ export default function PrivacyPage() {
 
         <Section title="10. 개인정보 보호책임자">
           <ul>
-            <li>책임자: 양정우 / 개인정보 보호책임자 (대표 겸임)</li>
-            <li>연락처: harrison.park@qagentlabs.com</li>
+            <li>책임자: {COMPANY.representative} / 개인정보 보호책임자 (대표 겸임)</li>
+            <li>연락처: <a href={"mailto:" + COMPANY.email} className="underline">{COMPANY.email}</a> · <a href={COMPANY.phoneHref} className="underline">{COMPANY.phone}</a></li>
           </ul>
         </Section>
 
         <Section title="11. 고지 의무">
           <p>본 방침의 변경 시 시행 전 서비스 내 또는 운영 채널을 통해 안내합니다.</p>
           <ul>
-            <li>시행일: 2026-07-11</li>
-            <li>버전: 1.1</li>
+            <li>Driver Hub 앱 안내 기준: 2026-07-11 · 버전 1.1</li>
+            <li>웹사이트 상담·문의 및 사업자 연락처 안내 개정: {POLICY_EFFECTIVE_DATE}</li>
           </ul>
         </Section>
       </article>
