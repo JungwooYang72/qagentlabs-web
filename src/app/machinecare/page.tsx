@@ -25,7 +25,7 @@ const faq = [
   ["프로그램은 어느 PC를 점검하나요?", "프로그램을 실행한 고객 Windows PC를 점검합니다. 기사 폰은 승인·업무·결과 확인용으로 연결하는 계획입니다. 홈페이지나 챗봇 대화만으로 고객 PC를 진단하지 않습니다."],
   ["현재 도입 단계는 어디까지인가요?", "현장 운영 준비 중입니다. PC 증상과 기업 PC 관리를 상담하고 제공 가능한 점검·조치 범위와 일정을 확인합니다."],
   ["기업 PC 관리는 어떻게 문의하나요?", "기업 PC 관리 문의에서 장비 수와 관리 목적, 지역을 알려주세요. 점검 범위·일정·비용은 사전에 상담합니다."],
-  ["데이터 복구처럼 오래 걸리는 작업은 어떻게 하나요?", "현장 상태 확인 → 고객 동의 후 본사 입고 → 별도 확인·견적 → 작업·결과 확인·반환 순서로 안내합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. 외부 전문업체 의뢰가 필요하면 고객에게 설명하고 동의를 확인합니다."],
+  ["데이터 복구처럼 오래 걸리는 작업은 어떻게 하나요?", "현장 상태 확인 → 고객 동의 후 본사 입고 → 별도 확인·견적 → 작업·결과 확인·반환 순서로 안내합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. MachineCare가 접수부터 진행 상황 안내·결과 확인·반환까지 관리합니다. 작업 범위와 비용은 사전에 설명하고 고객 동의를 확인합니다."],
   ["AI PC도 지원하나요?", "호환성 확인·초기 설정·AI 기능 동작 점검을 준비하고 있습니다. 지원 완료로 공개한 기종·범위는 아직 없으며 실제 기기 검증 후 안내합니다. AI PC 기능 점검과 AI 보고서 해석은 별개입니다."],
 ];
 export default async function MachineCarePage() {
@@ -64,7 +64,7 @@ export default async function MachineCarePage() {
       <h2 className="text-2xl md:text-3xl font-bold">장시간 작업은 본사 입고 후 확인합니다</h2>
       <p className="mt-4 text-sm leading-7 text-muted-foreground">데이터 복구 등 오래 걸리는 작업은 현장에서 상태와 증상을 확인한 뒤 고객 동의를 받아 본사 입고로 안내합니다. 일반적인 단시간 현장 조치의 가능 여부는 상담 후 확인합니다.</p>
       <ol className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{["현장 상태 확인", "고객 동의 후 본사 입고", "별도 확인·견적 후 작업", "결과 확인·반환"].map((text, i) => <li key={text} className="rounded-xl border border-border p-5 text-sm leading-7"><span className="font-bold text-accent">{i + 1}</span><p className="mt-2 font-semibold">{text}</p></li>)}</ol>
-      <p className="mt-5 text-sm leading-7 text-muted-foreground">입고·반환 방법과 비용은 사전에 협의합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. 외부 전문업체 의뢰가 필요한 경우에는 고객에게 설명하고 동의를 확인합니다.</p>
+      <p className="mt-5 text-sm leading-7 text-muted-foreground">입고·반환 방법과 비용은 사전에 협의합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. MachineCare가 접수부터 진행 상황 안내·결과 확인·반환까지 관리합니다. 작업 범위와 비용은 사전에 설명하고 고객 동의를 확인합니다.</p>
     </section>
     <section id="inquiry" className="scroll-mt-24 border-y border-border bg-muted/20"><div className="section-padding container-custom max-w-5xl">
       <h2 className="text-2xl md:text-3xl font-bold mb-4">상담·문의하기</h2>
