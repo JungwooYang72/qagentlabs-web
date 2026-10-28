@@ -166,11 +166,11 @@ export default function Home() {
               <Monitor className="h-6 w-6" />
               </div>
               <CardTitle className="text-xl">QAgent MachineCare</CardTitle>
-              <CardDescription className="text-base mt-2">PC 점검부터 현장 업무 기록까지</CardDescription>
+              <CardDescription className="text-base mt-2">출장 컴퓨터 점검·수리·기업 PC 관리</CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
-              <p className="text-sm text-muted-foreground leading-7 break-keep">현장 기사와 수리점의 PC 점검·보고서·업무 관리를 연결하는 플랫폼을 준비하고 있습니다.</p>
-              <p className="mt-4 text-sm font-medium">현장 운영 준비 중 · 서비스 도입 및 제휴 상담</p>
+              <p className="text-sm text-muted-foreground leading-7 break-keep">구리·남양주 등 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 점검 결과와 필요한 조치·비용을 설명하고 고객 동의 후 작업합니다.</p>
+              <p className="mt-4 text-sm font-medium">서비스 운영 중 · 상담 후 방문 일정 확정</p>
               </CardContent>
               <CardFooter className="pt-4 border-t border-border">
               <Link href="/machinecare" className="text-accent text-sm font-medium flex items-center">MachineCare 자세히 보기 <ArrowRight className="ml-1 h-3 w-3" />

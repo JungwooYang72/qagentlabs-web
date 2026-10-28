@@ -30,7 +30,7 @@ export default function MachineCareGuidesPage() {
       </section>)}
       <aside className="rounded-xl border border-border bg-muted/30 p-6 md:p-8">
         <h2 className="text-xl font-bold">직접 확인하기 어렵다면 상담을 준비하세요</h2>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">MachineCare는 현장 운영 준비 중입니다. 증상과 지역을 남기면 담당자가 확인 후 방문 가능 여부·비용·일정을 협의합니다. 문의 접수만으로 방문이 확정되지는 않습니다.</p>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">MachineCare는 출장 PC 점검·수리 서비스를 운영하고 있습니다. 증상과 지역을 남기면 담당자가 확인 후 방문 가능 여부·비용·일정을 협의합니다. 문의 접수만으로 방문이 확정되지는 않습니다.</p>
         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold"><Link href={MACHINECARE_PC_INQUIRY} className="text-accent underline">PC 점검 상담 문의</Link><Link href="/machinecare/visit" className="text-accent underline">출장 지역·비용·진행 방식 확인</Link></div>
       </aside>
     </div>

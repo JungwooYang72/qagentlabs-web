@@ -98,7 +98,7 @@ export async function POST(req: Request) {
       sources = driver.sources;
     } else {
       if (/machinecare|머신케어|PC 점검/i.test(lastUserMessage)) {
-        return NextResponse.json({ reply: "QAgent MachineCare는 현장 운영을 준비하며 PC 증상과 기업 PC 관리 상담을 받습니다. 점검 결과 설명과 조치 범위, 장시간 작업의 본사 입고 절차를 안내합니다. 다운로드나 기사 로그인은 공개하지 않습니다. /machinecare에서 고객 상담 안내를 확인할 수 있습니다.", sources: ["MachineCare 서비스 개요"], service });
+        return NextResponse.json({ reply: "QAgent MachineCare는 출장 PC 점검·수리 서비스와 기업 PC 관리 상담을 운영합니다. 점검 결과 설명과 조치 범위, 장시간 작업의 본사 입고 절차를 안내합니다. 다운로드나 기사 로그인은 공개하지 않습니다. /machinecare에서 고객 상담 안내를 확인할 수 있습니다.", sources: ["MachineCare 서비스 개요"], service });
       }
       const intent = classifyIntent(lastUserMessage);
       if (intent === Intent.DANGER || intent === Intent.UNRELATED) {
