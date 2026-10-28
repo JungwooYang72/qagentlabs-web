@@ -53,7 +53,7 @@ export default function MachineCareCallbackForm({ fallback }: { fallback: React.
     <p>접수만으로 방문이 예약되지는 않습니다. 담당 기사와 통화해 증상·상세 주소·기사 일정·비용을 확인한 뒤 방문을 확정합니다. 즉시 연락이나 24시간 상담을 약속하지 않습니다.</p>
   </div>;
   return <div className="space-y-5">
-    <p className="text-sm leading-7 text-muted-foreground">현장 운영 준비 중입니다. 이름·연락처·지역·연락 가능한 시간·증상 요약을 확인한 뒤 상담을 요청해 주세요. 본부에서 접수를 확인하고 담당자를 수동 배정합니다.</p>
+    <p className="text-sm leading-7 text-muted-foreground">출장 PC 점검·수리 서비스를 운영하고 있습니다. 이름·연락처·지역·연락 가능한 시간·증상 요약을 확인한 뒤 상담을 요청해 주세요. 본부에서 접수를 확인하고 담당자를 수동 배정합니다.</p>
     <form ref={formRef} hidden={draft !== null} className="space-y-5" onSubmit={event => {
       event.preventDefault(); const data = new FormData(event.currentTarget);
       const input = parseCallbackInput(Object.fromEntries(data));

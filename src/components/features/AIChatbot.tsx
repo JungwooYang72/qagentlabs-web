@@ -9,7 +9,7 @@ type Service = "company" | "machinecare";
 type Message = { sender: "ai" | "user"; text: string };
 const greetings = {
   company: "안녕하세요! QAgent Labs입니다. 회사 서비스와 업무 자동화에 대해 무엇을 도와드릴까요?",
-  machinecare: "QAgent MachineCare는 현장 운영 준비 중입니다. PC 증상 상담이나 기업 PC 관리 문의를 선택해 주세요. 필요한 점검 범위와 상담 순서를 안내합니다.",
+  machinecare: "QAgent MachineCare는 자체 개발한 점검 프로그램으로 상태를 확인하고 결과를 기록하는 출장 PC 점검·수리 서비스를 운영합니다. PC 증상 상담이나 기업 PC 관리 문의를 선택해 주세요.",
 };
 
 export function ChatLauncher() {
@@ -69,7 +69,7 @@ function ChatPanel({ service, isOpen, close, reset }: { service: Service; isOpen
       {review ? <div className="border-t border-border p-4 space-y-3">
         <label htmlFor="machinecare-summary" className="block text-xs font-semibold">문의에 전달할 상담 메모를 확인·수정하세요</label>
         <textarea id="machinecare-summary" value={summary} onChange={e => setSummary(e.target.value)} maxLength={1200} rows={3} className="w-full resize-y rounded-md border border-border bg-background p-2 text-sm" />
-        <p className="text-xs text-muted-foreground">대화 전체·연락처를 자동 전송하지 않습니다. 이메일 문의 안내에서 내용을 검토하고 메일 앱에서 직접 전송합니다. 현재 콜백 접수는 준비 중입니다.</p>
+        <p className="text-xs text-muted-foreground">대화 전체·연락처를 자동 전송하지 않습니다. 문의 화면에서 상담 메모와 연락 방법을 확인해 주세요. 이메일을 이용하는 경우 메일 앱에서 직접 전송해야 합니다.</p>
         <div className="flex flex-wrap gap-2"><Button size="sm" onClick={() => {
           try { sessionStorage.setItem(MACHINECARE_DRAFT_KEY, summary); } catch { /* Contact remains available without browser storage. */ }
           router.push("/contact?service=machinecare&inquiry=" + (inquiry ?? "pc"));
