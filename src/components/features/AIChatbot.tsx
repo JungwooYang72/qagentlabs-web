@@ -9,7 +9,7 @@ type Service = "company" | "machinecare";
 type Message = { sender: "ai" | "user"; text: string };
 const greetings = {
   company: "안녕하세요! QAgent Labs입니다. 회사 서비스와 업무 자동화에 대해 무엇을 도와드릴까요?",
-  machinecare: "QAgent MachineCare는 출장 PC 점검·수리 서비스를 운영하고 있습니다. PC 증상 상담이나 기업 PC 관리 문의를 선택해 주세요. 필요한 점검·조치 범위와 방문 상담 순서를 안내합니다.",
+  machinecare: "QAgent MachineCare는 자체 개발한 점검 프로그램으로 상태를 확인하고 결과를 기록하는 출장 PC 점검·수리 서비스를 운영합니다. PC 증상 상담이나 기업 PC 관리 문의를 선택해 주세요.",
 };
 
 export function ChatLauncher() {

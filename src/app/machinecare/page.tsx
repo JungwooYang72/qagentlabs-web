@@ -11,19 +11,19 @@ import { MACHINECARE_BASE_HOURS, MACHINECARE_INQUIRIES, MACHINECARE_CONTACT, MAC
 
 export const metadata: Metadata = {
   title: "출장 컴퓨터 점검·수리·기업 PC 관리 | QAgent MachineCare",
-  description: "구리·남양주 등 경기 9개 시와 서울 동부 4개 구의 출장 컴퓨터 점검·수리 서비스를 운영합니다. 느려짐·부팅 오류·Windows 문제와 기업 PC 관리를 상담하고, 작업 범위·비용·일정을 협의해 방문합니다.",
+  description: "구리·남양주 등 경기 9개 시와 서울 동부 4개 구의 출장 컴퓨터 점검·수리 서비스를 운영합니다. 자체 개발 프로그램의 12개 점검 항목을 기준으로 결과를 기록하고 필요한 조치·비용을 설명합니다. 방문 일정은 사전 협의합니다.",
   alternates: { canonical: "https://www.qagentlabs.com/machinecare" },
 };
 
 const features = [
-  { icon: Monitor, title: "고객 PC에서 점검", status: "서비스 운영 중", text: "고객 Windows PC의 느려짐·부팅 오류·인터넷·저장장치·Windows 문제를 현장에서 점검합니다. 증상과 장비 상태에 맞는 조치 범위를 확인하고 비용을 안내합니다." },
+  { icon: Monitor, title: "고객 PC에서 점검", status: "서비스 운영 중", text: "자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC의 상태를 확인하고 기록합니다. 기사가 증상과 점검 결과를 함께 검토해 필요한 조치와 비용을 설명합니다." },
   { icon: ClipboardCheck, title: "점검 결과 설명과 조치 상담", status: "서비스 운영 중", text: "점검에서 확인한 내용과 추가 확인이 필요한 부분을 설명하고, 필요한 조치와 비용을 안내합니다. 작업은 고객 동의를 확인한 뒤 진행합니다." },
   { icon: BriefcaseBusiness, title: "기업 PC 관리 상담", status: "상담 후 범위 확인", text: "업무용 PC의 반복 장애와 관리 목적을 확인합니다. 필요한 장비 수·점검 범위·일정·비용을 사전에 상담합니다." },
   { icon: FolderSync, title: "AI PC 호환성·초기 설정", status: "서비스 준비 중 · 실제 기종 검증 대기", text: "AI PC의 호환성 확인·초기 설정·AI 기능 동작 점검을 준비합니다. 실제 기종별 지원 완료 범위는 아직 공개하지 않습니다. AI PC의 기능 점검과 AI를 이용한 점검 보고서 해석은 별도 기능입니다." },
 ];
 const faq = [
   ["누구를 위한 서비스인가요?", "PC 점검·수리 상담이 필요한 개인 고객과 기업 PC 관리 담당자를 위한 서비스입니다."],
-  ["PC 점검은 어떻게 진행하나요?", "기사가 고객 Windows PC를 현장에서 점검하고 결과와 필요한 조치를 설명합니다. 홈페이지와 챗봇은 증상 상담과 문의 안내를 제공하며 실제 PC 점검은 방문 후 진행합니다."],
+  ["PC 점검은 어떻게 진행하나요?", "기사가 자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC를 확인하고, 결과를 기록해 필요한 조치를 설명합니다. 홈페이지와 챗봇은 증상 상담과 문의 안내를 제공하며 실제 PC 점검은 방문 후 진행합니다."],
   ["지금 방문 점검을 신청할 수 있나요?", "네. 출장 PC 점검·수리 서비스를 운영하고 있습니다. 증상과 지역을 알려주시면 상세 주소·기사 일정·작업 범위·비용을 확인한 뒤 방문을 확정합니다."],
   ["기업 PC 관리는 어떻게 문의하나요?", "기업 PC 관리 문의에서 장비 수와 관리 목적, 지역을 알려주세요. 점검 범위·일정·비용은 사전에 상담합니다."],
   ["데이터 복구처럼 오래 걸리는 작업은 어떻게 하나요?", "현장 상태 확인 → 고객 동의 후 본사 입고 → 별도 확인·견적 → 작업·결과 확인·반환 순서로 안내합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. MachineCare가 접수부터 진행 상황 안내·결과 확인·반환까지 관리합니다. 작업 범위와 비용은 사전에 설명하고 고객 동의를 확인합니다."],
@@ -35,7 +35,7 @@ const serviceStructuredData = {
   "@id": "https://www.qagentlabs.com/machinecare#service",
   name: "QAgent MachineCare 출장 PC 점검·수리",
   serviceType: "출장 컴퓨터 점검·수리 및 기업 PC 관리 상담",
-  description: "개인·기업 고객의 Windows PC를 현장에서 점검하고 결과와 필요한 조치·비용을 설명합니다. 상담 후 방문 일정을 확정하고 고객 동의 후 작업합니다.",
+  description: "자체 개발한 MachineCare 프로그램의 12개 항목을 기준으로 개인·기업 고객의 Windows PC를 점검하고 결과를 기록해 필요한 조치·비용을 설명합니다. 상담 후 방문 일정을 확정하고 고객 동의 후 작업합니다.",
   url: "https://www.qagentlabs.com/machinecare",
   provider: {
     "@type": "Organization",
@@ -62,10 +62,19 @@ export default async function MachineCarePage() {
         <p className="inline-flex rounded-full bg-accent/10 px-4 py-2 text-xs font-semibold text-accent mb-6">출장 PC 점검·수리 서비스 운영 중</p>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight">QAgent MachineCare</h1>
         <p className="text-xl md:text-3xl font-semibold mt-5">컴퓨터 점검부터 수리·결과 설명까지</p>
-        <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">구리·남양주를 비롯한 경기 9개 시와 서울 동부 4개 구에서 개인·기업 고객의 출장 PC 점검·수리 서비스를 제공합니다. 증상을 상담하고, 현장 점검 결과와 필요한 조치·비용을 설명합니다.</p>
+        <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">구리·남양주를 비롯한 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 자체 개발한 MachineCare 점검 프로그램으로 상태를 확인하고 기록해, 점검 결과와 필요한 조치·비용을 설명합니다.</p>
         <div className="flex flex-wrap gap-3 mt-8"><ChatLauncher /><Button size="lg" variant="outline" asChild><Link href="/contact?service=machinecare&inquiry=pc">출장 점검·수리 상담 신청</Link></Button><Button size="lg" variant="outline" asChild><Link href="/machinecare/guides">PC 문제 해결 안내</Link></Button></div>
         <p className="text-xs text-muted-foreground mt-5 leading-relaxed">기본 상담·방문 시간 09:00~18:00 · 상세 주소와 기사 일정, 작업 범위·비용을 협의한 뒤 방문을 확정합니다.</p>
       </div>
+    </section>
+    <section className="section-padding container-custom max-w-5xl" aria-labelledby="our-diagnostics">
+      <h2 id="our-diagnostics" className="text-2xl md:text-3xl font-bold">자체 점검 프로그램으로 확인하고, 결과로 설명합니다</h2>
+      <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground">QAgentLabs가 개발한 MachineCare 점검 프로그램을 현장 점검에 사용합니다. 프로그램이 수집한 결과와 고객의 증상을 기사가 함께 검토해 조치 방향을 안내합니다.</p>
+      <ol className="mt-7 grid md:grid-cols-3 gap-5">{[
+        ["12개 항목을 기준으로 점검", "자체 점검 프로그램의 공통 항목을 기준으로 PC 상태를 확인합니다."],
+        ["점검 결과를 기록", "확인된 결과와 주의·추가 확인이 필요한 항목을 기록해 상담의 근거로 남깁니다."],
+        ["조치와 비용을 먼저 설명", "무엇을 확인했고 어떤 조치가 필요한지 설명한 뒤, 고객 동의를 확인하고 작업합니다."],
+      ].map(([title, text], i) => <li key={title} className="rounded-xl border border-border bg-muted/30 p-6"><p className="text-sm font-bold text-accent">{i + 1}. {title}</p><p className="mt-3 text-sm leading-7 text-muted-foreground">{text}</p></li>)}</ol>
     </section>
     <section className="section-padding container-custom max-w-5xl">
       <aside className="mb-12 rounded-xl border border-border bg-muted/30 p-6">

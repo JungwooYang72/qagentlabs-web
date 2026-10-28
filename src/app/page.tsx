@@ -169,7 +169,7 @@ export default function Home() {
               <CardDescription className="text-base mt-2">출장 컴퓨터 점검·수리·기업 PC 관리</CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
-              <p className="text-sm text-muted-foreground leading-7 break-keep">구리·남양주 등 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 점검 결과와 필요한 조치·비용을 설명하고 고객 동의 후 작업합니다.</p>
+              <p className="text-sm text-muted-foreground leading-7 break-keep">자체 개발한 점검 프로그램의 12개 항목을 기준으로 PC 상태를 확인하고 결과를 기록합니다. 경기 9개 시와 서울 동부 4개 구에서 점검 결과와 필요한 조치·비용을 설명하고 고객 동의 후 작업합니다.</p>
               <p className="mt-4 text-sm font-medium">서비스 운영 중 · 상담 후 방문 일정 확정</p>
               </CardContent>
               <CardFooter className="pt-4 border-t border-border">
