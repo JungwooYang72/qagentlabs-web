@@ -19,10 +19,10 @@ const features = [
   { icon: Monitor, title: "고객 PC에서 점검", status: "서비스 운영 중", text: "자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC의 상태를 확인하고 기록합니다. 기사가 증상과 점검 결과를 함께 검토해 필요한 조치와 비용을 설명합니다." },
   { icon: ClipboardCheck, title: "점검 결과 설명과 조치 상담", status: "서비스 운영 중", text: "점검에서 확인한 내용과 추가 확인이 필요한 부분을 설명하고, 필요한 조치와 비용을 안내합니다. 작업은 고객 동의를 확인한 뒤 진행합니다." },
   { icon: BriefcaseBusiness, title: "기업 PC 관리 상담", status: "상담 후 범위 확인", text: "업무용 PC의 반복 장애와 관리 목적을 확인합니다. 필요한 장비 수·점검 범위·일정·비용을 사전에 상담합니다." },
+  { icon: Workflow, title: "조립 PC 업무 자동화 시스템 설치", status: "사내 구축·운영 중 · 설치 상담", text: "QAgentLabs는 자체 업무용 PC에 자동화 시스템을 구축해 사용하고 있습니다. 조립 PC에 설치할 경우 필요한 PC 사양과 반복 업무를 확인한 뒤, 적용 범위와 설치 조건을 협의합니다." },
 ];
 const plannedServices = [
   { icon: FolderSync, title: "AI PC 기종별 점검", status: "기종별 검증 대기", text: "AI PC의 호환성 확인, 초기 설정, AI 기능 동작 점검을 준비합니다. 실제 기기에서 검증한 뒤 지원 기종과 범위를 안내합니다." },
-  { icon: Workflow, title: "조립 PC 업무 자동화 시스템 설치", status: "시범 운영 준비 중", text: "조립 PC에서 엑셀 자료 정리나 반복 업무를 처리할 수 있도록 업무 자동화 시스템의 기본 설치와 동작 확인을 준비하고 있습니다. 적용 대상과 제공 범위는 검증 후 안내합니다." },
 ];
 const faq = [
   ["누구를 위한 서비스인가요?", "PC 점검·수리 상담이 필요한 개인 고객과 기업 PC 관리 담당자를 위한 서비스입니다."],
@@ -94,12 +94,12 @@ export default async function MachineCarePage() {
     </section>
     <section className="border-y border-border bg-muted/20"><div className="section-padding container-custom max-w-5xl">
       <h2 className="text-2xl md:text-3xl font-bold mb-4">현재 이용 가능한 서비스</h2>
-      <p className="text-muted-foreground text-sm leading-relaxed mb-8">출장 PC 점검·수리와 기업 PC 관리 상담을 제공합니다.</p>
+      <p className="text-muted-foreground text-sm leading-relaxed mb-8">출장 PC 점검·수리, 기업 PC 관리 상담, 조립 PC 업무 자동화 시스템 설치 상담을 제공합니다.</p>
       <div className="grid md:grid-cols-2 gap-6">{features.map(({ icon: Icon, ...item }) => <Card key={item.title}><CardHeader><Icon className="text-accent h-7 w-7 mb-4" aria-hidden="true" /><p className="text-xs font-semibold text-accent !mb-2">{item.status}</p><CardTitle className="text-lg leading-normal">{item.title}</CardTitle></CardHeader><CardContent><p className="text-sm text-muted-foreground leading-relaxed break-keep">{item.text}</p></CardContent></Card>)}</div>
     </div></section>
     <section id="planned-services" className="section-padding container-custom max-w-5xl" aria-labelledby="planned-services-title">
       <h2 id="planned-services-title" className="mb-4 text-2xl font-bold md:text-3xl">준비 중인 서비스</h2>
-      <p className="mb-8 text-sm leading-7 text-muted-foreground">아래 두 서비스는 지원 범위를 확인하고 있습니다. 출장 PC 점검·수리는 현재 신청할 수 있습니다.</p>
+      <p className="mb-8 text-sm leading-7 text-muted-foreground">AI PC 기종별 점검은 실제 기기에서 지원 범위를 확인한 뒤 안내합니다.</p>
       <div className="grid gap-6 md:grid-cols-2">{plannedServices.map(({ icon: Icon, ...item }) => <Card key={item.title}><CardHeader><Icon className="mb-4 h-7 w-7 text-accent" aria-hidden="true" /><p className="!mb-2 text-xs font-semibold text-accent">{item.status}</p><CardTitle className="text-lg leading-normal">{item.title}</CardTitle></CardHeader><CardContent><p className="break-keep text-sm leading-relaxed text-muted-foreground">{item.text}</p></CardContent></Card>)}</div>
     </section>
     <section className="section-padding container-custom max-w-5xl">
