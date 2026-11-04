@@ -3,14 +3,14 @@ import { COMPANY } from "@/lib/company";
 import { callbackAvailable } from "@/lib/machinecare-callback-store";
 export const dynamic = "force-dynamic";
 import Link from "next/link";
-import { Monitor, ClipboardCheck, BriefcaseBusiness, FolderSync, ArrowRight } from "lucide-react";
+import { Monitor, ClipboardCheck, BriefcaseBusiness, FolderSync, Workflow, Phone, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ChatLauncher } from "@/components/features/AIChatbot";
 import { MACHINECARE_BASE_HOURS, MACHINECARE_INQUIRIES, MACHINECARE_CONTACT, MACHINECARE_VISIT_AREAS } from "@/lib/machinecare";
 
 export const metadata: Metadata = {
-  title: "출장 컴퓨터 점검·수리·기업 PC 관리 | QAgent MachineCare",
+  title: "구리·남양주 등 출장 컴퓨터 점검·수리 | QAgent MachineCare",
   description: "구리·남양주 등 경기 9개 시와 서울 동부 4개 구의 출장 컴퓨터 점검·수리 서비스를 운영합니다. 자체 개발 프로그램의 12개 점검 항목을 기준으로 결과를 기록하고 필요한 조치·비용을 설명합니다. 방문 일정은 사전 협의합니다.",
   alternates: { canonical: "https://www.qagentlabs.com/machinecare" },
 };
@@ -19,7 +19,10 @@ const features = [
   { icon: Monitor, title: "고객 PC에서 점검", status: "서비스 운영 중", text: "자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC의 상태를 확인하고 기록합니다. 기사가 증상과 점검 결과를 함께 검토해 필요한 조치와 비용을 설명합니다." },
   { icon: ClipboardCheck, title: "점검 결과 설명과 조치 상담", status: "서비스 운영 중", text: "점검에서 확인한 내용과 추가 확인이 필요한 부분을 설명하고, 필요한 조치와 비용을 안내합니다. 작업은 고객 동의를 확인한 뒤 진행합니다." },
   { icon: BriefcaseBusiness, title: "기업 PC 관리 상담", status: "상담 후 범위 확인", text: "업무용 PC의 반복 장애와 관리 목적을 확인합니다. 필요한 장비 수·점검 범위·일정·비용을 사전에 상담합니다." },
-  { icon: FolderSync, title: "AI PC 호환성·초기 설정", status: "서비스 준비 중 · 실제 기종 검증 대기", text: "AI PC의 호환성 확인·초기 설정·AI 기능 동작 점검을 준비합니다. 실제 기종별 지원 완료 범위는 아직 공개하지 않습니다. AI PC의 기능 점검과 AI를 이용한 점검 보고서 해석은 별도 기능입니다." },
+];
+const plannedServices = [
+  { icon: FolderSync, title: "AI PC 기종별 점검", status: "기종별 검증 대기", text: "AI PC의 호환성 확인, 초기 설정, AI 기능 동작 점검을 준비합니다. 실제 기기에서 검증한 뒤 지원 기종과 범위를 안내합니다." },
+  { icon: Workflow, title: "조립 PC 업무 자동화 시스템 설치", status: "시범 운영 준비 중", text: "조립 PC에서 엑셀 자료 정리나 반복 업무를 처리할 수 있도록 업무 자동화 시스템의 기본 설치와 동작 확인을 준비하고 있습니다. 적용 대상과 제공 범위는 검증 후 안내합니다." },
 ];
 const faq = [
   ["누구를 위한 서비스인가요?", "PC 점검·수리 상담이 필요한 개인 고객과 기업 PC 관리 담당자를 위한 서비스입니다."],
@@ -60,10 +63,14 @@ export default async function MachineCarePage() {
     <section className="border-b border-border bg-muted/30 py-14 md:py-24">
       <div className="container-custom max-w-5xl">
         <p className="inline-flex rounded-full bg-accent/10 px-4 py-2 text-xs font-semibold text-accent mb-6">출장 PC 점검·수리 서비스 운영 중</p>
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight">QAgent MachineCare</h1>
-        <p className="text-xl md:text-3xl font-semibold mt-5">컴퓨터 점검부터 수리·결과 설명까지</p>
+        <p className="mb-3 text-sm font-semibold text-muted-foreground">QAgent MachineCare</p>
+        <h1 className="max-w-4xl text-3xl md:text-5xl font-bold leading-tight tracking-tight break-keep">구리·남양주 등 경기·서울 동부 출장 컴퓨터 점검·수리</h1>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">구리·남양주를 비롯한 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 자체 개발한 MachineCare 점검 프로그램으로 상태를 확인하고 기록해, 점검 결과와 필요한 조치·비용을 설명합니다.</p>
-        <div className="flex flex-wrap gap-3 mt-8"><ChatLauncher /><Button size="lg" variant="outline" asChild><Link href="/contact?service=machinecare&inquiry=pc">출장 점검·수리 상담 신청</Link></Button><Button size="lg" variant="outline" asChild><Link href="/machinecare/guides">PC 문제 해결 안내</Link></Button></div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button size="lg" asChild><Link href="/contact?service=machinecare&inquiry=pc">출장 점검·수리 상담 신청</Link></Button>
+          <Button size="lg" variant="outline" asChild><a href={`tel:${COMPANY.phone}`} aria-label={`대표번호 ${COMPANY.phone} 전화하기`}><Phone className="h-4 w-4" aria-hidden="true" />{COMPANY.phone}</a></Button>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-3"><ChatLauncher /><Link href="/machinecare/guides" className="text-sm font-semibold text-accent underline">PC 문제 해결 안내</Link></div>
         <p className="text-xs text-muted-foreground mt-5 leading-relaxed">기본 상담·방문 시간 09:00~18:00 · 상세 주소와 기사 일정, 작업 범위·비용을 협의한 뒤 방문을 확정합니다.</p>
       </div>
     </section>
@@ -86,10 +93,15 @@ export default async function MachineCarePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">{["PC 점검·수리 상담이 필요한 고객", "기업 PC 관리 담당자"].map(text => <Card key={text} className="bg-muted/40"><CardContent className="!pt-6 text-sm leading-relaxed font-medium">{text}</CardContent></Card>)}</div>
     </section>
     <section className="border-y border-border bg-muted/20"><div className="section-padding container-custom max-w-5xl">
-      <h2 className="text-2xl md:text-3xl font-bold mb-4">현재 이용 가능한 서비스와 기종별 확인 항목</h2>
-      <p className="text-muted-foreground text-sm leading-relaxed mb-8">현장 PC 점검과 수리·조치 상담, 기업 PC 관리 상담을 제공합니다. AI PC의 기종별 기능 점검은 실제 기기 검증 후 지원 범위를 안내합니다.</p>
+      <h2 className="text-2xl md:text-3xl font-bold mb-4">현재 이용 가능한 서비스</h2>
+      <p className="text-muted-foreground text-sm leading-relaxed mb-8">출장 PC 점검·수리와 기업 PC 관리 상담을 제공합니다.</p>
       <div className="grid md:grid-cols-2 gap-6">{features.map(({ icon: Icon, ...item }) => <Card key={item.title}><CardHeader><Icon className="text-accent h-7 w-7 mb-4" aria-hidden="true" /><p className="text-xs font-semibold text-accent !mb-2">{item.status}</p><CardTitle className="text-lg leading-normal">{item.title}</CardTitle></CardHeader><CardContent><p className="text-sm text-muted-foreground leading-relaxed break-keep">{item.text}</p></CardContent></Card>)}</div>
     </div></section>
+    <section id="planned-services" className="section-padding container-custom max-w-5xl" aria-labelledby="planned-services-title">
+      <h2 id="planned-services-title" className="mb-4 text-2xl font-bold md:text-3xl">준비 중인 서비스</h2>
+      <p className="mb-8 text-sm leading-7 text-muted-foreground">아래 두 서비스는 지원 범위를 확인하고 있습니다. 출장 PC 점검·수리는 현재 신청할 수 있습니다.</p>
+      <div className="grid gap-6 md:grid-cols-2">{plannedServices.map(({ icon: Icon, ...item }) => <Card key={item.title}><CardHeader><Icon className="mb-4 h-7 w-7 text-accent" aria-hidden="true" /><p className="!mb-2 text-xs font-semibold text-accent">{item.status}</p><CardTitle className="text-lg leading-normal">{item.title}</CardTitle></CardHeader><CardContent><p className="break-keep text-sm leading-relaxed text-muted-foreground">{item.text}</p></CardContent></Card>)}</div>
+    </section>
     <section className="section-padding container-custom max-w-5xl">
       <h2 className="text-2xl md:text-3xl font-bold mb-8">상담 이후의 진행 흐름</h2>
       <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{["챗봇에서 증상 정리", "내용 확인 후 상담 요청", "본부 확인·담당자 배정 및 통화", "협의 후 방문 확정·현장 점검"].map((text, i) => <li key={text} className="rounded-xl border border-border p-5"><span className="text-accent text-sm font-bold">{i + 1}</span><p className="mt-3 text-sm font-semibold leading-relaxed">{text}</p></li>)}</ol>
