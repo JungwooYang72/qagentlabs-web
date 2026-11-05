@@ -66,6 +66,16 @@ export default async function MachineCarePage() {
         <p className="mb-3 text-sm font-semibold text-muted-foreground">QAgent MachineCare</p>
         <h1 className="max-w-4xl text-3xl md:text-5xl font-bold leading-tight tracking-tight break-keep">구리·남양주 등 경기·서울 동부 출장 컴퓨터 점검·수리</h1>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">구리·남양주를 비롯한 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 자체 개발한 MachineCare 점검 프로그램으로 상태를 확인하고 기록해, 점검 결과와 필요한 조치·비용을 설명합니다.</p>
+        <aside id="automation-benefit" aria-labelledby="automation-benefit-title" className="mt-7 scroll-mt-24 rounded-2xl border-2 border-lime-400 bg-lime-300 p-5 text-slate-950 shadow-lg shadow-lime-300/15 sm:p-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <p className="mb-2 inline-flex rounded-full bg-slate-950 px-3 py-1 text-xs font-bold text-lime-300">조립 PC 완제품 구매 혜택</p>
+              <h2 id="automation-benefit-title" className="text-2xl font-extrabold leading-tight tracking-tight break-keep sm:text-3xl">자동화 시스템 무상 구축 상담</h2>
+              <p className="mt-3 text-sm font-medium leading-6 text-slate-800">기본 설치비 무료 · 혜택 적용 여부와 설치 범위는 구매 전에 상담해 드립니다.</p>
+            </div>
+            <a href={`tel:${COMPANY.phone}`} className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-sm font-bold text-white hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"><Phone className="h-4 w-4" aria-hidden="true" />무료 구축 상담</a>
+          </div>
+        </aside>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button size="lg" asChild><Link href="/contact?service=machinecare&inquiry=pc">출장 점검·수리 상담 신청</Link></Button>
           <Button size="lg" variant="outline" asChild><a href={`tel:${COMPANY.phone}`} aria-label={`대표번호 ${COMPANY.phone} 전화하기`}><Phone className="h-4 w-4" aria-hidden="true" />{COMPANY.phone}</a></Button>
