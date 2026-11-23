@@ -7,11 +7,13 @@ import { Monitor, ClipboardCheck, BriefcaseBusiness, FolderSync, Workflow, Phone
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ChatLauncher } from "@/components/features/AIChatbot";
+import { MACHINECARE_FREE } from "@/lib/machinecare-free";
+import { MACHINECARE_PC_INQUIRY } from "@/lib/machinecare-guides";
 import { MACHINECARE_BASE_HOURS, MACHINECARE_INQUIRIES, MACHINECARE_CONTACT, MACHINECARE_VISIT_AREAS } from "@/lib/machinecare";
 
 export const metadata: Metadata = {
   title: "구리·남양주 등 출장 컴퓨터 점검·수리 | QAgent MachineCare",
-  description: "구리·남양주 등 경기 9개 시와 서울 동부 4개 구의 출장 컴퓨터 점검·수리 서비스를 운영합니다. 자체 개발 프로그램의 12개 점검 항목을 기준으로 결과를 기록하고 필요한 조치·비용을 설명합니다. 방문 일정은 사전 협의합니다.",
+  description: "Windows 11 x64용 MachineCare로 무료 PC 자가점검과 결과 확인을 할 수 있습니다. 구리·남양주 등 경기 9개 시와 서울 동부 4개 구의 출장 컴퓨터 점검·수리 상담과 비용 안내를 확인하세요.",
   alternates: { canonical: "https://www.qagentlabs.com/machinecare" },
 };
 
@@ -26,7 +28,8 @@ const plannedServices = [
 ];
 const faq = [
   ["누구를 위한 서비스인가요?", "PC 점검·수리 상담이 필요한 개인 고객과 기업 PC 관리 담당자를 위한 서비스입니다."],
-  ["PC 점검은 어떻게 진행하나요?", "기사가 자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC를 확인하고, 결과를 기록해 필요한 조치를 설명합니다. 홈페이지와 챗봇은 증상 상담과 문의 안내를 제공하며 실제 PC 점검은 방문 후 진행합니다."],
+  ["무료 자가점검은 어느 PC에서 할 수 있나요?", "무료 고객판을 실행한 Windows 11 x64 PC를 점검합니다. 점검이 끝나면 같은 프로그램에서 결과를 확인할 수 있습니다."],
+  ["출장 PC 점검은 어떻게 진행하나요?", "기사가 자체 개발한 MachineCare 점검 프로그램의 12개 항목을 기준으로 고객 Windows PC를 확인하고, 결과를 기록해 필요한 조치를 설명합니다."],
   ["지금 방문 점검을 신청할 수 있나요?", "네. 출장 PC 점검·수리 서비스를 운영하고 있습니다. 증상과 지역을 알려주시면 상세 주소·기사 일정·작업 범위·비용을 확인한 뒤 방문을 확정합니다."],
   ["기업 PC 관리는 어떻게 문의하나요?", "기업 PC 관리 문의에서 장비 수와 관리 목적, 지역을 알려주세요. 점검 범위·일정·비용은 사전에 상담합니다."],
   ["데이터 복구처럼 오래 걸리는 작업은 어떻게 하나요?", "현장 상태 확인 → 고객 동의 후 본사 입고 → 별도 확인·견적 → 작업·결과 확인·반환 순서로 안내합니다. 복구 성공·요금·완료 시각은 확정 전에 보장하지 않습니다. MachineCare가 접수부터 진행 상황 안내·결과 확인·반환까지 관리합니다. 작업 범위와 비용은 사전에 설명하고 고객 동의를 확인합니다."],
@@ -56,8 +59,18 @@ const serviceStructuredData = {
   ],
   availableChannel: { "@type": "ServiceChannel", serviceUrl: "https://www.qagentlabs.com/contact?service=machinecare&inquiry=pc" },
 };
+
+function getInspectionVideoUrl() {
+  const value = process.env.MACHINECARE_INSPECTION_VIDEO_URL?.trim();
+  if (!value || !URL.canParse(value)) return;
+
+  const url = new URL(value);
+  if (url.protocol === "https:" && !url.username && !url.password) return url.href;
+}
+
 export default async function MachineCarePage() {
   const acceptingCallbacks = await callbackAvailable();
+  const inspectionVideoUrl = getInspectionVideoUrl();
   return <div lang="ko" className="w-full pb-20">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceStructuredData).replace(/</g, "\\u003c") }} />
     <section className="border-b border-border bg-muted/30 py-14 md:py-24">
@@ -66,6 +79,37 @@ export default async function MachineCarePage() {
         <p className="mb-3 text-sm font-semibold text-muted-foreground">QAgent MachineCare</p>
         <h1 className="max-w-4xl text-3xl md:text-5xl font-bold leading-tight tracking-tight break-keep">구리·남양주 등 경기·서울 동부 출장 컴퓨터 점검·수리</h1>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mt-5 break-keep">구리·남양주를 비롯한 경기 9개 시와 서울 동부 4개 구에서 출장 PC 점검·수리 서비스를 제공합니다. 자체 개발한 MachineCare 점검 프로그램으로 상태를 확인하고 기록해, 점검 결과와 필요한 조치·비용을 설명합니다.</p>
+
+        <section id="free-download" aria-labelledby="free-download-title" className="mt-7 scroll-mt-24 rounded-2xl border border-border bg-background p-5 sm:p-7">
+          <h2 id="free-download-title" className="text-2xl font-bold tracking-tight">내 PC를 무료로 점검하세요</h2>
+          <p className="mt-3 break-keep leading-relaxed text-muted-foreground">Windows용 무료 고객판으로 자가점검을 하고, 결과도 프로그램에서 무료로 확인할 수 있습니다.</p>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button size="lg" className="h-auto! min-h-11 px-3! py-2 text-center leading-snug sm:px-5!" asChild>
+              <a href={MACHINECARE_FREE.path} download={MACHINECARE_FREE.filename} aria-describedby="machinecare-download-details">Windows용 무료 PC 점검 다운로드</a>
+            </Button>
+            <Button size="lg" variant="outline" asChild><Link href="/machinecare/visit">출장·수리 요금 보기</Link></Button>
+            {inspectionVideoUrl && <Button size="lg" variant="outline" asChild><a href={inspectionVideoUrl}>점검 영상 보기</a></Button>}
+          </div>
+          <p id="machinecare-download-details" className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span>{MACHINECARE_FREE.platform}</span><span>버전 {MACHINECARE_FREE.version}</span><span>ZIP · {MACHINECARE_FREE.size}</span>
+          </p>
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-3">
+            <p className="break-keep leading-relaxed">PC가 부팅되지 않거나 방문이 필요하신가요?</p>
+            <Link className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4" href={MACHINECARE_PC_INQUIRY}>PC 점검·수리 상담</Link>
+          </div>
+
+          <div className="mt-3 border-t border-border pt-4">
+            <h3 className="text-lg font-bold">무료 점검 실행 순서</h3>
+            <ol className="mt-3 list-decimal space-y-2 break-keep pl-5 leading-relaxed">
+              <li>다운로드한 ZIP 파일의 압축을 모두 풉니다.</li>
+              <li>압축을 푼 폴더에서 <code className="inline-block max-w-full break-all text-sm font-semibold">QAgent.MachineCare.Free.exe</code>를 실행합니다.</li>
+              <li><strong>내 PC 점검 시작</strong>을 누르고 점검 결과를 확인합니다.</li>
+            </ol>
+          </div>
+        </section>
+
         <aside id="automation-benefit" aria-labelledby="automation-benefit-title" className="mt-7 scroll-mt-24 rounded-2xl border-2 border-lime-400 bg-lime-300 p-5 text-slate-950 shadow-lg shadow-lime-300/15 sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
@@ -77,7 +121,7 @@ export default async function MachineCarePage() {
           </div>
         </aside>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button size="lg" asChild><Link href="/contact?service=machinecare&inquiry=pc">출장 점검·수리 상담 신청</Link></Button>
+          <Button size="lg" asChild><Link href={MACHINECARE_PC_INQUIRY}>출장 점검·수리 상담 신청</Link></Button>
           <Button size="lg" variant="outline" asChild><a href={`tel:${COMPANY.phone}`} aria-label={`대표번호 ${COMPANY.phone} 전화하기`}><Phone className="h-4 w-4" aria-hidden="true" />{COMPANY.phone}</a></Button>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3"><ChatLauncher /><Link href="/machinecare/guides" className="text-sm font-semibold text-accent underline">PC 문제 해결 안내</Link></div>
@@ -114,7 +158,7 @@ export default async function MachineCarePage() {
     </section>
     <section className="section-padding container-custom max-w-5xl">
       <h2 className="text-2xl md:text-3xl font-bold mb-8">상담 이후의 진행 흐름</h2>
-      <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{["챗봇에서 증상 정리", "내용 확인 후 상담 요청", "본부 확인·담당자 배정 및 통화", "협의 후 방문 확정·현장 점검"].map((text, i) => <li key={text} className="rounded-xl border border-border p-5"><span className="text-accent text-sm font-bold">{i + 1}</span><p className="mt-3 text-sm font-semibold leading-relaxed">{text}</p></li>)}</ol>
+      <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{["증상 또는 자가점검 결과 정리", "내용 확인 후 상담 요청", "본부 확인·담당자 배정 및 통화", "협의 후 방문 확정·현장 점검"].map((text, i) => <li key={text} className="rounded-xl border border-border p-5"><span className="text-accent text-sm font-bold">{i + 1}</span><p className="mt-3 text-sm font-semibold leading-relaxed">{text}</p></li>)}</ol>
       <p className="mt-5 text-sm text-muted-foreground leading-relaxed">문의 접수만으로 방문이 예약되지 않습니다. 담당자가 확인 후 연락하고, 통화로 증상·상세 주소·기사 일정·비용을 협의한 뒤 방문을 확정합니다. 즉시 연락이나 24시간 전화상담을 약속하지 않습니다.</p>
     </section>
     <section className="section-padding container-custom max-w-5xl">

@@ -16,7 +16,7 @@ function EmailInquiry({ initialInquiry }: { initialInquiry: MachineCareInquiry }
   }, []);
   return <div className="space-y-5">
     <p className="font-semibold text-sm">{MACHINECARE_INQUIRIES[initialInquiry]}</p>
-    <p className="text-sm leading-7 text-muted-foreground">현재 온라인 접수 보관·담당자 확인 경로를 점검 중입니다. 전화상담·콜백 요청 접수는 아직 제공하지 않습니다. 챗봇에서 증상을 정리한 뒤 아래 이메일로 문의해 주세요.</p>
+    <p className="text-sm leading-7 text-muted-foreground">현재 이메일로 상담을 받습니다. PC가 부팅되지 않으면 전원이 켜지는지, 어떤 화면이나 오류가 보이는지 알려주세요.</p>
     <label className="block text-sm font-medium">이메일에 포함할 상담 메모 (선택)
       <textarea ref={summaryRef} maxLength={2000} rows={6} className="mt-2 w-full min-w-0 rounded-md border border-border bg-background p-3" />
       <span className="mt-2 block text-xs font-normal leading-6 text-muted-foreground">보낼 내용만 직접 검토·수정해 주세요. 대화 전체·연락처를 자동 전송하지 않습니다. 비밀번호나 개인 문서는 입력하지 마세요.</span>
