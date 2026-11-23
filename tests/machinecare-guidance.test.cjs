@@ -25,6 +25,7 @@ test("customer service answers stay separate from recruitment and explicit partn
     assert.equal(typeof answer, "string");
     assert.doesNotMatch(answer, /모집|inquiry=partner/);
   }
+  assert.match(machineCareGuard("무료 고객판 다운로드는 어디서 하나요?", "pc", false, true), /\/machinecare.*Windows 11 x64/);
   assert.equal(machineCareGuard("노트북 전문 수리가 필요한데 부팅이 안 돼요", "pc", false, true), null);
   assert.match(machineCareGuard("전문 데이터 복구 제휴 문의", "pc", false, true), /inquiry=partner/);
   assert.doesNotMatch(MACHINECARE_PROMPT, /PC·노트북 부품 공급, 노트북 전문 수리, 전문 데이터 복구/);

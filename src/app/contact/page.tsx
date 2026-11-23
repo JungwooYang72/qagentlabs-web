@@ -27,7 +27,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
             {partner ? "MachineCare 협력업체 문의" : machinecare ? "MachineCare 상담 문의" : "Contact Us"}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl break-keep">
-            {partner ? "PC·노트북 부품 공급, 노트북 전문 수리, 전문 데이터 복구 분야의 사업 제휴 문의를 받습니다. 고객 방문 지역과 모집 지역은 별개이며 거래 조건은 개별 협의합니다." : machinecare ? (acceptingCallbacks ? "내용을 확인한 뒤 상담을 요청해 주세요. 본부에서 확인 후 담당자를 배정하며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다." : "챗봇에서 정리한 증상을 이메일로 문의해 주세요. 콜백 접수는 준비 중이며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다.") : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
+            {partner ? "PC·노트북 부품 공급, 노트북 전문 수리, 전문 데이터 복구 분야의 사업 제휴 문의를 받습니다. 고객 방문 지역과 모집 지역은 별개이며 거래 조건은 개별 협의합니다." : machinecare ? (acceptingCallbacks ? "내용을 확인한 뒤 상담을 요청해 주세요. 본부에서 확인 후 담당자를 배정하며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다." : "PC 증상을 이메일로 문의해 주세요. 콜백 접수는 준비 중이며, 상세 주소와 기사 일정을 확인한 뒤 방문을 확정합니다.") : "문의는 아래 폼 또는 이메일을 통해 부탁드립니다. 확인 후 빠르게 답변드리겠습니다."}
           </p>
         </div>
       </section>

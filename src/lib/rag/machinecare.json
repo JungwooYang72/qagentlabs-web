@@ -7,7 +7,7 @@
   {
     "id": "scope",
     "title": "PC 점검·수리 서비스 범위",
-    "content": "고객 Windows PC의 현장 점검, 결과 설명과 필요한 조치·수리 상담을 제공합니다. AI PC 기종별 기능 점검과 AI 보고서 해석은 별도 준비 범위입니다. 공개 다운로드·기사 로그인·보고서 조회는 제공한다고 안내하지 않습니다. 홈페이지나 채팅만으로 실제 진단·수리·원격 점검을 하지 않습니다."
+    "content": "고객 Windows PC의 현장 점검, 결과 설명과 필요한 조치·수리 상담을 제공합니다. AI PC 기종별 기능 점검과 AI 보고서 해석은 별도 준비 범위입니다. MachineCare 메인 페이지(/machinecare)에서 Windows 11 x64 무료 고객판을 내려받을 수 있습니다. ZIP 압축을 모두 풀고 QAgent.MachineCare.Free.exe를 실행한 뒤 ‘내 PC 점검 시작’을 누르면 자가점검과 결과 확인을 무료로 이용할 수 있습니다."
   },
   {
     "id": "diagnostic-program",
