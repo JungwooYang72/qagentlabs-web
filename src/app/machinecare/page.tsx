@@ -88,6 +88,7 @@ export default async function MachineCarePage() {
             <Button size="lg" className="h-auto! min-h-11 px-3! py-2 text-center leading-snug sm:px-5!" asChild>
               <a href={MACHINECARE_FREE.path} download={MACHINECARE_FREE.filename} aria-describedby="machinecare-download-details">Windows용 무료 PC 점검 다운로드</a>
             </Button>
+            <Button size="lg" variant="outline" asChild><Link href={MACHINECARE_FREE.manualPath}>고객용 사용설명서</Link></Button>
             <Button size="lg" variant="outline" asChild><Link href="/machinecare/visit">출장·수리 요금 보기</Link></Button>
             {inspectionVideoUrl && <Button size="lg" variant="outline" asChild><a href={inspectionVideoUrl}>점검 영상 보기</a></Button>}
           </div>
@@ -104,7 +105,7 @@ export default async function MachineCarePage() {
             <h3 className="text-lg font-bold">무료 점검 실행 순서</h3>
             <ol className="mt-3 list-decimal space-y-2 break-keep pl-5 leading-relaxed">
               <li>다운로드한 ZIP 파일의 압축을 모두 풉니다.</li>
-              <li>압축을 푼 폴더에서 <code className="inline-block max-w-full break-all text-sm font-semibold">QAgent.MachineCare.Free.exe</code>를 실행합니다.</li>
+              <li>압축을 푼 폴더에서 <code className="inline-block max-w-full break-all text-sm font-semibold">{MACHINECARE_FREE.executable}</code>를 실행합니다.</li>
               <li><strong>내 PC 점검 시작</strong>을 누르고 점검 결과를 확인합니다.</li>
             </ol>
           </div>

@@ -5,6 +5,8 @@ export const MACHINECARE_FREE = {
   version,
   filename,
   path: `/downloads/machinecare/${filename}`,
+  manualPath: "/machinecare/manual",
+  executable: "QAgent.MachineCare.Free.exe",
   size: "65.2 MB",
   platform: "Windows 11 x64",
 } as const;

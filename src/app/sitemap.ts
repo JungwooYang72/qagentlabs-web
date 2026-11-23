@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
+import { MACHINECARE_FREE } from "@/lib/machinecare-free";
 import { MACHINECARE_GUIDES, MACHINECARE_PUBLIC_ORIGIN } from "@/lib/machinecare-guides";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["", "/about", "/contact", "/terms", "/privacy", "/refund", "/driver-hub", "/ai-automation", "/products/nx-802ru30", "/machinecare", "/machinecare/guides", "/machinecare/visit"];
+  const paths = ["", "/about", "/contact", "/terms", "/privacy", "/refund", "/driver-hub", "/ai-automation", "/products/nx-802ru30", "/machinecare", "/machinecare/guides", "/machinecare/visit", MACHINECARE_FREE.manualPath];
   const updatedAt: Record<string, string> = {
     "": "2026-10-28",
-    "/machinecare": "2026-11-04",
-    "/machinecare/visit": "2026-11-04",
+    "/machinecare": "2026-11-23",
+    "/machinecare/visit": "2026-11-23",
+    [MACHINECARE_FREE.manualPath]: "2026-11-23",
     "/machinecare/guides": "2026-10-28",
   };
   return [
